@@ -1,17 +1,19 @@
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, Pressable } from 'react-native';
+import { View, Text, TextInput, ScrollView, Pressable, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ListItem, { Patient } from '../../components/ListItem';
 import TabPills from '../../components/TabPills';
-import BottomDock from '../../components/BottomDock';
 import ParticipantInfo from './components/participant_info';
 import AssessmentTab from './components/assesment/AssessmentTab';
 import VRTab from './components/VRTab';
 import OrientationTab from './components/OrientationTab'; 
 import Dashboard from './components/Dashboard';
 import { RootStackParamList } from '../../Navigation/types';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 const participants: Patient[] = [
   { id: 1, name: 'Participant001', age: 23, weightKg: 60, status: 'ok', cancerType: 'Breast Cancer', stage: 'IIA', gender: 'Female' },
@@ -66,11 +68,23 @@ export default function ParticipantAssessmentSplit() {
               </View>
               <Text className="text-xs text-[#6b7a77]">List of Participants (112)</Text>
             </View>
-            <View className="flex-row items-center gap-2 bg-white border border-[#e6eeeb] rounded-xl px-3 py-2">
-              <Text>🔎</Text>
-              <TextInput placeholder="Search Participant" className="flex-1" />
-              <Text>🔘</Text>
-              <Text>🔽</Text>
+                  <View className="flex-row items-center space-x-2">
+              {/* Search Bar */}
+              <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-3 py-2 flex-1">
+                <TextInput
+                  placeholder="Search Participant"
+                  className="flex-1"
+                  placeholderTextColor="#999"
+                  style={{ fontSize: 12 }}
+                />
+
+                <EvilIcons name="search" size={24} color="#21c57e" />
+              </View>
+
+              {/* Tune / Filter Icon */}
+              <TouchableOpacity className="">
+                <MaterialCommunityIcons name="tune" size={24} color="black" />
+              </TouchableOpacity>
             </View>
             
             {/* Add Participant Button */}

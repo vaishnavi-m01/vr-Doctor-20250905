@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 
 export type Patient = {
@@ -28,8 +28,8 @@ export default function PatientCard({
     item.status === 'alert'
       ? '#f97316'
       : item.status === 'pending'
-      ? '#2b88d8'
-      : '#00b894';
+        ? '#2b88d8'
+        : '#00b894';
 
   const dotColor = '#f43f5e';
 
@@ -39,7 +39,12 @@ export default function PatientCard({
       className={`flex-row items-center justify-between rounded-xl px-3 py-3 mb-2 ${chipBg}`}
     >
       <View className="flex-row items-center gap-3">
-        <FontAwesome name="user-md" size={20} color={iconColor} />
+        {/* <FontAwesome name="user-md" size={20} color={iconColor} /> */}
+        <Image
+          source={require("../../assets/patient.png")}
+          style={{ width: 20, height: 20, tintColor: iconColor }} 
+        />
+
         <View>
           <Text className={`font-bold ${selected ? 'text-white' : 'text-[#0b1f1c]'}`}>
             {item.name}

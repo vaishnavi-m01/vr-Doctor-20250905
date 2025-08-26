@@ -135,7 +135,8 @@ const Login = () => {
                 <View className="items-center mb-2">
                 <Image
                     source={require("../../../assets/LoginLogo.png")}
-                    className="w-[264px] h-[264px]"
+                    // className="w-[264px] h-[264px]"
+                    style={{ width: 264, height: 264 }}
                     resizeMode="contain"
                 />
 

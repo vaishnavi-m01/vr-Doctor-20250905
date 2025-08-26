@@ -17,25 +17,41 @@ export default function BottomDock({ activeScreen }: BottomDockProps) {
     label: string;
     active: boolean;
     screenName: keyof RootStackParamList;
-    IconComponent: React.ComponentType<{ color: string; size: number }>;
+    IconComponent?: React.ComponentType<{ color: string; size: number }>;
+    iconName: string;
   };
 
-  const Item = ({ label, active, screenName, IconComponent }: DockItemProps) => (
-    <Pressable
-      className={`flex-1 items-center gap-1 px-3 py-2 relative ${active ? 'opacity-100' : 'opacity-80'}`}
+  const Item = ({ label, active, screenName, IconComponent, iconName }: DockItemProps) => (
+    // <Pressable
+    //   className={`flex-1 items-center gap-1 px-3 py-2 relative ${active ? 'opacity-100' : 'opacity-80'}`}
+    //   onPress={() => navigation.navigate(screenName)}
+    //   accessible={true}
+    //   accessibilityLabel={`${label} tab`}
+    //   accessibilityRole="tab"
+    //   accessibilityState={{ selected: active }}
+    // >
+    //   <IconComponent size={24} color={active ? 'white' : '#FFFFFFB3'} />
+    //   <Text className={`text-xs font-zen-medium ${active ? 'text-white' : 'text-white/80'}`}>
+    //     {label}
+    //   </Text>
+    //   {active && (
+    //     <View className="absolute bottom-0 w-16 h-1 bg-[#0ea06c] rounded-full" />
+    //   )}
+    // </Pressable>
+     <Pressable
+      className="flex-1 items-center px-3 py-2 relative"
       onPress={() => navigation.navigate(screenName)}
-      accessible={true}
-      accessibilityLabel={`${label} tab`}
-      accessibilityRole="tab"
-      accessibilityState={{ selected: active }}
     >
-      <IconComponent size={24} color={active ? 'white' : '#FFFFFFB3'} />
+      <Feather
+        name={iconName as any}
+        size={24}
+        color={active ? 'white' : '#FFFFFFB3'}
+        solid
+      />
       <Text className={`text-xs font-zen-medium ${active ? 'text-white' : 'text-white/80'}`}>
         {label}
       </Text>
-      {active && (
-        <View className="absolute bottom-0 w-16 h-1 bg-[#0ea06c] rounded-full" />
-      )}
+      {active && <View className="absolute bottom-0 w-16 h-1 bg-[#0ea06c] rounded-full" />}
     </Pressable>
   );
 
@@ -46,19 +62,22 @@ export default function BottomDock({ activeScreen }: BottomDockProps) {
           label="HOME"
           screenName="Home"
           active={activeScreen === 'Home'}
-          IconComponent={HomeIcon}
+          // IconComponent={HomeIcon}
+          iconName="home"
         />
         <Item
           label="PARTICIPANTS"
           screenName="Participants"
           active={activeScreen === 'Participants'}
-          IconComponent={UserGroupIcon}
+          // IconComponent={UserGroupIcon}
+          iconName="user"
         />
         <Item
           label="REPORTS"
           screenName="Reports"
           active={activeScreen === 'Reports'}
           IconComponent={ChartPieIcon}
+          iconName="file-text"
         />
 
         {/* Profile Button */}
@@ -91,4 +110,3 @@ export default function BottomDock({ activeScreen }: BottomDockProps) {
     </View>
   );
 }
- 

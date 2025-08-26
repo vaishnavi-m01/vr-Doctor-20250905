@@ -124,7 +124,7 @@ export default function App() {
               {/* Core Screens */}
               <Stack.Screen name="Splash" component={Splash} />
               <Stack.Screen name="Login" component={Login} />
-                             <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} />
                <Stack.Screen name="Participants" component={ParticipantsScreen} />
               <Stack.Screen name="Reports" component={ReportsScreen} />
               <Stack.Screen name="Profile" component={Profile} />
