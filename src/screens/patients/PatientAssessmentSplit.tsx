@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, Pressable, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, ScrollView, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ListItem, { Patient } from '../../components/ListItem';
@@ -14,30 +13,60 @@ import { RootStackParamList } from '../../Navigation/types';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-
-const participants: Patient[] = [
-  { id: 1, name: 'Participant001', age: 23, weightKg: 60, status: 'ok', cancerType: 'Breast Cancer', stage: 'IIA', gender: 'Female' },
-  { id: 2, name: 'Participant002', age: 23, weightKg: 60, status: 'ok', cancerType: 'Lung Cancer', stage: 'IIIB', gender: 'Male' },
-  { id: 3, name: 'Participant003', age: 23, weightKg: 60, status: 'pending', cancerType: 'Leukemia', stage: 'I', gender: 'Male' },
-  { id: 4, name: 'Participant004', age: 23, weightKg: 60, status: 'ok', cancerType: 'Prostate Cancer', stage: 'II', gender: 'Male' },
-  { id: 5, name: 'Participant005', age: 23, weightKg: 60, status: 'ok', cancerType: 'Skin Cancer', stage: '0', gender: 'Female' },
-  { id: 6, name: 'Participant006', age: 23, weightKg: 60, status: 'ok', cancerType: 'Brain Cancer', stage: 'IV', gender: 'Male' },
-  { id: 7, name: 'Participant007', age: 23, weightKg: 60, status: 'ok', cancerType: 'Colon Cancer', stage: 'IIIA', gender: 'Female' },
-  { id: 8, name: 'Participant008', age: 23, weightKg: 60, status: 'pending', cancerType: 'Pancreatic Cancer', stage: 'III', gender: 'Male' },
-  { id: 9, name: 'Participant009', age: 23, weightKg: 60, status: 'ok', cancerType: 'Lymphoma', stage: 'II', gender: 'Female' },
-  { id: 10, name: 'Participant010', age: 23, weightKg: 60, status: 'alert', cancerType: 'Ovarian Cancer', stage: 'IV', gender: 'Female' },
-  { id: 11, name: 'Participant011', age: 23, weightKg: 60, status: 'ok', cancerType: 'Stomach Cancer', stage: 'IIB', gender: 'Male' },
-];
- 
-
 export default function ParticipantAssessmentSplit() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [selId, setSelId] = useState(2);
+  const [participants, setParticipants] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [selId, setSelId] = useState<number | null>(null);
   const [tab, setTab] = useState('assessment');
+
+  useEffect(() => {
+    fetchParticipants();
+  }, []);
+
+  const fetchParticipants = async () => {
+    try {
+      const response = await fetch('http://18.60.122.213:8060/api/GetParticipantsPaginationFilterSearch', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          PageNumber: 1,
+          RecordsPerPage: 10,
+          Search: '',
+          Filters: [],
+        }),
+      });
+
+      const json = await response.json();
+
+      if (json.ResponseData) {
+        const parsed: Patient[] = json.ResponseData.map((item: any, index: number) => ({
+          id: index + 1, // You can replace this with a unique identifier if needed
+          name: item.ParticipantId,
+          age: item.Age,
+          status: item.CriteriaStatus?.toLowerCase() || 'pending',
+          gender: item.Gender === 'Male' || item.Gender === 'Female' ? item.Gender : 'Unknown',
+          cancerType: item.CancerDiagnosis || 'N/A',
+          stage: item.StageOfCancer || 'N/A',
+          // weightKg: 60, // Placeholder
+        }));
+
+        setParticipants(parsed);
+        setSelId(parsed[0]?.id ?? null);
+      }
+    } catch (error) {
+      console.error('Failed to fetch participants:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const sel = participants.find(p => p.id === selId);
 
   const renderTabContent = () => {
-    switch (tab) {  
+    switch (tab) {
       case 'dash':
         return <Dashboard patientId={sel?.id || 0} />;
       case 'info':
@@ -51,7 +80,7 @@ export default function ParticipantAssessmentSplit() {
       case 'notification':
         return null;
       default:
-        return <AssessmentTab patientId={sel?.id || 0} />; 
+        return <AssessmentTab patientId={sel?.id || 0} />;
     }
   };
 
@@ -66,9 +95,12 @@ export default function ParticipantAssessmentSplit() {
                 <Text className="font-extrabold">Participant List</Text>
                 <Text className="text-[#21c57e]">●</Text>
               </View>
-              <Text className="text-xs text-[#6b7a77]">List of Participants (112)</Text>
+              <Text className="text-xs text-[#6b7a77]">
+                List of Participants ({participants.length})
+              </Text>
             </View>
-                  <View className="flex-row items-center space-x-2">
+
+            <View className="flex-row items-center space-x-2">
               {/* Search Bar */}
               <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-3 py-2 flex-1">
                 <TextInput
@@ -77,31 +109,32 @@ export default function ParticipantAssessmentSplit() {
                   placeholderTextColor="#999"
                   style={{ fontSize: 12 }}
                 />
-
                 <EvilIcons name="search" size={24} color="#21c57e" />
               </View>
 
-              {/* Tune / Filter Icon */}
-              <TouchableOpacity className="">
+              {/* Filter Icon */}
+              <TouchableOpacity>
                 <MaterialCommunityIcons name="tune" size={24} color="black" />
               </TouchableOpacity>
             </View>
-            
+
             {/* Add Participant Button */}
             <Pressable
-              onPress={() => {
-                // Navigate to SocioDemographic form with a new participant ID
-                navigation.navigate('SocioDemographic', { patientId: Date.now() });
-              }}
+              onPress={() => navigation.navigate('SocioDemographic', { patientId: Date.now() })}
               className="mt-3 bg-[#0ea06c] rounded-xl py-3 px-4 items-center"
             >
               <Text className="text-white font-semibold text-base">➕ Add Participant</Text>
             </Pressable>
           </View>
+
           <ScrollView className="flex-1 p-3">
-            {participants.map(p => (
-              <ListItem key={p.id} item={p} selected={p.id === selId} onPress={() => setSelId(p.id)} />
-            ))}
+            {loading ? (
+              <ActivityIndicator color="#0ea06c" />
+            ) : (
+              participants.map(p => (
+                <ListItem key={p.id} item={p} selected={p.id === selId} onPress={() => setSelId(p.id)} />
+              ))
+            )}
           </ScrollView>
         </View>
 
@@ -125,7 +158,7 @@ export default function ParticipantAssessmentSplit() {
                 { key: 'orie', label: 'Orientation' },
                 { key: 'assessment', label: 'Assessment' },
                 { key: ' VR', label: ' VR Session' },
-                { key: 'notification', label: 'Notification' }, 
+                { key: 'notification', label: 'Notification' },
               ]}
               active={tab}
               onChange={setTab}
@@ -134,7 +167,7 @@ export default function ParticipantAssessmentSplit() {
 
           {renderTabContent()}
         </View>
-      </View> 
+      </View>   
     </View>
   );
 }

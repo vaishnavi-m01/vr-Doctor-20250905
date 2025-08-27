@@ -8,7 +8,7 @@ export const ENV = {
 
 // API configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.EXPO_PUBLIC_API_URL || 'http://103.146.234.88:3007',
+  BASE_URL: process.env.EXPO_PUBLIC_API_URL || 'http://18.60.122.213:8060/api',
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
 } as const;

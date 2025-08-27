@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Pressable, Image } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Pressable, Image, Alert } from 'react-native';
 import FormCard from '@components/FormCard';
 import Segmented from '@components/Segmented';
 import { Field } from '@components/Field';
@@ -8,6 +8,9 @@ import { Btn } from '@components/Button';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
 import Header from '@components/Header';
+import axios from "axios";
+import { apiService } from 'src/services';
+
 
 export default function SocioDemographic() {
   // Personal Information fields
@@ -16,14 +19,15 @@ export default function SocioDemographic() {
   const [genderOther, setGenderOther] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
   const [numberOfChildren, setNumberOfChildren] = useState("");
-  const [englishKnowledge, setEnglishKnowledge] = useState("");
-  const [hindiKnowledge, setHindiKnowledge] = useState("");
-  const [khasiKnowledge, setKhasiKnowledge] = useState("");
   const [faithWellbeing, setFaithWellbeing] = useState("");
   const [practiceReligion, setPracticeReligion] = useState("");
   const [religionSpecify, setReligionSpecify] = useState("");
   const [educationLevel, setEducationLevel] = useState("");
   const [employmentStatus, setEmploymentStatus] = useState("");
+  const [english, setEnglish] = useState(false);
+  const [hindi, setHindi] = useState(false);
+  const [khasi, setKhasi] = useState(false);
+
 
   // Medical History fields
   const [cancerDiagnosis, setCancerDiagnosis] = useState("");
@@ -45,10 +49,50 @@ export default function SocioDemographic() {
   const route = useRoute<RouteProp<RootStackParamList, 'SocioDemographic'>>();
   const { patientId: routePatientId } = route.params as { patientId: number };
 
+
+
   const handleSave = async () => {
-    // Save logic here
-    console.log('Saving socio-demographic data...');
+    try {
+      const knowledgeIn = english
+        ? "English"
+        : hindi
+          ? "Hindi"
+          : khasi
+            ? "Khasi"
+            : "";
+      const payload = {
+        StudyId: "CS-0001",
+        Age: Number(age),
+        Gender: gender,
+        MaritalStatus: maritalStatus,
+        KnowledgeIn: knowledgeIn,
+        EducationLevel: educationLevel,
+        // CriteriaStatus: "Included",
+        // GroupType: "Trial",
+        // PhoneNumber: "+912345234568",
+
+        CancerDiagnosis: cancerDiagnosis,
+        StageOfCancer: cancerStage,
+        TypeOfTreatment: treatmentType,
+        DurationOfTreatmentMonths: Number(treatmentDuration),
+
+        SmokingHistory: smokingHistory,
+        AlcoholConsumption: alcoholConsumption,
+        PhysicalActivityLevel: physicalActivityLevel,
+      };
+
+      console.log(" Sending payload:", payload);
+
+      const response = await apiService.post("/AddUpdateParticipant", payload);
+
+      console.log(" API Response:", response.data);
+      Alert.alert("Participant data saved successfully!");
+    } catch (error: any) {
+      console.error(" Error saving participant:", error.message);
+      Alert.alert("Failed to save participant.");
+    }
   };
+
 
   return (
     <>
@@ -247,7 +291,7 @@ export default function SocioDemographic() {
             )}
           </View>
 
-          <View className="mt-3">
+          {/* <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-1">4. Knowledge in</Text>
             <View className="mt-2">
               <Field
@@ -273,7 +317,72 @@ export default function SocioDemographic() {
                 onChangeText={setKhasiKnowledge}
               />
             </View>
+          </View> */}
+
+
+          <View className="mt-3">
+            <Text className="text-xs text-[#4b5f5a] mb-1">4. Knowledge in</Text>
+
+            <View className="flex-row mt-2 space-x-4">
+              {/* English */}
+              <TouchableOpacity
+                onPress={() => {
+                  setEnglish(true);
+                  setHindi(false);
+                  setKhasi(false);
+                  setEnglishKnowledge("English");
+                }}
+                className="flex-row items-center"
+              >
+                <View
+                  className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${english ? 'bg-green-500' : 'bg-white' // ✅ background color
+                    }`}
+                >
+                  {english && <Text className="text-white font-bold text-xs">✓</Text>} {/* check icon */}
+                </View>
+                <Text>English</Text>
+              </TouchableOpacity>
+
+              {/* Hindi */}
+              <TouchableOpacity
+                onPress={() => {
+                  setEnglish(false);
+                  setHindi(true);
+                  setKhasi(false);
+                  setHindiKnowledge("Hindi");
+                }}
+                className="flex-row items-center"
+              >
+                <View
+                  className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${hindi ? 'bg-green-500' : 'bg-white'
+                    }`}
+                >
+                  {hindi && <Text className="text-white font-bold text-xs">✓</Text>}
+                </View>
+                <Text>Hindi</Text>
+              </TouchableOpacity>
+
+              {/* Khasi */}
+              <TouchableOpacity
+                onPress={() => {
+                  setEnglish(false);
+                  setHindi(false);
+                  setKhasi(true);
+                  setKhasiKnowledge("Khasi");
+                }}
+                className="flex-row items-center"
+              >
+                <View
+                  className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${khasi ? 'bg-green-500' : 'bg-white'
+                    }`}
+                >
+                  {khasi && <Text className="text-white font-bold text-xs">✓</Text>}
+                </View>
+                <Text>Khasi</Text>
+              </TouchableOpacity>
+            </View>
           </View>
+
 
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">5. Does faith contribute to well-being?</Text>
@@ -319,7 +428,7 @@ export default function SocioDemographic() {
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">6. Do you practice any religion?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
+
               <Pressable
                 onPress={() => setPracticeReligion('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${practiceReligion === 'Yes'
