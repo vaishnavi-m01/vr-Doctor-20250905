@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Pressable, Image, Alert } from 'react-native';
 import FormCard from '@components/FormCard';
 import Segmented from '@components/Segmented';
 import { Field } from '@components/Field';
 import BottomBar from '@components/BottomBar';
 import { Btn } from '@components/Button';
-import { useRoute, RouteProp } from '@react-navigation/native';
+import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
 import Header from '@components/Header';
 import axios from "axios";
 import { apiService } from 'src/services';
+import Toast from 'react-native-toast-message';
+
+
+
+interface ParticipantDetails {
+  Age?: number;
+  Gender?: string;
+  MaritalStatus?: string;
+  NumberOfChildren?: number;
+  FaithContributeToWellBeing?: string;
+  PracticeAnyReligion?: string;
+  ReligionSpecify?: string;
+  EducationLevel?: string;
+  EmploymentStatus?: string;
+  KnowledgeIn?: string;
+
+  CancerDiagnosis?: string;
+  StageOfCancer?: string;
+  ScoreOfECOG?: string;
+  TypeOfTreatment?: string;
+  TreatmentStartDate?: string;
+  DurationOfTreatmentMonths?: number;
+  OtherMedicalConditions?: string;
+  CurrentMedications?: string;
+  StartDateOfTreatment?: string;
+
+  SmokingHistory?: string;
+  AlcoholConsumption?: string;
+  PhysicalActivityLevel?: string;
+  StressLevels?: string;
+  TechnologyExperience?: string;
+}
+
 
 
 export default function SocioDemographic() {
   // Personal Information fields
-  const [age, setAge] = useState("");
+  const [ages, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [genderOther, setGenderOther] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
@@ -27,9 +60,8 @@ export default function SocioDemographic() {
   const [english, setEnglish] = useState(false);
   const [hindi, setHindi] = useState(false);
   const [khasi, setKhasi] = useState(false);
-  const [knowledgeIn, setKnowledgeIn] = useState<string>("");
-
-
+  const [KnowledgeIn, setKnowledgeIn] = useState<string>("");
+  console.log("KnowledgeIn", KnowledgeIn)
 
   // Medical History fields
   const [cancerDiagnosis, setCancerDiagnosis] = useState("");
@@ -47,88 +79,222 @@ export default function SocioDemographic() {
   const [physicalActivityLevel, setPhysicalActivityLevel] = useState("");
   const [stressLevels, setStressLevels] = useState("");
   const [technologyExperience, setTechnologyExperience] = useState("");
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
 
   const route = useRoute<RouteProp<RootStackParamList, 'SocioDemographic'>>();
-  const { patientId: routePatientId } = route.params as { patientId: number };
+  const { patientId, age } = route.params as { patientId: number, age: number };
+  const isEditMode = !!patientId;
+  const navigation = useNavigation<any>();
+
+
+
+  useEffect(() => {
+    if (isEditMode) {
+      (async () => {
+        try {
+          const res = await apiService.post<{ ResponseData: ParticipantDetails }>(
+            "/GetParticipantDetails",
+            { ParticipantId: patientId }
+          );
+
+          const data = res.data?.ResponseData;
+
+          if (data) {
+            // Personal
+            setAge(String(data.Age ?? ""));
+            setGender(data.Gender ?? "");
+            setMaritalStatus(data.MaritalStatus ?? "");
+            setNumberOfChildren(String(data.NumberOfChildren ?? ""));
+            setFaithWellbeing(data.FaithContributeToWellBeing ?? "");
+            setPracticeReligion(data.PracticeAnyReligion ?? "");
+            setReligionSpecify(data.ReligionSpecify ?? "");
+            setEducationLevel(data.EducationLevel ?? "");
+            setEmploymentStatus(data.EmploymentStatus ?? "");
+            setKnowledgeIn(data.KnowledgeIn ?? "");
+
+            // Medical
+            setCancerDiagnosis(data.CancerDiagnosis ?? "");
+            setCancerStage(data.StageOfCancer ?? "");
+            setEcogScore(data.ScoreOfECOG ?? "");
+            setTreatmentType(data.TypeOfTreatment ?? "");
+            setTreatmentStartDate(data.StartDateOfTreatment ?? "");
+            setTreatmentDuration(String(data.DurationOfTreatmentMonths ?? ""));
+            setOtherMedicalConditions(data.OtherMedicalConditions ?? "");
+            setCurrentMedications(data.CurrentMedications ?? "");
+
+            // Lifestyle
+            setSmokingHistory(data.SmokingHistory ?? "");
+            setAlcoholConsumption(data.AlcoholConsumption ?? "");
+            setPhysicalActivityLevel(data.PhysicalActivityLevel ?? "");
+            setStressLevels(data.StressLevels ?? "");
+            setTechnologyExperience(data.TechnologyExperience ?? "");
+          }
+        } catch (err) {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Failed to load participant details",
+            position: "top",
+            topOffset: 50,
+          });
+        }
+      })();
+    }
+  }, [isEditMode, patientId]);
+
+
+
 
 
 
   const handleSave = async () => {
+    let newErrors: { [key: string]: string } = {};
+
+    if (!ages) newErrors.age = "Age is required";
+    if (!gender) newErrors.gender = "Gender is required";
+    if (!maritalStatus) newErrors.maritalStatus = "Marital status is required";
+    if (!cancerDiagnosis) newErrors.cancerDiagnosis = "Cancer diagnosis is required";
+    if (!cancerStage) newErrors.cancerStage = "Cancer stage is required";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) {
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please fill all required fields",
+        position: "top",
+        topOffset: 50,
+      });
+      return;
+    }
+
     try {
-      const knowledgeIn = english
-        ? "English"
-        : hindi
-          ? "Hindi"
-          : khasi
-            ? "Khasi"
-            : "";
+      // const knowledgeIn = english ? "English" : hindi ? "Hindi" : khasi ? "Khasi" : "";
+
       const payload = {
+        ParticipantId: patientId,
         StudyId: "CS-0001",
-        Age: Number(age),
+        Age: Number(ages),
         Gender: gender,
         MaritalStatus: maritalStatus,
-        KnowledgeIn: knowledgeIn,
+        NumberOfChildren: numberOfChildren,
+        KnowledgeIn: KnowledgeIn,
+        FaithContributeToWellBeing: faithWellbeing,
+        PracticeAnyReligion: practiceReligion,
         EducationLevel: educationLevel,
-        // CriteriaStatus: "Included",
-        // GroupType: "Trial",
-        // PhoneNumber: "+912345234568",
+        EmploymentStatus: employmentStatus,
+
         CancerDiagnosis: cancerDiagnosis,
         StageOfCancer: cancerStage,
+        ScoreOfECOG: ecogScore,
         TypeOfTreatment: treatmentType,
+        StartDateOfTreatment: treatmentStartDate,
         DurationOfTreatmentMonths: Number(treatmentDuration),
+        OtherMedicalConditions: otherMedicalConditions,
+        CurrentMedications: currentMedications,
 
         SmokingHistory: smokingHistory,
         AlcoholConsumption: alcoholConsumption,
         PhysicalActivityLevel: physicalActivityLevel,
+        StressLevels: stressLevels,
+        TechnologyExperience: technologyExperience
       };
 
-      console.log(" Sending payload:", payload);
+      let response;
+      if (isEditMode) {
+        // response = await apiService.put("/AddUpdateParticipant", payload);
+        response = await apiService.post("/AddUpdateParticipant", payload);
 
-      const response = await apiService.post("/AddUpdateParticipant", payload);
+      } else {
+        response = await apiService.post("/AddUpdateParticipant", payload);
+      }
 
-      console.log(" API Response:", response.data);
-      Alert.alert("Participant data saved successfully!");
+      if (response.status === 200) {
+        Toast.show({
+          type: "success",
+          text1: isEditMode ? "Updated" : "Success",
+          text2: isEditMode
+            ? "Participant updated successfully!"
+            : "Participant added successfully!",
+          position: "top",
+          topOffset: 50,
+          visibilityTime: 2000,
+          onHide: () => navigation.goBack(),
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Something went wrong. Please try again.",
+          position: "top",
+          topOffset: 50,
+        });
+      }
     } catch (error: any) {
-      console.error(" Error saving participant:", error.message);
-      Alert.alert("Failed to save participant.");
+      console.error("Error saving participant:", error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to save participant.",
+        position: "top",
+        topOffset: 50,
+      });
     }
   };
 
 
+
+
+
   return (
     <>
-      {/* <View className="px-4 pt-4">
-        <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
-          <Text className="text-lg font-bold text-green-600">
-            Participant ID: {routePatientId}
-          </Text>
+      {isEditMode && (
+        <View className="px-4 pt-4">
+          <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
+            <Text className="text-lg font-bold text-green-600">
+              Participant ID: {patientId}
+            </Text>
 
-          <Text className="text-base font-semibold text-gray-700">
-            Age: {age || 'Not specified'}
-          </Text>
+            <Text className="text-base font-semibold text-gray-700">
+              Age: {age || "Not specified"}
+            </Text>
+          </View>
         </View>
-      </View> */}
+      )}
+
 
       <ScrollView className="flex-1 p-4 bg-bg pb-[60px]">
 
-        {/* Section 1: Personal Information */}
         <FormCard icon="👤" title="Section 1: Personal Information">
           <View className="mt-3">
             <Field
               label="1. Age"
               placeholder="_______ years"
-              value={age}
-              onChangeText={setAge}
+              value={ages}
+              onChangeText={(val) => {
+                setAge(val);
+                setErrors((prev) => ({ ...prev, age: "" }));
+              }}
               keyboardType="numeric"
+            // className={errors.age ? "border border-red-500 rounded-md" : ""}
             />
+            {errors.ages && <Text className="text-red-500 text-xs mt-1">{errors.ages}</Text>}
+
           </View>
+
+
 
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">2. Gender</Text>
             <View className="flex-row gap-2">
               {/* Male Button */}
               <Pressable
-                onPress={() => setGender('Male')}
+                onPress={() => {
+                  setGender("Male");
+                  setErrors((prev) => ({ ...prev, gender: "" }));
+                }}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${gender === 'Male'
                   ? 'bg-[#4FC264]'
                   : 'bg-[#EBF6D6]'
@@ -188,6 +354,8 @@ export default function SocioDemographic() {
                 </Text>
               </Pressable>
             </View>
+            {errors.gender && <Text className="text-red-500 text-xs mt-1">{errors.gender}</Text>}
+
 
             {/* Conditional Specify Field */}
             {gender === 'Other' && (
@@ -204,82 +372,111 @@ export default function SocioDemographic() {
 
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">3. Marital Status</Text>
-            <View className="flex-row gap-2">
+
+            {/* Button Group */}
+            <View
+              className={`flex-row gap-2`}
+            >
               {/* Single Button */}
               <Pressable
-                onPress={() => setMaritalStatus('Single')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === 'Single'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
+                onPress={() => {
+                  setMaritalStatus("Single");
+                  setErrors((prev) => ({ ...prev, maritalStatus: "" })); // clear error
+                }}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === "Single" ? "bg-[#4FC264]" : "bg-[#EBF6D6]"
                   }`}
               >
-                <Text className={`text-lg mr-1 ${maritalStatus === 'Single' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`text-lg mr-1 ${maritalStatus === "Single" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   👤
                 </Text>
-                <Text className={`font-medium text-xs ${maritalStatus === 'Single' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`font-medium text-xs ${maritalStatus === "Single" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   Single
                 </Text>
               </Pressable>
 
               {/* Married Button */}
               <Pressable
-                onPress={() => setMaritalStatus('Married')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === 'Married'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
+                onPress={() => {
+                  setMaritalStatus("Married");
+                  setErrors((prev) => ({ ...prev, maritalStatus: "" }));
+                }}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === "Married" ? "bg-[#4FC264]" : "bg-[#EBF6D6]"
                   }`}
               >
-                <Text className={`text-lg mr-1 ${maritalStatus === 'Married' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`text-lg mr-1 ${maritalStatus === "Married" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   💑
                 </Text>
-                <Text className={`font-medium text-xs ${maritalStatus === 'Married' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`font-medium text-xs ${maritalStatus === "Married" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   Married
                 </Text>
               </Pressable>
 
               {/* Divorced Button */}
               <Pressable
-                onPress={() => setMaritalStatus('Divorced')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === 'Divorced'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
+                onPress={() => {
+                  setMaritalStatus("Divorced");
+                  setErrors((prev) => ({ ...prev, maritalStatus: "" }));
+                }}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === "Divorced" ? "bg-[#4FC264]" : "bg-[#EBF6D6]"
                   }`}
               >
-                <Text className={`text-lg mr-1 ${maritalStatus === 'Divorced' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`text-lg mr-1 ${maritalStatus === "Divorced" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   💔
                 </Text>
-                <Text className={`font-medium text-xs ${maritalStatus === 'Divorced' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`font-medium text-xs ${maritalStatus === "Divorced" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   Divorced
                 </Text>
               </Pressable>
 
               {/* Widowed Button */}
               <Pressable
-                onPress={() => setMaritalStatus('Widowed')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === 'Widowed'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
+                onPress={() => {
+                  setMaritalStatus("Widowed");
+                  setErrors((prev) => ({ ...prev, maritalStatus: "" }));
+                }}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${maritalStatus === "Widowed" ? "bg-[#4FC264]" : "bg-[#EBF6D6]"
                   }`}
               >
-                <Text className={`text-lg mr-1 ${maritalStatus === 'Widowed' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`text-lg mr-1 ${maritalStatus === "Widowed" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   🕊️
                 </Text>
-                <Text className={`font-medium text-xs ${maritalStatus === 'Widowed' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
+                <Text
+                  className={`font-medium text-xs ${maritalStatus === "Widowed" ? "text-white" : "text-[#2c4a43]"
+                    }`}
+                >
                   Widowed
                 </Text>
               </Pressable>
             </View>
 
+            {/* Error Message */}
+            {errors.maritalStatus && (
+              <Text className="text-red-500 text-xs mt-1">{errors.maritalStatus}</Text>
+            )}
+
             {/* Conditional Number of Children Field */}
-            {maritalStatus === 'Married' && (
+            {maritalStatus === "Married" && (
               <View className="mt-3">
                 <Field
                   label="If married, number of children"
@@ -291,6 +488,7 @@ export default function SocioDemographic() {
               </View>
             )}
           </View>
+
 
           {/* <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-1">4. Knowledge in</Text>
@@ -327,60 +525,35 @@ export default function SocioDemographic() {
             <View className="flex-row mt-2 space-x-4">
               {/* English */}
               <TouchableOpacity
-                onPress={() => {
-                  setEnglish(true);
-                  setHindi(false);
-                  setKhasi(false);
-                  setKnowledgeIn("English");
-                }}
+                onPress={() => setKnowledgeIn("English")}
                 className="flex-row items-center"
               >
-                <View
-                  className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${english ? 'bg-green-500' : 'bg-white' // ✅ background color
-                    }`}
-                >
-                  {english && <Text className="text-white font-bold text-xs">✓</Text>} {/* check icon */}
+                <View className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${KnowledgeIn === 'English' ? 'bg-green-500' : 'bg-white'}`}>
+                  {KnowledgeIn === 'English' && <Text className="text-white font-bold text-xs">✓</Text>}
                 </View>
                 <Text>English</Text>
               </TouchableOpacity>
 
-              {/* Hindi */}
               <TouchableOpacity
-                onPress={() => {
-                  setEnglish(false);
-                  setHindi(true);
-                  setKhasi(false);
-                  setKnowledgeIn("Hindi");
-                }}
+                onPress={() => setKnowledgeIn("Hindi")}
                 className="flex-row items-center"
               >
-                <View
-                  className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${hindi ? 'bg-green-500' : 'bg-white'
-                    }`}
-                >
-                  {hindi && <Text className="text-white font-bold text-xs">✓</Text>}
+                <View className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${KnowledgeIn === 'Hindi' ? 'bg-green-500' : 'bg-white'}`}>
+                  {KnowledgeIn === 'Hindi' && <Text className="text-white font-bold text-xs">✓</Text>}
                 </View>
                 <Text>Hindi</Text>
               </TouchableOpacity>
 
-              {/* Khasi */}
               <TouchableOpacity
-                onPress={() => {
-                  setEnglish(false);
-                  setHindi(false);
-                  setKhasi(true);
-                  setKnowledgeIn("Khasi");
-                }}
+                onPress={() => setKnowledgeIn("Khasi")}
                 className="flex-row items-center"
               >
-                <View
-                  className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${khasi ? 'bg-green-500' : 'bg-white'
-                    }`}
-                >
-                  {khasi && <Text className="text-white font-bold text-xs">✓</Text>}
+                <View className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${KnowledgeIn === 'Khasi' ? 'bg-green-500' : 'bg-white'}`}>
+                  {KnowledgeIn === 'Khasi' && <Text className="text-white font-bold text-xs">✓</Text>}
                 </View>
                 <Text>Khasi</Text>
               </TouchableOpacity>
+
             </View>
           </View>
 
@@ -519,7 +692,11 @@ export default function SocioDemographic() {
               value={cancerDiagnosis}
               onChangeText={setCancerDiagnosis}
             />
+            {errors.cancerDiagnosis && (
+              <Text className="text-red-500 text-xs mt-1">{errors.cancerDiagnosis}</Text>
+            )}
           </View>
+
 
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-1">2. Stage of Cancer</Text>
@@ -533,7 +710,11 @@ export default function SocioDemographic() {
               value={cancerStage}
               onChange={setCancerStage}
             />
+            {errors.cancerStage && (
+              <Text className="text-red-500 text-xs mt-1">{errors.cancerStage}</Text>
+            )}
           </View>
+
 
           <View className="mt-3">
             <Field
@@ -905,7 +1086,7 @@ export default function SocioDemographic() {
       </ScrollView>
 
       <BottomBar>
-        <Btn variant="light" onPress={() => { }}>Validate</Btn>
+        {/* <Btn variant="light" onPress={() => { }}>Validate</Btn> */}
         <Btn onPress={handleSave}>Save Information</Btn>
       </BottomBar>
     </>

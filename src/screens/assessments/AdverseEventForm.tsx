@@ -41,12 +41,6 @@ export default function AdverseEventForm() {
     const [conditionContribution, setConditionContribution] = useState<string | null>(null);
     const [severity, setSeverity] = useState(null);
     const [outcome, setOutcome] = useState([]);
-
-
-
-
-
-
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const route = useRoute<RouteProp<RootStackParamList, 'AdverseEventForm'>>();
     const { patientId,age } = route.params as { patientId: number,age:number };

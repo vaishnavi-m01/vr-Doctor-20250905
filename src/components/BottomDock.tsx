@@ -38,7 +38,7 @@ export default function BottomDock({ activeScreen }: BottomDockProps) {
     //     <View className="absolute bottom-0 w-16 h-1 bg-[#0ea06c] rounded-full" />
     //   )}
     // </Pressable>
-     <Pressable
+    <Pressable
       className="flex-1 items-center px-3 py-2 relative"
       onPress={() => navigation.navigate(screenName)}
     >
@@ -95,10 +95,11 @@ export default function BottomDock({ activeScreen }: BottomDockProps) {
         {/* Floating Button */}
         <Pressable
           className="absolute -right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-brand-accent-green items-center justify-center shadow-xl"
-          onPress={() => {
-            // Navigate to SocioDemographic form
-            navigation.navigate('SocioDemographic', { patientId: 1 });
-          }}
+          onPress={() =>
+            navigation.navigate('SocioDemographic', {
+              // patientId: Date.now(),
+              // age:age
+            })}
           accessible={true}
           accessibilityLabel="Add new participant"
           accessibilityRole="button"

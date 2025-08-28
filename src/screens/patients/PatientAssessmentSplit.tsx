@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ListItem from '../../components/ListItem';
 import TabPills from '../../components/TabPills';
@@ -41,9 +41,11 @@ export default function ParticipantAssessmentSplit() {
   const [selId, setSelId] = useState<number | null>(null); // holds ParticipantId
   const [tab, setTab] = useState('assessment');
 
-  useEffect(() => {
-    fetchParticipants();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchParticipants();
+    }, [])
+  );
 
   const fetchParticipants = async () => {
     try {
@@ -165,7 +167,7 @@ export default function ParticipantAssessmentSplit() {
             </Pressable>
           </View>
 
-          <ScrollView className="flex-1 p-3">
+          <ScrollView className="flex-1 p-3" contentContainerStyle={{paddingBottom:70}}>
             {loading ? (
               <ActivityIndicator color="#0ea06c" />
             ) : (

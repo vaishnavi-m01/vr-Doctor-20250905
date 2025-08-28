@@ -3,11 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import toastConfig from '@components/toastConfig';
 import * as Font from 'expo-font';
 
 import "./global.css";
 
-// Screens
 import ParticipantsScreen from './src/screens/patients/PatientAssessmentSplit';
 import BottomDock from './src/components/BottomDock';
 import HomeScreen from './src/screens/tabs/home_tab';
@@ -38,6 +39,8 @@ import Profile from './src/screens/auth/Profile';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import DistressThermometerList from './src/screens/patients/components/assesment/DistressThermometer_list';
+import STUDY_OBSERVATION from '@screens/assessments/StudyObservation_List';
+import StudyObservation_List from '@screens/assessments/StudyObservation_List';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -194,6 +197,12 @@ export default function App() {
                   component={AdverseEventForm}
                   options={{ headerShown: true, title: "Adverse Event Form" }}
                 />
+
+                 <Stack.Screen
+                  name="StudyObservation_List"
+                  component={StudyObservation_List}
+                  options={{ headerShown: true, title: "Study Observation List" }}
+                />
                 <Stack.Screen
                   name="StudyObservation"
                   component={StudyObservation}
@@ -251,6 +260,7 @@ export default function App() {
               )}
             </View>
           </NavigationContainer>
+          <Toast  config={toastConfig}/>
         </SafeAreaView>
       </SafeAreaProvider>
     </ErrorBoundary>
