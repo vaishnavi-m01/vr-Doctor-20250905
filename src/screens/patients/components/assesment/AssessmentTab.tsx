@@ -44,7 +44,7 @@ const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
         icon="🌡️"
         title="Distress Thermometer scoring 0-10"
         subtitle="Assess participant distress levels and identify problem areas"
-        onPress={() => navigation.navigate('DistressThermometerScreen', { patientId,age })}
+        onPress={() => navigation.navigate('DistressThermometerList', { patientId,age })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem

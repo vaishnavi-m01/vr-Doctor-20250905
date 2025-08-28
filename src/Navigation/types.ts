@@ -23,5 +23,6 @@ export type RootStackParamList = {
   PatientScreening: { patientId: number,age:number };
   Screening: { patientId: number,age:number };
   FactG: { patientId: number,age:number };
+  DistressThermometerList:{ patientId: number,age:number };
 };
  
