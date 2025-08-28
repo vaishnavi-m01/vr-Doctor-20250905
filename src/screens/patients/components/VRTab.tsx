@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AssessItem from "../../../components/AssessItem";
 
-type VRProps = { patientId: number };
+type VRProps = { patientId: number,age:number };
 
 type RootStackParamList = {
     VR: { patientId: number };

@@ -9,9 +9,10 @@ type OrientationTabNavigationProp = NativeStackNavigationProp<RootStackParamList
 
 interface OrientationTabProps {
   patientId: number;
+  age:number;
 }
 
-export default function OrientationTab({ patientId }: OrientationTabProps){
+export default function OrientationTab({ patientId,age }: OrientationTabProps){
   const navigation = useNavigation<OrientationTabNavigationProp>();
 
   return ( 
@@ -21,7 +22,7 @@ export default function OrientationTab({ patientId }: OrientationTabProps){
         title="Pre VR Assessment"
         subtitle="Evaluate participant readiness and comfort before VR session"
         onPress={() => 
-          navigation.navigate('PreVR', { patientId })
+          navigation.navigate('PreVR', { patientId,age })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
@@ -30,7 +31,7 @@ export default function OrientationTab({ patientId }: OrientationTabProps){
         title="Post VR Assessment"
         subtitle="Collect feedback and evaluate VR session experience"
         onPress={() => 
-          navigation.navigate('PostVRAssessment', { patientId })
+          navigation.navigate('PostVRAssessment', { patientId,age })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />

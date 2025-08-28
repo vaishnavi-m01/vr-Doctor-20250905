@@ -14,9 +14,10 @@ type AssessmentTabNavigationProp = NativeStackNavigationProp<RootStackParamList>
 
 interface AssessmentTabProps {
   patientId: number;
+  age:number;
 }
 
-const AssessmentTab = ({ patientId }: AssessmentTabProps) => {
+const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
   const navigation = useNavigation<AssessmentTabNavigationProp>(); 
   
   // State for orientation assessment items
@@ -43,14 +44,14 @@ const AssessmentTab = ({ patientId }: AssessmentTabProps) => {
         icon="🌡️"
         title="Distress Thermometer scoring 0-10"
         subtitle="Assess participant distress levels and identify problem areas"
-        onPress={() => navigation.navigate('DistressThermometerScreen', { patientId })}
+        onPress={() => navigation.navigate('DistressThermometerScreen', { patientId,age })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
         icon="📝"
         title="Fact-G scoring 0-108"
         subtitle="Evaluate quality of life across physical, social, emotional domains"
-        onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId })}
+        onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId,age })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
@@ -58,7 +59,7 @@ const AssessmentTab = ({ patientId }: AssessmentTabProps) => {
         title="Study Observation Form"
         subtitle="Record session observations and participant responses"
         onPress={() => 
-          navigation.navigate('StudyObservation', { patientId })
+          navigation.navigate('StudyObservation', { patientId,age })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
@@ -67,7 +68,7 @@ const AssessmentTab = ({ patientId }: AssessmentTabProps) => {
         title="Exit Interview optional"
         subtitle="Final assessment and feedback collection from participant"
         onPress={() => 
-          navigation.navigate('ExitInterview', { patientId })
+          navigation.navigate('ExitInterview', { patientId,age })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />

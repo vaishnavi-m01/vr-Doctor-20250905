@@ -70,7 +70,6 @@ export default function SocioDemographic() {
         // CriteriaStatus: "Included",
         // GroupType: "Trial",
         // PhoneNumber: "+912345234568",
-
         CancerDiagnosis: cancerDiagnosis,
         StageOfCancer: cancerStage,
         TypeOfTreatment: treatmentType,

@@ -3,9 +3,9 @@ import { View, Text, Pressable, Image } from 'react-native';
 
 export type Patient = {
   id: number;
-  name: string;
+  ParticipantId: string;
   age: number;
-  weightKg: number;
+  weightKg?: number;
   status?: 'ok' | 'pending' | 'alert';
   cancerType?: string;
   stage?: string;
@@ -46,7 +46,7 @@ export default function PatientCard({
 
         <View>
           <Text className={`font-bold ${selected ? 'text-white' : 'text-[#0b1f1c]'}`}>
-            {item.name}
+            {item.ParticipantId}
           </Text>
 
           <Text className={`text-xs ${selected ? 'text-white/90' : 'text-[#6b7a77]'}`}>

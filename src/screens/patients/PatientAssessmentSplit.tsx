@@ -1,23 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, ScrollView, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  Pressable,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import ListItem, { Patient } from '../../components/ListItem';
+import ListItem from '../../components/ListItem';
 import TabPills from '../../components/TabPills';
 import ParticipantInfo from './components/participant_info';
 import AssessmentTab from './components/assesment/AssessmentTab';
 import VRTab from './components/VRTab';
-import OrientationTab from './components/OrientationTab'; 
+import OrientationTab from './components/OrientationTab';
 import Dashboard from './components/Dashboard';
 import { RootStackParamList } from '../../Navigation/types';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
+export interface Patient {
+  id: number;                  // using ParticipantId as id
+  ParticipantId: number;
+  age: number;
+  status: string;
+  gender: string;
+  cancerType: string;
+  stage: string;
+  name?: string;
+  weightKg?: number;           // optional to satisfy ListItem typing
+}
+
 export default function ParticipantAssessmentSplit() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [participants, setParticipants] = useState<Patient[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selId, setSelId] = useState<number | null>(null);
+  const [selId, setSelId] = useState<number | null>(null); // holds ParticipantId
   const [tab, setTab] = useState('assessment');
 
   useEffect(() => {
@@ -26,35 +47,42 @@ export default function ParticipantAssessmentSplit() {
 
   const fetchParticipants = async () => {
     try {
-      const response = await fetch('http://18.60.122.213:8060/api/GetParticipantsPaginationFilterSearch', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          PageNumber: 1,
-          RecordsPerPage: 10,
-          Search: '',
-          Filters: [],
-        }),
-      });
+      const response = await fetch(
+        'http://18.60.122.213:8060/api/GetParticipantsPaginationFilterSearch',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            PageNumber: 1,
+            RecordsPerPage: 10,
+            Search: '',
+            Filters: [],
+          }),
+        }
+      );
 
       const json = await response.json();
 
       if (json.ResponseData) {
-        const parsed: Patient[] = json.ResponseData.map((item: any, index: number) => ({
-          id: index + 1, // You can replace this with a unique identifier if needed
-          name: item.ParticipantId,
-          age: item.Age,
+        const parsed: Patient[] = json.ResponseData.map((item: any) => ({
+          id: item.ParticipantId,
+          ParticipantId: item.ParticipantId,
+          age: Number(item.Age) ?? 0,
           status: item.CriteriaStatus?.toLowerCase() || 'pending',
-          gender: item.Gender === 'Male' || item.Gender === 'Female' ? item.Gender : 'Unknown',
+          gender:
+            item.Gender === 'Male' || item.Gender === 'Female'
+              ? item.Gender
+              : 'Unknown',
           cancerType: item.CancerDiagnosis || 'N/A',
           stage: item.StageOfCancer || 'N/A',
-          // weightKg: 60, // Placeholder
+          name: item.Name ?? undefined,
+          // weightKg: item.WeightKg ?? undefined, // uncomment if API sends it
         }));
 
         setParticipants(parsed);
-        setSelId(parsed[0]?.id ?? null);
+        setSelId(parsed[0]?.ParticipantId ?? null);
       }
     } catch (error) {
       console.error('Failed to fetch participants:', error);
@@ -63,24 +91,27 @@ export default function ParticipantAssessmentSplit() {
     }
   };
 
-  const sel = participants.find(p => p.id === selId);
+  const sel = participants.find((p) => p.ParticipantId === selId);
 
   const renderTabContent = () => {
+    const patientId = sel?.ParticipantId || 0;
+    const age = sel?.age ?? 0; // 👈 pass age along with patientId
+
     switch (tab) {
       case 'dash':
-        return <Dashboard patientId={sel?.id || 0} />;
+        return <Dashboard patientId={patientId} age={age} />;
       case 'info':
-        return <ParticipantInfo patientId={sel?.id || 0} />;
+        return <ParticipantInfo patientId={patientId} age={age} />;
       case 'orie':
-        return <OrientationTab patientId={sel?.id || 0} />;
+        return <OrientationTab patientId={patientId} age={age} />;
       case 'assessment':
-        return <AssessmentTab patientId={sel?.id || 0} />;
+        return <AssessmentTab patientId={patientId} age={age} />;
       case ' VR':
-        return <VRTab patientId={sel?.id || 0} />;
+        return <VRTab patientId={patientId} age={age} />;
       case 'notification':
         return null;
       default:
-        return <AssessmentTab patientId={sel?.id || 0} />;
+        return <AssessmentTab patientId={patientId} age={age} />;
     }
   };
 
@@ -120,10 +151,17 @@ export default function ParticipantAssessmentSplit() {
 
             {/* Add Participant Button */}
             <Pressable
-              onPress={() => navigation.navigate('SocioDemographic', { patientId: Date.now() })}
+              onPress={() =>
+                navigation.navigate('SocioDemographic', {
+                  // patientId: Date.now(),
+                  // age:age
+                })
+              }
               className="mt-3 bg-[#0ea06c] rounded-xl py-3 px-4 items-center"
             >
-              <Text className="text-white font-semibold text-base">➕ Add Participant</Text>
+              <Text className="text-white font-semibold text-base">
+                ➕ Add Participant
+              </Text>
             </Pressable>
           </View>
 
@@ -131,8 +169,13 @@ export default function ParticipantAssessmentSplit() {
             {loading ? (
               <ActivityIndicator color="#0ea06c" />
             ) : (
-              participants.map(p => (
-                <ListItem key={p.id} item={p} selected={p.id === selId} onPress={() => setSelId(p.id)} />
+              participants.map((p) => (
+                <ListItem
+                  key={p.ParticipantId}
+                  item={p}
+                  selected={p.ParticipantId === selId}
+                  onPress={() => setSelId(p.ParticipantId)}
+                />
               ))
             )}
           </ScrollView>
@@ -142,8 +185,12 @@ export default function ParticipantAssessmentSplit() {
         <View className="flex-1">
           <View className="px-6 pt-4 pb-2 flex-row items-center justify-between">
             <View>
-              <Text className="font-extrabold">{sel?.name ?? 'Client'}</Text>
-              <Text className="text-xs text-[#6b7a77]">Participant setup</Text>
+              <Text className="font-extrabold">
+                {sel?.name ?? `Participant ${sel?.ParticipantId ?? ''}`}
+              </Text>
+              <Text className="text-xs text-[#6b7a77]">
+                Participant setup {sel?.age ? `• Age ${sel.age}` : ''}
+              </Text>
             </View>
             <View className="w-10 h-10 rounded-xl bg-white border border-[#e6eeeb] items-center justify-center">
               <Text>⋯</Text>
@@ -167,7 +214,7 @@ export default function ParticipantAssessmentSplit() {
 
           {renderTabContent()}
         </View>
-      </View>   
+      </View>
     </View>
   );
 }
