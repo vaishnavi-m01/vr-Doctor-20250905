@@ -1,11 +1,12 @@
 // App.js or ParticipantDashboard.js
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../Navigation/types';
-import BottomBar from '../../components/BottomBar';
  
+type PatientDashboardRouteProp = RouteProp<RootStackParamList, 'PatientDashboard'>;
+
 const Icon = ({ name, className }) => <Text className={className}>{name}</Text>;
 
 // Placeholder for Graph component. You'd use a library like react-native-svg-charts here.
@@ -19,6 +20,9 @@ type ParticipantDashboardNavigationProp = NativeStackNavigationProp<RootStackPar
 
 const ParticipantDashboard = () => {
   const navigation = useNavigation<ParticipantDashboardNavigationProp>();
+    const route = useRoute<PatientDashboardRouteProp>();
+  const { patientId, age } = route.params;
+
 
   return (
     <View className="flex-1 bg-white">
@@ -27,7 +31,7 @@ const ParticipantDashboard = () => {
           <View className="flex-row items-center justify-between mb-6">
             <Text className="text-xl font-bold text-gray-800">Participant Dashboard</Text>
             <View className="flex-row items-center">
-              <Text className="text-green-600 font-bold text-lg mr-2">Participant ID - 0012-5389-5824</Text>
+              <Text className="text-green-600 font-bold text-lg mr-2">Participant ID - {patientId}</Text>
             </View>
           </View>
 

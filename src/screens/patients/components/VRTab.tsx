@@ -4,26 +4,27 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AssessItem from "../../../components/AssessItem";
+import { RootStackParamList } from "src/Navigation/types";
 
 type VRProps = { patientId: number,age:number };
 
-type RootStackParamList = {
-    VR: { patientId: number };
-    PreVR: { patientId: number };
-    PostVRAssessment: { patientId: number };
-    PreAndPostVR: { patientId: number };
-    AdverseEventForm: { patientId: number };
-    DistressThermometerScreen: { patientId: number };
-    HabitsBeliefsScreen: { patientId: number };
-    SessionSetupScreen: undefined;
-};
+// type RootStackParamList = {
+//     VR: { patientId: number };
+//     PreVR: { patientId: number };
+//     PostVRAssessment: { patientId: number };
+//     PreAndPostVR: { patientId: number,age:number };
+//     AdverseEventForm: { patientId: number,age:number };
+//     DistressThermometerScreen: { patientId: number };
+//     HabitsBeliefsScreen: { patientId: number };
+//     SessionSetupScreen: {patientId: number,age:number};
+// };
 
 type VRScreenNavigationProp = NativeStackNavigationProp<
-    RootStackParamList,
-    "VR"
+    RootStackParamList
+    // "VR"
 >;
 
-const VRTab: React.FC<VRProps> = ({ patientId }) => {
+const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
     const navigation = useNavigation<VRScreenNavigationProp>();
     const [sessionStage, setSessionStage] = useState<"pre" | "post" | "pre & post">("pre");
 
@@ -53,7 +54,7 @@ const VRTab: React.FC<VRProps> = ({ patientId }) => {
                 icon="🎮"
                 title="VR Session Setup"
                 subtitle="Configure and initialize VR therapy session parameters"
-                onPress={() => navigation.navigate("SessionSetupScreen" )}
+                onPress={() => navigation.navigate("SessionSetupScreen",{patientId,age} )}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
 
@@ -63,11 +64,11 @@ const VRTab: React.FC<VRProps> = ({ patientId }) => {
                 subtitle={sessionStage === "pre" ? "Start Pre VR" : sessionStage === "post" ? "Start Post VR" : "Pre & Post Done"}
                 onPress={() => {
                     if (sessionStage === "pre") {
-                        navigation.navigate("PreAndPostVR", { patientId });
+                        navigation.navigate("PreAndPostVR", { patientId,age });
                     } else if (sessionStage === "post") {
-                        navigation.navigate("PreAndPostVR", { patientId });
+                        navigation.navigate("PreAndPostVR", { patientId,age });
                     } else {
-                        navigation.navigate("PreAndPostVR", { patientId });
+                        navigation.navigate("PreAndPostVR", { patientId,age });
                     }
                 }}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
@@ -77,7 +78,7 @@ const VRTab: React.FC<VRProps> = ({ patientId }) => {
                 icon="⚠️"
                 title="Adverse Event Reporting Form"
                 subtitle="Document and report any adverse events during VR sessions"
-                onPress={() => navigation.navigate("AdverseEventForm", { patientId })}
+                onPress={() => navigation.navigate("AdverseEventForm", { patientId,age })}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
 

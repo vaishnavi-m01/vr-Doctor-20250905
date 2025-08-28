@@ -27,7 +27,6 @@ export default function PostVRAssessment() {
 
   // New state variables for previously hardcoded values
   const [participantId, setParticipantId] = useState('');
-  const [age, setAge] = useState('');
   const [date, setDate] = useState('');
   const [easeOfUse, setEaseOfUse] = useState<number | undefined>();
   const [deviceComfort, setDeviceComfort] = useState<number | undefined>();
@@ -45,7 +44,7 @@ export default function PostVRAssessment() {
 
   const route = useRoute<RouteProp<RootStackParamList, 'PostVRAssessment'>>();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { patientId } = route.params;
+  const { patientId,age } = route.params;
   console.log("participantId", patientId)
 
   const handleSave = async () => {

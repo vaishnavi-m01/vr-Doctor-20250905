@@ -25,7 +25,6 @@ export default function PreVR() {
 
   // New state variables for previously hardcoded values
   const [participantId, setParticipantId] = useState('');
-  const [age, setAge] = useState('');
   const [date, setDate] = useState('');
   const [demoComments, setDemoComments] = useState('');
   const [wearComments, setWearComments] = useState('');
@@ -34,7 +33,7 @@ export default function PreVR() {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'PreVR'>>();
-  const { patientId } = route.params;
+  const { patientId,age } = route.params;
   console.log("PATIENTID", patientId)
 
   const ready = (() => {

@@ -15,7 +15,7 @@ export type RootStackParamList = {
   PatientDashboard: { patientId: number,age:number };
   ExitInterview: { patientId: number,age:number };
   DoctorDashboard: undefined;
-  SessionSetupScreen: undefined;
+  SessionSetupScreen: {patientId:number,age:number};
   ParticipantInfo: { patientId: number,age:number };
   SessionControlScreen: undefined;
   SessionCompletedScreen: undefined;

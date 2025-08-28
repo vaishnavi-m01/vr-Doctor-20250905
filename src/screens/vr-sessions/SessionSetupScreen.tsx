@@ -4,7 +4,7 @@ import Header from '../../components/Header';
 import Card from '../../components/Card';
 import RadioTile from '../../components/RadioTile';
 import PillChip from '../../components/PillChip';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../Navigation/types';
 
@@ -14,6 +14,9 @@ export default function SessionSetupScreen() {
   const [instr, setInstr] = useState('Flute');
   const [lang, setLang] = useState('English');
   const [sess, setSess] = useState('Relaxation');
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'SessionSetupScreen'>>();
+  const { patientId, age } = route.params as { patientId: number, age: number };
 
   const ready = !!cat && !!instr && !!lang && !!sess;
 
@@ -26,11 +29,11 @@ export default function SessionSetupScreen() {
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="text-lg font-bold text-green-600">
-            Participant ID: 0012-5389-5824
+            Participant ID: {patientId}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">
-            Age: 54
+            Age: {age}
           </Text>
         </View>
       </View>
@@ -46,8 +49,8 @@ export default function SessionSetupScreen() {
                 <Pressable
                   onPress={() => setCat('Guided imagery')}
                   className={`p-3 rounded-xl border-2 items-center ${cat === 'Guided imagery'
-                      ? 'bg-green-50 border-green-500'
-                      : 'bg-gray-50 border-gray-200'
+                    ? 'bg-green-50 border-green-500'
+                    : 'bg-gray-50 border-gray-200'
                     }`}
                 >
                   <Text className="text-2xl mb-2">🧘‍♀️</Text>
@@ -58,8 +61,8 @@ export default function SessionSetupScreen() {
                 <Pressable
                   onPress={() => setCat('Sound Therapy')}
                   className={`p-3 rounded-xl border-2 items-center ${cat === 'Side Effects'
-                      ? 'bg-red-50 border-red-500'
-                      : 'bg-gray-50 border-gray-200'
+                    ? 'bg-red-50 border-red-500'
+                    : 'bg-gray-50 border-gray-200'
                     }`}
                 >
                   <Text className="text-2xl mb-2">⛑️</Text>
@@ -83,8 +86,8 @@ export default function SessionSetupScreen() {
                       }`}
                   >
                     <View className={`w-4 h-4 rounded-full border-2 mr-3 ${sess === s
-                        ? 'bg-green-500 border-green-500'
-                        : 'bg-white border-gray-300'
+                      ? 'bg-green-500 border-green-500'
+                      : 'bg-white border-gray-300'
                       }`} />
                     <Text className={`font-medium text-sm ${sess === s ? 'text-green-700' : 'text-gray-700'
                       }`}>{s}</Text>
@@ -102,8 +105,8 @@ export default function SessionSetupScreen() {
             <Pressable
               onPress={() => setInstr('Flute')}
               className={`flex-1 p-4 rounded-xl border-2 items-center ${instr === 'Flute'
-                  ? 'bg-blue-50 border-blue-500'
-                  : 'bg-gray-50 border-gray-200'
+                ? 'bg-blue-50 border-blue-500'
+                : 'bg-gray-50 border-gray-200'
                 }`}
             >
               <Text className="text-2xl mb-2">🎼</Text>
@@ -113,8 +116,8 @@ export default function SessionSetupScreen() {
             <Pressable
               onPress={() => setInstr('Piano')}
               className={`flex-1 p-4 rounded-xl border-2 items-center ${instr === 'Piano'
-                  ? 'bg-blue-50 border-blue-500'
-                  : 'bg-gray-50 border-gray-200'
+                ? 'bg-blue-50 border-blue-500'
+                : 'bg-gray-50 border-gray-200'
                 }`}
             >
               <Text className="text-2xl mb-2">🎹</Text>
@@ -132,8 +135,8 @@ export default function SessionSetupScreen() {
                 key={l}
                 onPress={() => setLang(l)}
                 className={`px-4 py-2 rounded-full border-2 ${lang === l
-                    ? 'bg-green-500 border-green-500'
-                    : 'bg-gray-100 border-gray-200'
+                  ? 'bg-green-500 border-green-500'
+                  : 'bg-gray-100 border-gray-200'
                   }`}
               >
                 <Text className={`font-medium text-sm ${lang === l ? 'text-white' : 'text-gray-700'

@@ -35,7 +35,7 @@ export default function StudyObservation() {
   
   // Form field states using constants - properly typed as strings
   const [participantId, setParticipantId] = useState<string>(DEFAULT_PATIENT_INFO.PARTICIPANT_ID);
-  const [age, setAge] = useState<string>(DEFAULT_PATIENT_INFO.AGE);
+  // const [age, setAge] = useState<string>(DEFAULT_PATIENT_INFO.AGE);
   const [dateTime, setDateTime] = useState<string>('');
   const [deviceId, setDeviceId] = useState<string>(SESSION_CONSTANTS.DEFAULT_DEVICE_ID);
   const [observerName, setObserverName] = useState<string>(SESSION_CONSTANTS.DEFAULT_OBSERVER);
@@ -56,7 +56,7 @@ export default function StudyObservation() {
   const [otherObservations, setOtherObservations] = useState<string>('');
 
   const route = useRoute<RouteProp<RootStackParamList, 'StudyObservation'>>();
-  const { patientId } = route.params as { patientId: number };
+  const { patientId,age } = route.params as { patientId: number,age:number };
 
   const flag = useMemo(() => completed === 'No' || tech === 'Yes' || discomfort === 'Yes' || deviation === 'Yes', [completed, tech, discomfort, deviation]);
 
@@ -139,7 +139,8 @@ export default function StudyObservation() {
     setDeviation('');
     setResp([]);
     setParticipantId(DEFAULT_PATIENT_INFO.PARTICIPANT_ID);
-    setAge(DEFAULT_PATIENT_INFO.AGE);
+    // setAge(DEFAULT_PATIENT_INFO.AGE);
+    
     setDateTime('');
     setDeviceId(SESSION_CONSTANTS.DEFAULT_DEVICE_ID);
     setObserverName(SESSION_CONSTANTS.DEFAULT_OBSERVER);
@@ -166,7 +167,7 @@ export default function StudyObservation() {
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="font-zen text-lg font-bold text-green-600">
-            {FORM_LABELS.PARTICIPANT_ID}: {participantId || patientId}
+            {FORM_LABELS.PARTICIPANT_ID}: { patientId || participantId}
           </Text>
 
           <Text className="font-zen text-base font-semibold text-gray-700">

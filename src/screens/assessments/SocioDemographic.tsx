@@ -27,6 +27,8 @@ export default function SocioDemographic() {
   const [english, setEnglish] = useState(false);
   const [hindi, setHindi] = useState(false);
   const [khasi, setKhasi] = useState(false);
+  const [knowledgeIn, setKnowledgeIn] = useState<string>("");
+
 
 
   // Medical History fields
@@ -95,7 +97,7 @@ export default function SocioDemographic() {
 
   return (
     <>
-      <View className="px-4 pt-4">
+      {/* <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {routePatientId}
@@ -105,7 +107,7 @@ export default function SocioDemographic() {
             Age: {age || 'Not specified'}
           </Text>
         </View>
-      </View>
+      </View> */}
 
       <ScrollView className="flex-1 p-4 bg-bg pb-[60px]">
 
@@ -329,7 +331,7 @@ export default function SocioDemographic() {
                   setEnglish(true);
                   setHindi(false);
                   setKhasi(false);
-                  setEnglishKnowledge("English");
+                  setKnowledgeIn("English");
                 }}
                 className="flex-row items-center"
               >
@@ -348,7 +350,7 @@ export default function SocioDemographic() {
                   setEnglish(false);
                   setHindi(true);
                   setKhasi(false);
-                  setHindiKnowledge("Hindi");
+                  setKnowledgeIn("Hindi");
                 }}
                 className="flex-row items-center"
               >
@@ -367,7 +369,7 @@ export default function SocioDemographic() {
                   setEnglish(false);
                   setHindi(false);
                   setKhasi(true);
-                  setKhasiKnowledge("Khasi");
+                  setKnowledgeIn("Khasi");
                 }}
                 className="flex-row items-center"
               >

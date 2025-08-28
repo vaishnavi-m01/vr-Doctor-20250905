@@ -49,7 +49,7 @@ export default function DistressThermometerScreen() {
   const [notes, setNotes] = useState<string>('');
 
   const route = useRoute<RouteProp<RootStackParamList, 'DistressThermometerScreen'>>();
-  const { patientId } = route.params as { patientId: number };
+  const { patientId, age } = route.params as { patientId: number, age: number };
 
   const toggleProblem = (key: ProblemKeys) => {
     setProblems((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -61,11 +61,11 @@ export default function DistressThermometerScreen() {
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="text-lg font-bold text-green-600">
-            Participant ID: 0012-5389-5824
+            Participant ID: {patientId}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">
-            Age: 54
+            Age: {age}
           </Text>
         </View>
       </View>
@@ -199,7 +199,7 @@ export default function DistressThermometerScreen() {
         </View>
       </ScrollView>
 
-        <BottomBar>
+      <BottomBar>
         <Btn variant="light" onPress={() => { }}>Validate</Btn>
         <Btn onPress={() => { }}>Save Distress Thermometer</Btn>
       </BottomBar>

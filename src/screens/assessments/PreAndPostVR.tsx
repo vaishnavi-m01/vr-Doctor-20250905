@@ -24,7 +24,7 @@ export default function PreAndPostVR() {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'PreAndPostVR'>>();
-  const { patientId } = route.params as { patientId: number };
+  const { patientId,age } = route.params as { patientId: number,age:number };
 
   const delta = useMemo(() => (postGood === 'Yes' ? 1 : 0) - (preGood === 'Yes' ? 1 : 0), [preGood, postGood]);
   const flag = (preHead === 'Yes') || (preDiz === 'Yes') || (preBlur === 'Yes') || (preVert === 'Yes') || (postDisc === 'Yes');
@@ -35,11 +35,11 @@ export default function PreAndPostVR() {
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="text-lg font-bold text-green-600">
-            Participant ID: 0012-5389-5824
+            Participant ID: {patientId}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">
-            Age: 54
+            Age: {age}
           </Text>
         </View>
       </View>

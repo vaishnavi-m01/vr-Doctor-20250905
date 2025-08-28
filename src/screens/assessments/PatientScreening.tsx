@@ -20,7 +20,7 @@ export default function PatientScreening() {
 
   // New state variables for previously hardcoded values
   const [participantId, setParticipantId] = useState('');
-  const [age, setAge] = useState('');
+  // const [age, setAge] = useState('');
   const [date, setDate] = useState('');
   const [factGScore, setFactGScore] = useState('');
   const [pulseRate, setPulseRate] = useState('');
@@ -30,8 +30,8 @@ export default function PatientScreening() {
   const [notes, setNotes] = useState('');
 
   const route = useRoute<RouteProp<RootStackParamList, 'PatientScreening'>>();
-  const { patientId } = route.params as { patientId: number };
-
+  const { patientId,age } = route.params as { patientId: number,age:number };
+  console.log("agee",age)
   return (
     <>
       <View className="px-4 pt-4">

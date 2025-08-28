@@ -95,7 +95,7 @@ export default function ParticipantAssessmentSplit() {
 
   const renderTabContent = () => {
     const patientId = sel?.ParticipantId || 0;
-    const age = sel?.age ?? 0; // 👈 pass age along with patientId
+    const age = sel?.age ?? 0;
 
     switch (tab) {
       case 'dash':
