@@ -59,7 +59,7 @@ const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
         title="Study Observation Form"
         subtitle="Record session observations and participant responses"
         onPress={() => 
-          navigation.navigate('StudyObservation', { patientId,age })
+          navigation.navigate('StudyObservation_List',{patientId,age})
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
