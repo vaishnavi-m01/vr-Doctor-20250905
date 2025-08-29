@@ -1,19 +1,20 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useMemo, useState } from "react";
-import { View, Text, Pressable, ScrollView, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native"
+import { NativeStackNavigationOptions, NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { act, useMemo, useState } from "react";
+import { Pressable, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { RootStackParamList } from "src/Navigation/types";
 
-type ObservationStatus = "complete" | "incomplete" | "flagged" | "pending";
+
+
+type ObservationStatus = "Good QoL" | "Moderate QoL" | "Excellent QoL";
 
 type ObservationCategories = {
-    behavioral: string;
+
     physical: string;
-    compliance: string;
     social: string;
-    treatment: string;
-    adverse: string;
+    Emotional: string;
+    Functional: string;
+
 };
 
 type Observation = {
@@ -21,11 +22,10 @@ type Observation = {
     weekNumber: number;
     observationDate: Date;
     status: ObservationStatus;
-    completionPercentage: number;
+    completionPercentage?: number;
     observerName: string;
     categories: ObservationCategories;
     keyObservations: string[];
-    actionItems: Array<"Follow-up" | "Monitor" | "Alert" | "Adjust">;
     notes?: string;
     duration: number;
     alertsRaised: number;
@@ -34,131 +34,108 @@ type Observation = {
 const OBSERVATIONS: Observation[] = [
     {
         id: "12",
-        weekNumber: 12,
+        weekNumber: 6,
         observationDate: new Date("2024-01-15T14:30:00"),
-        status: "flagged",
-        completionPercentage: 100,
-        observerName: "Dr. Raghavender",
+        status: "Good QoL",
+
+        observerName: "Dr. Smith",
         categories: {
-            behavioral: "Concerning",
-            physical: "Stable",
-            compliance: "Good",
-            social: "Improved",
-            treatment: "Responsive",
-            adverse: "Present",
+            physical: "18",
+            social: "22",
+            Emotional: "19",
+            Functional: "19"
         },
         keyObservations: [
-            "Patient showing increased anxiety about treatment outcomes",
-            "Physical strength maintained, no new symptoms reported",
-            "Excellent medication compliance (100% this week)",
+            "Good quality of life with manageable symptoms and maintained daily functioning.",
         ],
-        actionItems: ["Follow-up", "Monitor", "Alert"],
         notes:
-            "Patient expressing concerns about progression. Recommend psychological support consultation. Physical status stable.",
-        duration: 22,
-        alertsRaised: 2,
+            "Significant improvement in overall quality of life. Patient reporting better physical function and emotional wellbeing.",
+        duration: 25,
+        alertsRaised: 12,
     },
     {
         id: "11",
-        weekNumber: 11,
+        weekNumber: 5,
         observationDate: new Date("2024-01-08T11:20:00"),
-        status: "complete",
-        completionPercentage: 100,
+        status: "Moderate QoL",
+
         observerName: "Dr. Smith",
         categories: {
-            behavioral: "Stable",
-            physical: "Improving",
-            compliance: "Excellent",
-            social: "Good",
-            treatment: "Responsive",
-            adverse: "Minimal",
+            physical: "15",
+            social: "18",
+            Emotional: "16",
+            Functional: "17"
         },
         keyObservations: [
-            "Patient mood more positive this week",
-            "Appetite improvement noted, weight stable",
-            "Engaging well with family and care team",
+            "Moderate quality of life with some limitations in daily activities and wellbeing",
         ],
-        actionItems: ["Monitor"],
+        // actionItems: ["Monitor"],
         notes:
-            "Good week overall. Patient responding well to treatment adjustments made last week.",
+            "Moderate quality of life improvements. Patient adapting well to treatment regimen with some remaining challenges.",
         duration: 18,
         alertsRaised: 0,
     },
     {
         id: "10",
-        weekNumber: 10,
+        weekNumber: 4,
         observationDate: new Date("2024-01-01T16:45:00"),
-        status: "complete",
+        status: "Good QoL",
         completionPercentage: 100,
         observerName: "Dr. Johnson",
         categories: {
-            behavioral: "Good",
-            physical: "Stable",
-            compliance: "Good",
-            social: "Excellent",
-            treatment: "Responsive",
-            adverse: "Mild",
+            physical: "17",
+            social: "20",
+            Emotional: "17",
+            Functional: "178"
         },
         keyObservations: [
-            "Holiday period - patient maintained positive outlook",
-            "No significant physical changes this week",
-            "Family support very strong during holidays",
+            "Good quality of life with manageable symptoms and maintained daily functioning.",
         ],
-        actionItems: ["Monitor"],
+        // actionItems: ["Monitor"],
         notes:
-            "Patient handled holiday period well with strong family support. Continue current regimen.",
-        duration: 15,
-        alertsRaised: 0,
+            "Good quality of life maintenance during holiday period. Patient showing resilience despite treatment challenges.",
+        duration: 20,
+        alertsRaised: 14,
     },
     {
         id: "9",
-        weekNumber: 9,
+        weekNumber: 3,
         observationDate: new Date("2023-12-25T09:15:00"),
-        status: "incomplete",
+        status: "Moderate QoL",
         completionPercentage: 75,
         observerName: "Dr. Wilson",
         categories: {
-            behavioral: "Concerning",
-            physical: "Declining",
-            compliance: "Fair",
-            social: "Withdrawn",
-            treatment: "Variable",
-            adverse: "Moderate",
+            physical: "13",
+            social: "16",
+            Emotional: "14",
+            Functional: "15"
         },
         keyObservations: [
-            "Patient more withdrawn this week",
-            "Reported increased fatigue and nausea",
-            "Some missed medication doses noted",
+            "Moderate quality of life with some limitations in daily activities and wellbeing.",
         ],
-        actionItems: ["Follow-up", "Adjust"],
         notes:
-            "Challenging week for patient. Consider dose adjustment and additional supportive care.",
-        duration: 25,
-        alertsRaised: 1,
+            "Decreased quality of life due to treatment intensification. Patient experiencing fatigue and emotional challenges.",
+        duration: 28,
+        alertsRaised: 27,
     },
     {
         id: "8",
-        weekNumber: 8,
+        weekNumber: 2,
         observationDate: new Date("2023-12-18T13:30:00"),
-        status: "flagged",
-        completionPercentage: 100,
+        status: "Excellent QoL",
         observerName: "Dr. Brown",
         categories: {
-            behavioral: "Alert",
-            physical: "Concerning",
-            compliance: "Good",
-            social: "Fair",
-            treatment: "Responsive",
-            adverse: "Significant",
+            physical: "21",
+            social: "23",
+            Emotional: "20",
+            Functional: "21"
         },
         keyObservations: [
-            "Patient reported severe nausea episodes",
-            "Weight loss of 3kg noted this week",
-            "Maintaining medication schedule despite side effects",
+            "Excellent overall functioning across all life domains with minimal impact from cancer/treatment.",
         ],
-        actionItems: ["Follow-up", "Alert", "Adjust"],
+
         notes:
-            "Significant adverse events this week. Immediate intervention required for symptom management.",
+            "Excellent quality of life scores across all domains. Patient functioning well with strong support systems",
         duration: 30,
         alertsRaised: 3,
     },
@@ -166,30 +143,24 @@ const OBSERVATIONS: Observation[] = [
         id: "7",
         weekNumber: 7,
         observationDate: new Date("2023-12-11T10:45:00"),
-        status: "complete",
+        status: "Good QoL",
         completionPercentage: 100,
         observerName: "Dr. Davis",
         categories: {
-            behavioral: "Good",
-            physical: "Stable",
-            compliance: "Excellent",
-            social: "Good",
-            treatment: "Responsive",
-            adverse: "Mild",
+            physical: "16",
+            social: "19",
+            Emotional: "15",
+            Functional: "19"
         },
         keyObservations: [
-            "Patient adapting well to treatment routine",
-            "Energy levels consistent with previous week",
-            "Good social engagement with support group",
+            "Good quality of life with manageable symptoms and maintained daily functioning",
         ],
-        actionItems: ["Monitor"],
         notes:
-            "Stable week with good treatment response. Patient coping well with current protocol.",
+            "Baseline assessment shows moderate to good quality of life. Patient motivated and optimistic about treatment.",
         duration: 16,
         alertsRaised: 0,
     },
 ];
-
 
 function formatDate(d: Date) {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
@@ -200,144 +171,160 @@ function formatTime(d: Date) {
 
 function statusIcon(s: ObservationStatus) {
     switch (s) {
-        case "complete":
-            return "✓";
-        case "incomplete":
-            return "◑";
-        case "flagged":
-            return "⚠";
-        case "pending":
-            return "○";
+        case "Good QoL":
+            return "78";
+        case "Moderate QoL":
+            return "58";
+        case "Excellent QoL":
+            return "85";
         default:
             return "○";
     }
 }
 
-type FilterKey = "all" | "recent" | "complete" | "flagged" | "pending";
 
-export default function StudyObservation_List() {
+type FilterKey = "all" | "Last 30 Days" | "Improving" | "Excellent QoL" | "Concerning";
 
+const FactGAssessmentHistory = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const route = useRoute();
-    const { patientId, age } = route.params as { patientId: number, age: number };
+    const { patientId, age } = route.params as { patientId: number, age: number }
+
     const [filter, setFilter] = useState<FilterKey>("all");
 
 
 
     const filtered = useMemo(() => {
-        const now = new Date().getTime();
-        const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+        const now = Date.now();
+        const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
 
-        const base = OBSERVATIONS.filter((o) => {
+        return OBSERVATIONS.filter((o) => {
             switch (filter) {
-                case "recent":
-                    return o.observationDate.getTime() >= sevenDaysAgo;
-                case "complete":
-                    return o.status === "complete";
-                case "flagged":
-                    return o.status === "flagged";
-                case "pending":
-                    return o.status === "pending";
+                case "Last 30 Days":
+                    return o.observationDate.getTime() >= thirtyDaysAgo;
+                case "Improving":
+                    return o.status === "Good QoL" || o.status === "Excellent QoL";
+                case "Excellent QoL":
+                    return o.status === "Excellent QoL";
+                case "Concerning":
+                    return o.status === "Moderate QoL";
                 default:
                     return true;
             }
         }).sort((a, b) => b.observationDate.getTime() - a.observationDate.getTime());
-
-        return base;
     }, [filter]);
+
 
 
     const counts = useMemo(() => {
         return {
             all: OBSERVATIONS.length,
-            recent: OBSERVATIONS.filter(
-                (o) => o.observationDate.getTime() >= Date.now() - 7 * 24 * 60 * 60 * 1000
+
+            "Last 30 Days": OBSERVATIONS.filter(
+                (o) => o.observationDate.getTime() >= Date.now() - 30 * 24 * 60 * 60 * 1000
             ).length,
-            complete: OBSERVATIONS.filter((o) => o.status === "complete").length,
-            flagged: OBSERVATIONS.filter((o) => o.status === "flagged").length,
-            pending: OBSERVATIONS.filter((o) => o.status === "pending").length,
+
+
+            "Improving": OBSERVATIONS.filter(
+                (o) => o.status === "Good QoL" || o.status === "Excellent QoL"
+            ).length,
+
+            "Excellent QoL": OBSERVATIONS.filter(
+                (o) => o.status === "Excellent QoL"
+            ).length,
+
+            Concerning: OBSERVATIONS.filter(
+                (o) => o.status === "Moderate QoL"
+            ).length,
         };
-    }, []);
+    }, [OBSERVATIONS]);
+
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
-            {/* Container mimic */}
             <View className="mx-auto w-full max-w-[1024px] flex-1 border border-gray-300 rounded-lg  bg-gray-50">
 
-                {/* Patient Header */}
+                {/* Header */}
                 <View className="bg-white p-6 border-b border-gray-100">
-                    <View className="flex-row items-center gap-5 mb-4">
+                    <View className="flex-row items-center mb-4 gap-5">
+
                         <View className="w-16 h-16 rounded-full bg-green-400 items-center justify-center">
                             <Text className="text-3xl text-white">👤</Text>
                         </View>
 
-
-                        <View className="flex-1">
+                        <View className="flex-1 ">
                             <Text className="text-2xl font-semibold text-gray-900">Participant002</Text>
                             <Text className="text-sm text-gray-700 mb-1">25 y • 65 kg • Male • Lung Cancer - Stage IIB</Text>
                             <View className="flex-row items-center gap-3">
-                                <Text className="text-lg font-medium text-gray-700">📋</Text>
-                                <Text className="text-lg font-medium text-gray-700">Study Observation Forms</Text>
+                                <Text className="text-lg font-medium text-gray-700">📝</Text>
+                                <Text className="text-lg font-medium text-gray-700">Fact-G Assessment History</Text>
                             </View>
                         </View>
+
                         <TouchableOpacity
                             className="bg-teal-400 px-4 py-3 rounded-lg"
-                            onPress={() => navigation.navigate('StudyObservation', { patientId, age })}
+                            onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId, age })}
                         >
                             <Text className="text-white font-semibold">+ New Assessment</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
 
-                {/* Patient status */}
+                {/* patient status */}
+
                 <View className="bg-white px-6 py-5 border-b border-gray-100">
                     <View className="flex-row justify-between">
-                        <View className="flex-1 items-center p-4 rounded-xl bg-blue-50 border border-blue-200 mx-1">
-                            <Text className="text-xl font-extrabold text-gray-900">12</Text>
-                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Total Forms</Text>
-                            <Text className="text-xs text-gray-500">Since enrollment</Text>
+                        <View className="flex-1 items-center p-4 rounded-xl  bg-blue-50 border border-blue-200 mx-1">
+                            <Text className="tex-xl font-extrabold text-gray-900">78</Text>
+                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Current Score</Text>
+                            <Text className="text-xs tex-gray-500">Last visit (/108)</Text>
                         </View>
 
-                        <View className="flex-1 items-center p-4 rounded-xl bg-yellow-50 border border-yellow-200 mx-1">
-                            <Text className="text-xl font-extrabold text-gray-900">Week 12</Text>
-                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Current Week</Text>
-                            <Text className="text-xs text-gray-500">Study progress</Text>
+                        <View className="flex-1 items-center p-4 rounded-xl  bg-yellow-50 border border-yellow-200 mx-1">
+                            <Text className="tex-xl font-extrabold text-gray-900">71.4</Text>
+                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Average Score</Text>
+                            <Text className="tracking-wide tex-gray-600">Over 6 visits</Text>
                         </View>
 
-                        <View className="flex-1 items-center p-4 rounded-xl bg-red-50 border border-red-200 mx-1">
-                            <Text className="text-xl font-extrabold text-gray-900">2</Text>
-                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Active Alerts</Text>
-                            <Text className="text-xs text-gray-500">Requires attention</Text>
+
+                        <View className="flex-1 items-center p-4 rounded-xl  bg-blue-50 border border-blue-200 mx-1">
+                            <Text className="tex-xl font-extrabold text-gray-900">+12</Text>
+                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Trend</Text>
+                            <Text className="tracking-wide tex-gray-600">↓ Since last month</Text>
                         </View>
 
-                        <View className="flex-1 items-center p-4 rounded-xl bg-green-50 border border-green-200 mx-1">
-                            <Text className="text-xl font-extrabold text-gray-900">92%</Text>
-                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">Compliance</Text>
-                            <Text className="text-xs text-gray-500">Form completion</Text>
+                        <View className="flex-1 items-center p-4 rounded-xl  bg-green-50 border border-green-200 mx-1">
+                            <Text className="tex-xl font-extrabold text-gray-900">Good</Text>
+                            <Text className="text-[11px] uppercase tracking-wide text-gray-500">QoL Level</Text>
+                            <Text className="text-xs tracking-wide tex-gray-600">↑ Improving</Text>
                         </View>
                     </View>
                 </View>
 
-                <View className="w-full  border-t border-b border-gray-200 m-0 p-2 bg-white" >
+                {/* filter */}
+
+                <View className=" w-full bg-white border-t border-b border-gray-200 m-0 p-2">
                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 24 }}>
-                        {(["all", "recent", "complete", "flagged", "pending"] as FilterKey[]).map((k) => {
-                            const active = filter === k;
+                        {(["all", "Last 30 Days", "Improving", "Excellent QoL", "Concerning"] as FilterKey[]).map((k) => {
+                            const active = filter === k
                             return (
                                 <Pressable
                                     key={k}
                                     onPress={() => setFilter(k)}
-                                    className={`mr-3 flex-row items-center gap-2 px-4 py-2 rounded-full border ${active ? "bg-teal-400 border-teal-400" : "bg-gray-50 border-gray-200"}`}
+                                    className={`mr-3 flex-row items-center px-3 py-2 gap-2 rounded-full border ${active ? "bg-teal-400 border-teal-400" : "bg-gray-50 border-gray-200"}`}
                                 >
+
                                     <Text className={`text-sm font-medium ${active ? "text-white" : "text-gray-500"}`}>
-                                        {k === "all" ? "All Forms" : k[0].toUpperCase() + k.slice(1)}
+                                        {k === "all" ? "All Visits" : k[0].toUpperCase() + k.slice(1)}
                                     </Text>
                                     <View className={`px-2 py-0.5 rounded-full ${active ? "bg-white/30" : "bg-gray-200"}`}>
                                         <Text className={`text-xs font-semibold ${active ? "text-white" : "text-gray-600"}`}>
                                             {counts[k]}
                                         </Text>
                                     </View>
+
                                 </Pressable>
-                            );
+                            )
                         })}
                     </ScrollView>
                 </View>
@@ -350,10 +337,10 @@ export default function StudyObservation_List() {
                             {/* Items */}
                             {filtered.length === 0 ? (
                                 <View className="items-center justify-center px-8 py-16">
-                                    <Text className="text-6xl mb-4">📋</Text>
-                                    <Text className="text-xl font-semibold text-gray-900 mb-1">No observation forms found</Text>
+                                    <Text className="text-6xl mb-4">📝</Text>
+                                    <Text className="text-xl font-semibold text-gray-900 mb-1">No assessments found</Text>
                                     <Text className="text-gray-500 text-center">
-                                        No study observation forms match your current filter for this patient.
+                                        No Fact-G assessments match your current filter for this patient.
                                     </Text>
                                 </View>
                             ) : (
@@ -365,7 +352,7 @@ export default function StudyObservation_List() {
                                                 {formatDate(o.observationDate)}
                                             </Text>
                                             <Text className="text-[10px] mt-1 px-2 py-0.5 rounded bg-gray-100 text-gray-500">
-                                                Week {o.weekNumber}
+                                                Vist {o.weekNumber}
                                             </Text>
                                         </View>
 
@@ -373,10 +360,10 @@ export default function StudyObservation_List() {
                                         <View
                                             className={[
                                                 "absolute left-6 top-3 w-4 h-4 rounded-full border-2 border-white",
-                                                o.status === "complete" && "bg-emerald-500",
-                                                o.status === "incomplete" && "bg-amber-500",
-                                                o.status === "flagged" && "bg-red-500",
-                                                o.status === "pending" && "bg-gray-500",
+                                                o.status === "Good QoL" && "bg-blue-500",
+                                                o.status === "Excellent QoL" && "bg-green-500",
+                                                o.status === "Moderate QoL" && "bg-amber-500",
+                                                // o.status === "pending" && "bg-gray-500",
                                             ].filter(Boolean).join(" ")}
                                             style={{ shadowColor: "#000", shadowOpacity: 0.15, shadowRadius: 2, elevation: 2 }}
                                         />
@@ -390,10 +377,10 @@ export default function StudyObservation_List() {
                                                     <View
                                                         className={[
                                                             "w-12 h-12 rounded-full items-center justify-center",
-                                                            o.status === "complete" && "bg-emerald-500",
-                                                            o.status === "incomplete" && "bg-amber-500",
-                                                            o.status === "flagged" && "bg-red-500",
-                                                            o.status === "pending" && "bg-gray-500",
+                                                            o.status === "Good QoL" && "bg-blue-500",
+                                                            o.status === "Excellent QoL" && "bg-green-500",
+                                                            o.status === "Moderate QoL" && "bg-amber-500",
+                                                            // o.status === "pending" && "bg-gray-500",
                                                         ].filter(Boolean).join(" ")}
                                                     >
                                                         <Text className="text-white font-bold text-lg">{statusIcon(o.status)}</Text>
@@ -402,13 +389,13 @@ export default function StudyObservation_List() {
                                                         <Text
                                                             className={[
                                                                 "text-sm font-semibold",
-                                                                o.status === "complete" && "text-emerald-600",
-                                                                o.status === "incomplete" && "text-amber-600",
-                                                                o.status === "flagged" && "text-red-600",
-                                                                o.status === "pending" && "text-gray-500",
+                                                                o.status === "Good QoL" && "text-blue-600",
+                                                                o.status === "Excellent QoL" && "text-green-600",
+                                                                o.status === "Moderate QoL" && "text-amber-600",
+                                                                // o.status === "pending" && "text-gray-500",
                                                             ].filter(Boolean).join(" ")}
                                                         >
-                                                            {o.status[0].toUpperCase() + o.status.slice(1)} ({o.completionPercentage}%)
+                                                            {o.status[0].toUpperCase() + o.status.slice(1)}
                                                         </Text>
                                                         <Text className="text-xs text-gray-500">
                                                             {formatTime(o.observationDate)} • {o.duration} min
@@ -430,8 +417,8 @@ export default function StudyObservation_List() {
 
                                             {/* Categories */}
                                             <View className="my-3">
-                                                <Text className="text-sm font-medium text-gray-700 mb-3">Observation Categories:</Text>
-                                                <View className="grid grid-cols-3 gap-3">
+                                                <Text className="text-sm font-medium text-gray-700 mb-3">Quality of Life Domains:</Text>
+                                                <View className="grid grid-cols-4 gap-3">
                                                     {Object.entries(o.categories).map(([key, val]) => {
                                                         const base =
                                                             key === "behavioral" ? "bg-blue-100 border-blue-300" :
@@ -439,7 +426,7 @@ export default function StudyObservation_List() {
                                                                     key === "compliance" ? "bg-purple-100 border-purple-300" :
                                                                         key === "social" ? "bg-orange-100 border-orange-300" :
                                                                             key === "treatment" ? "bg-pink-100 border-pink-300" :
-                                              /* adverse */          "bg-red-100 border-red-300";
+                                                              /* adverse */          "bg-red-100 border-red-300";
                                                         return (
                                                             <View key={key} className={`items-center p-3 rounded-xl border ${base}`}>
                                                                 <Text className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">{key}</Text>
@@ -453,7 +440,7 @@ export default function StudyObservation_List() {
                                             {/* Key observations */}
                                             {o.keyObservations.length > 0 && (
                                                 <View className="my-3 rounded-xl border-l-4 border-teal-400 bg-slate-50 px-4 py-3">
-                                                    <Text className="text-sm font-semibold text-gray-700 mb-1">Key Observations:</Text>
+                                                    <Text className="text-sm font-semibold text-gray-700 mb-1">Assessment Summary</Text>
                                                     {o.keyObservations.map((line, idx) => (
                                                         <View key={idx} className="flex-row">
                                                             <Text className="mr-2 text-teal-400">•</Text>
@@ -463,26 +450,8 @@ export default function StudyObservation_List() {
                                                 </View>
                                             )}
 
-                                            {/* Action items */}
-                                            {o.actionItems.length > 0 && (
-                                                <View className="my-2">
-                                                    <Text className="text-sm font-medium text-gray-700 mb-2">Action Items:</Text>
-                                                    <View className="flex-row flex-wrap gap-2">
-                                                        {o.actionItems.map((a) => {
-                                                            const cls =
-                                                                a === "Follow-up" ? "bg-amber-100 border-amber-300 text-amber-900" :
-                                                                    a === "Monitor" ? "bg-blue-100 border-blue-300 text-blue-900" :
-                                                                        a === "Alert" ? "bg-red-200 border-red-400 text-red-900" :
-                                                /* Adjust */        "bg-purple-100 border-purple-300 text-purple-900";
-                                                            return (
-                                                                <Text key={a} className={`text-xs font-medium px-3 py-1 rounded-xl border ${cls}`}>
-                                                                    {a}
-                                                                </Text>
-                                                            );
-                                                        })}
-                                                    </View>
-                                                </View>
-                                            )}
+
+
 
                                             {/* Notes */}
                                             {!!o.notes && (
@@ -508,5 +477,8 @@ export default function StudyObservation_List() {
                 </View>
             </View>
         </SafeAreaView>
-    );
+    )
 }
+
+export default FactGAssessmentHistory
+

@@ -39,8 +39,8 @@ import Profile from './src/screens/auth/Profile';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
 import DistressThermometerList from './src/screens/patients/components/assesment/DistressThermometer_list';
-import STUDY_OBSERVATION from '@screens/assessments/StudyObservation_List';
 import StudyObservation_List from '@screens/assessments/StudyObservation_List';
+import FactGAssessmentHistory from '@screens/patients/components/assesment/FactGAssessmentHistory';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -90,26 +90,26 @@ export default function App() {
 
   // Check if current route should show bottom navigation
   const shouldShowBottomNav = (routeName: keyof RootStackParamList) => {
-    return ['Home', 'Participants', 'Reports', 'Profile'].includes(routeName);
+    return ['Home', 'Participants', 'Reports', 'Profile', 'StudyObservation_List'].includes(routeName);
   };
 
   console.log('App rendering, currentRoute:', currentRoute, 'fontsLoaded:', fontsLoaded);
-  
+
   // Show loading screen while fonts are loading
   if (!fontsLoaded) {
     return (
       <SafeAreaProvider>
-        <SafeAreaView style={{flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={{fontSize: 18, color: '#0e4336'}}>Loading...</Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, color: '#0e4336' }}>Loading...</Text>
         </SafeAreaView>
       </SafeAreaProvider>
     );
   }
-  
+
   return (
     <ErrorBoundary>
       <SafeAreaProvider>
-        <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
           <NavigationContainer
             onStateChange={(state) => {
               const route = state?.routes[state.index];
@@ -187,6 +187,14 @@ export default function App() {
                   component={DistressThermometerScreen}
                   options={{ headerShown: true, title: "Distress Thermometer" }}
                 />
+
+                <Stack.Screen name="FactGAssessmentHistory"
+                  component={FactGAssessmentHistory}
+                  options={{ headerShown: true, title: "Fact-G Assessment History" }}
+                />
+
+
+
                 <Stack.Screen
                   name="EdmontonFactGScreen"
                   component={EdmontonFactGScreen}
@@ -198,7 +206,7 @@ export default function App() {
                   options={{ headerShown: true, title: "Adverse Event Form" }}
                 />
 
-                 <Stack.Screen
+                <Stack.Screen
                   name="StudyObservation_List"
                   component={StudyObservation_List}
                   options={{ headerShown: true, title: "Study Observation List" }}
@@ -234,7 +242,7 @@ export default function App() {
                   options={{ headerShown: true, title: "FACT-G Assessment" }}
                 />
                 <Stack.Screen
-                  name="DistressThermometerList" 
+                  name="DistressThermometerList"
                   component={DistressThermometerList}
                   options={{ headerShown: true, title: "Distress Thermometer List" }}
                 />
@@ -260,7 +268,7 @@ export default function App() {
               )}
             </View>
           </NavigationContainer>
-          <Toast  config={toastConfig}/>
+          <Toast config={toastConfig} />
         </SafeAreaView>
       </SafeAreaProvider>
     </ErrorBoundary>

@@ -51,7 +51,7 @@ const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
         icon="📝"
         title="Fact-G scoring 0-108"
         subtitle="Evaluate quality of life across physical, social, emotional domains"
-        onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId,age })}
+        onPress={() => navigation.navigate('FactGAssessmentHistory',{patientId,age})}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
