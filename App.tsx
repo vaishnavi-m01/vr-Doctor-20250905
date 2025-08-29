@@ -90,7 +90,7 @@ export default function App() {
 
   // Check if current route should show bottom navigation
   const shouldShowBottomNav = (routeName: keyof RootStackParamList) => {
-    return ['Home', 'Participants', 'Reports', 'Profile', 'StudyObservation_List'].includes(routeName);
+    return ['Home', 'Participants', 'Reports', 'Profile','DistressThermometerList','FactGAssessmentHistory','StudyObservation_List',].includes(routeName);
   };
 
   console.log('App rendering, currentRoute:', currentRoute, 'fontsLoaded:', fontsLoaded);
