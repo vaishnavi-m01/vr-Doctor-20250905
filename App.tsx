@@ -41,6 +41,7 @@ import { ErrorBoundary } from './src/components/ErrorBoundary';
 import DistressThermometerList from './src/screens/patients/components/assesment/DistressThermometer_list';
 import StudyObservation_List from '@screens/assessments/StudyObservation_List';
 import FactGAssessmentHistory from '@screens/patients/components/assesment/FactGAssessmentHistory';
+import VRPrePostList from '@screens/vr-sessions/vr-prepost_list';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -259,6 +260,11 @@ export default function App() {
                   name="ParticipantInfo"
                   component={ParticipantInfo}
                   options={{ headerShown: true, title: "Participant Information" }}
+                />
+                 <Stack.Screen
+                  name="VRPrePostList"
+                  component={VRPrePostList}
+                  options={{ headerShown: true, title: "VR Pre & Post List" }}
                 />
               </Stack.Navigator>
 

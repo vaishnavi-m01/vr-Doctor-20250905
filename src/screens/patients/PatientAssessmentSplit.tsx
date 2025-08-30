@@ -50,7 +50,7 @@ export default function ParticipantAssessmentSplit() {
   const fetchParticipants = async () => {
     try {
       const response = await fetch(
-        'http://18.60.122.213:8060/api/GetParticipantsPaginationFilterSearch',
+        'https://dev.3framesailabs.com:8060/api/GetParticipantsPaginationFilterSearch',
         {
           method: 'POST',
           headers: {

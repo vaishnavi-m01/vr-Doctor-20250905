@@ -26,24 +26,24 @@ type VRScreenNavigationProp = NativeStackNavigationProp<
 
 const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
     const navigation = useNavigation<VRScreenNavigationProp>();
-    const [sessionStage, setSessionStage] = useState<"pre" | "post" | "pre & post">("pre");
+    // const [sessionStage, setSessionStage] = useState<"pre" | "post" | "pre & post">("pre");
 
-    useEffect(() => {
-        const checkStage = async () => {
-            setSessionStage("pre");
-            const today = new Date().toISOString().split("T")[0];
-            const preDone = await AsyncStorage.getItem(`prevr-${patientId}-${today}`);
-            const postDone = await AsyncStorage.getItem(`postvr-${patientId}-${today}`);
+    // useEffect(() => {
+    //     const checkStage = async () => {
+    //         setSessionStage("pre");
+    //         const today = new Date().toISOString().split("T")[0];
+    //         const preDone = await AsyncStorage.getItem(`prevr-${patientId}-${today}`);
+    //         const postDone = await AsyncStorage.getItem(`postvr-${patientId}-${today}`);
 
-            if (preDone && !postDone) setSessionStage("post");
-            else if (preDone && postDone) setSessionStage("pre & post");
-            else setSessionStage("pre");
-        };
+    //         if (preDone && !postDone) setSessionStage("post");
+    //         else if (preDone && postDone) setSessionStage("pre & post");
+    //         else setSessionStage("pre");
+    //     };
 
-        checkStage();
-        const unsubscribe = navigation.addListener("focus", checkStage);
-        return unsubscribe;
-    }, [navigation, patientId]);
+    //     checkStage();
+    //     const unsubscribe = navigation.addListener("focus", checkStage);
+    //     return unsubscribe;
+    // }, [navigation, patientId]);
 
     return (
         // <View className="flex-1 bg-white py-5">
@@ -57,20 +57,21 @@ const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
                 onPress={() => navigation.navigate("SessionSetupScreen",{patientId,age} )}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
-
-            <AssessItem
+ 
+            <AssessItem 
                 icon="📋"
                 title="Pre/Post VR Questionnaires"
-                subtitle={sessionStage === "pre" ? "Start Pre VR" : sessionStage === "post" ? "Start Post VR" : "Pre & Post Done"}
-                onPress={() => {
-                    if (sessionStage === "pre") {
-                        navigation.navigate("PreAndPostVR", { patientId,age });
-                    } else if (sessionStage === "post") {
-                        navigation.navigate("PreAndPostVR", { patientId,age });
-                    } else {
-                        navigation.navigate("PreAndPostVR", { patientId,age });
-                    }
-                }}
+                // subtitle={sessionStage === "pre" ? "Start Pre VR" : sessionStage === "post" ? "Start Post VR" : "Pre & Post Done"}
+                onPress={() => navigation.navigate("VRPrePostList",{patientId,age} )}
+                // onPress={() => {
+                //     if (sessionStage === "pre") {
+                //         navigation.navigate("PreAndPostVR", { patientId,age });
+                //     } else if (sessionStage === "post") {
+                //         navigation.navigate("PreAndPostVR", { patientId,age });
+                //     } else {
+                //         navigation.navigate("PreAndPostVR", { patientId,age });
+                //     }
+                // }}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
 
