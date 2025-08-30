@@ -12,6 +12,7 @@ import { RootStackParamList } from '../../Navigation/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PostVRAssessment() {
+  // Existing state variables
   const [adjust, setAdjust] = useState('');
   const [av, setAv] = useState('');
   const [techIssue, setTechIssue] = useState('');
@@ -25,7 +26,7 @@ export default function PostVRAssessment() {
   const [usedApp, setUsedApp] = useState('');
   const [uxDuration, setUxDuration] = useState('');
 
-  // New state variables for previously hardcoded values
+  // Existing state variables for previously hardcoded values
   const [participantId, setParticipantId] = useState('');
   const [date, setDate] = useState('');
   const [easeOfUse, setEaseOfUse] = useState<number | undefined>();
@@ -42,9 +43,19 @@ export default function PostVRAssessment() {
   const [appExperience, setAppExperience] = useState('');
   const [additionalSuggestions, setAdditionalSuggestions] = useState('');
 
+  // NEW MISSING STATE VARIABLES
+  const [contentClarity, setContentClarity] = useState<number | undefined>(); // Content Clarity and Engagement (1-5)
+  const [currentFeeling, setCurrentFeeling] = useState(''); // How do you feel now (1-10)
+  const [contentEngagement, setContentEngagement] = useState<string>(''); // How engaging was guided imagery content
+  const [sessionsThisWeek, setSessionsThisWeek] = useState(''); // How many VR sessions completed this week
+  const [headsetComfort, setHeadsetComfort] = useState<string>(''); // Comfort using VR headset (Very Comfortable, etc.)
+  const [vrDiscomfort, setVrDiscomfort] = useState(''); // Did you experience discomfort (Yes/No)
+  const [vrDiscomfortDescription, setVrDiscomfortDescription] = useState(''); // Describe VR discomfort
+  const [noCompleteReason, setNoCompleteReason] = useState(''); // Reason for not completing session
+
   const route = useRoute<RouteProp<RootStackParamList, 'PostVRAssessment'>>();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { patientId,age } = route.params;
+  const { patientId, age } = route.params;
   console.log("participantId", patientId)
 
   const handleSave = async () => {
@@ -60,7 +71,6 @@ export default function PostVRAssessment() {
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {participantId || patientId}
           </Text>
-
           <Text className="text-base font-semibold text-gray-700">
             Age: {age || 'Not specified'}
           </Text>
@@ -147,13 +157,10 @@ export default function PostVRAssessment() {
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">Physical adjustments needed mid‑session?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
                 onPress={() => setAdjust('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  adjust === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  adjust === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -167,14 +174,10 @@ export default function PostVRAssessment() {
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
                 onPress={() => setAdjust('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  adjust === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  adjust === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -201,16 +204,42 @@ export default function PostVRAssessment() {
             )}
           </View>
 
+          {/* NEW: Content Clarity and Engagement */}
+          <View className="mt-3">
+            <Text className="text-xs text-[#4b5f5a] mb-2">Content Clarity and Engagement (1–5)</Text>
+            <Text className="text-xs text-gray-500 mb-2">How engaging and clear was the guided imagery content?</Text>
+            <View className="bg-white border border-[#e6eeeb] rounded-xl shadow-sm overflow-hidden">
+              <View className="flex-row">
+                {[1, 2, 3, 4, 5].map((value, index) => (
+                  <React.Fragment key={value}>
+                    <Pressable
+                      onPress={() => setContentClarity(value)}
+                      className={`flex-1 py-3 items-center justify-center ${
+                        contentClarity === value ? 'bg-[#4FC264]' : 'bg-white'
+                      }`}
+                    >
+                      <Text className={`font-medium text-sm ${
+                        contentClarity === value ? 'text-white' : 'text-[#4b5f5a]'
+                      }`}>
+                        {value}
+                      </Text>
+                    </Pressable>
+                    {index < 4 && (
+                      <View className="w-px bg-[#e6eeeb]" />
+                    )}
+                  </React.Fragment>
+                ))}
+              </View>
+            </View>
+          </View>
+
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">Audio/Visual quality satisfactory?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
                 onPress={() => setAv('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  av === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  av === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -224,14 +253,10 @@ export default function PostVRAssessment() {
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
                 onPress={() => setAv('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  av === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  av === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -261,13 +286,10 @@ export default function PostVRAssessment() {
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">Technical issues or physical discomfort experienced?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
                 onPress={() => setTechIssue('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  techIssue === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  techIssue === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -281,14 +303,10 @@ export default function PostVRAssessment() {
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
                 onPress={() => setTechIssue('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  techIssue === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  techIssue === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -335,21 +353,33 @@ export default function PostVRAssessment() {
         </FormCard>
 
         <FormCard icon="B" title="VR Experience">
-          {/* Question 1 */}
+          {/* NEW: How do you feel now (1-10) */}
           <View className="mt-1">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Do you feel good?</Text>
+            <Text className="text-xs text-[#4b5f5a] mb-2">How do you feel now? (1-10, 1 = Very Bad, 10 = Excellent)</Text>
+            <Field 
+              label="Rate from 1-10" 
+              placeholder="1-10"
+              value={currentFeeling}
+              onChangeText={setCurrentFeeling}
+              keyboardType="number-pad"
+            />
+          </View>
+
+          {/* NEW: VR Headset Comfort */}
+          <View className="mt-3">
+            <Text className="text-xs text-[#4b5f5a] mb-2">How comfortable were you using the VR headset?</Text>
             <View className="bg-white border border-[#e6eeeb] rounded-xl shadow-sm overflow-hidden">
               <View className="flex-row">
                 {['Very Comfortable', 'Somewhat Comfortable', 'Neutral', 'Uncomfortable', 'Very Uncomfortable'].map((value, index) => (
                   <React.Fragment key={value}>
                     <Pressable
-                      onPress={() => setRelaxation(value)}
+                      onPress={() => setHeadsetComfort(value)}
                       className={`flex-1 py-3 items-center justify-center ${
-                        relaxation === value ? 'bg-[#4FC264]' : 'bg-white'
+                        headsetComfort === value ? 'bg-[#4FC264]' : 'bg-white'
                       }`}
                     >
                       <Text className={`font-medium text-xs text-center ${
-                        relaxation === value ? 'text-white' : 'text-[#4b5f5a]'
+                        headsetComfort === value ? 'text-white' : 'text-[#4b5f5a]'
                       }`}>
                         {value}
                       </Text>
@@ -363,79 +393,72 @@ export default function PostVRAssessment() {
             </View>
           </View>
 
-          {/* Question 2 */}
+          {/* NEW: VR Discomfort Question */}
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Do you experience any discomfort?</Text>
+            <Text className="text-xs text-[#4b5f5a] mb-2">Did you experience any discomfort while using VR? (e.g., dizziness, nausea, headache)</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
-                onPress={() => setDiscomfort('Yes')}
+                onPress={() => setVrDiscomfort('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  discomfort === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  vrDiscomfort === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
-                  discomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  vrDiscomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                 }`}>
                   ✅
                 </Text>
                 <Text className={`font-medium text-xs ${
-                  discomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  vrDiscomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                 }`}>
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
-                onPress={() => setDiscomfort('No')}
+                onPress={() => setVrDiscomfort('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  discomfort === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  vrDiscomfort === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
-                  discomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  vrDiscomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
                 }`}>
                   ❌
                 </Text>
                 <Text className={`font-medium text-xs ${
-                  discomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  vrDiscomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
                 }`}>
                   No
                 </Text>
               </Pressable>
             </View>
-            {discomfort === 'Yes' && (
+            {vrDiscomfort === 'Yes' && (
               <View className="mt-3">
                 <Field 
-                  label="Describe discomfort" 
-                  placeholder="Describe discomfort…"
-                  value={discomfortDescription}
-                  onChangeText={setDiscomfortDescription}
+                  label="Please describe" 
+                  placeholder="Describe discomfort experienced…"
+                  value={vrDiscomfortDescription}
+                  onChangeText={setVrDiscomfortDescription}
                 />
               </View>
             )}
           </View>
 
-          {/* Question 3 */}
+          {/* NEW: Content Engagement */}
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Did the VR experience help you to relax/feel good?</Text>
+            <Text className="text-xs text-[#4b5f5a] mb-2">How engaging did you find the guided imagery content?</Text>
             <View className="bg-white border border-[#e6eeeb] rounded-xl shadow-sm overflow-hidden">
               <View className="flex-row">
-                {['Very Much', 'Somewhat', 'Neutral', 'Not Much', 'Not At All'].map((value, index) => (
+                {['Very Engaging', 'Somewhat Engaging', 'Neutral', 'Not Very Engaging', 'Not Engaging at All'].map((value, index) => (
                   <React.Fragment key={value}>
                     <Pressable
-                      onPress={() => setRelaxation(value)}
+                      onPress={() => setContentEngagement(value)}
                       className={`flex-1 py-3 items-center justify-center ${
-                        relaxation === value ? 'bg-[#4FC264]' : 'bg-white'
+                        contentEngagement === value ? 'bg-[#4FC264]' : 'bg-white'
                       }`}
                     >
                       <Text className={`font-medium text-xs text-center ${
-                        relaxation === value ? 'text-white' : 'text-[#4b5f5a]'
+                        contentEngagement === value ? 'text-white' : 'text-[#4b5f5a]'
                       }`}>
                         {value}
                       </Text>
@@ -449,7 +472,69 @@ export default function PostVRAssessment() {
             </View>
           </View>
 
-          {/* Question 4 */}
+          {/* Updated: VR Session Completion */}
+          <View className="mt-3">
+            <Text className="text-xs text-[#4b5f5a] mb-2">Were you able to complete the full VR session as prescribed?</Text>
+            <View className="flex-row gap-2">
+              <Pressable 
+                onPress={() => setComplete('Yes')}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
+                  complete === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
+                }`}
+              >
+                <Text className={`text-lg mr-1 ${
+                  complete === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                }`}>
+                  ✅
+                </Text>
+                <Text className={`font-medium text-xs ${
+                  complete === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                }`}>
+                  Yes
+                </Text>
+              </Pressable>
+              <Pressable 
+                onPress={() => setComplete('No')}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
+                  complete === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
+                }`}
+              >
+                <Text className={`text-lg mr-1 ${
+                  complete === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                }`}>
+                  ❌
+                </Text>
+                <Text className={`font-medium text-xs ${
+                  complete === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                }`}>
+                  No
+                </Text>
+              </Pressable>
+            </View>
+            {complete === 'No' && (
+              <View className="mt-3">
+                <Field 
+                  label="What was the reason?" 
+                  placeholder="Reason for not completing…"
+                  value={noCompleteReason}
+                  onChangeText={setNoCompleteReason}
+                />
+              </View>
+            )}
+          </View>
+
+          {/* NEW: Sessions This Week */}
+          <View className="mt-3">
+            <Field 
+              label="How many VR sessions did you complete this week?" 
+              placeholder="Number of sessions"
+              value={sessionsThisWeek}
+              onChangeText={setSessionsThisWeek}
+              keyboardType="number-pad"
+            />
+          </View>
+
+          {/* Updated Audio Visual Rating */}
           <View className="mt-3">
             <Text className="text-xs text-[#4b5f5a] mb-2">Do you like the VR experience's audio and visual content?</Text>
             <View className="bg-white border border-[#e6eeeb] rounded-xl shadow-sm overflow-hidden">
@@ -475,104 +560,6 @@ export default function PostVRAssessment() {
                 ))}
               </View>
             </View>
-          </View>
-
-          {/* Existing questions */}
-          <View className="flex-row gap-3 mt-3">
-            <View className="flex-1">
-              <Text className="text-xs text-[#4b5f5a] mb-2">Completed full VR session as prescribed?</Text>
-              <View className="flex-row gap-2">
-                {/* Yes Button */}
-                <Pressable 
-                  onPress={() => setComplete('Yes')}
-                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                    complete === 'Yes' 
-                      ? 'bg-[#4FC264]' 
-                      : 'bg-[#EBF6D6]'
-                  }`}
-                >
-                  <Text className={`text-lg mr-1 ${
-                    complete === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                    ✅
-                  </Text>
-                  <Text className={`font-medium text-xs ${
-                    complete === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                    Yes
-                  </Text>
-                </Pressable>
-
-                {/* No Button */}
-                <Pressable 
-                  onPress={() => setComplete('No')}
-                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                    complete === 'No' 
-                      ? 'bg-[#4FC264]' 
-                      : 'bg-[#EBF6D6]'
-                  }`}
-                >
-                  <Text className={`text-lg mr-1 ${
-                    complete === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                    ❌
-                  </Text>
-                  <Text className={`font-medium text-xs ${
-                    complete === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                    No
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-            {complete === 'No' && (
-              <View className="flex-1">
-                <Field 
-                  label="Reason" 
-                  placeholder="Reason for not completing…"
-                  value={additionalComments}
-                  onChangeText={setAdditionalComments}
-                />
-              </View>
-            )}
-          </View>
-
-          <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Session duration</Text>
-            <View className="bg-white border border-[#e6eeeb] rounded-xl shadow-sm overflow-hidden">
-              <View className="flex-row">
-                {['Too Long', 'Just Right', 'Too Short'].map((value, index) => (
-                  <React.Fragment key={value}>
-                    <Pressable
-                      onPress={() => setDuration(value)}
-                      className={`flex-1 py-3 items-center justify-center ${
-                        duration === value ? 'bg-[#4FC264]' : 'bg-white'
-                      }`}
-                    >
-                      <Text className={`font-medium text-xs text-center ${
-                        duration === value ? 'text-white' : 'text-[#4b5f5a]'
-                      }`}>
-                        {value}
-                      </Text>
-                    </Pressable>
-                    {index < 2 && (
-                      <View className="w-px bg-[#e6eeeb]" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </View>
-            </View>
-            {duration !== 'Just Right' && (
-              <View className="mt-3">
-                <Field 
-                  label="Preferred duration (minutes)" 
-                  placeholder="e.g., 15" 
-                  keyboardType="number-pad"
-                  value={durationPreference}
-                  onChangeText={setDurationPreference}
-                />
-              </View>
-            )}
           </View>
         </FormCard>
 
@@ -617,7 +604,7 @@ export default function PostVRAssessment() {
 
           <View className="mt-3">
             <Field 
-              label="What did you like the most?" 
+              label="What did you like the most in the VR experience?" 
               placeholder="Your favorite aspects…" 
               multiline 
               numberOfLines={4}
@@ -627,15 +614,12 @@ export default function PostVRAssessment() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Technical issues with VR device or app?</Text>
+            <Text className="text-xs text-[#4b5f5a] mb-2">Did you face any technical issues with the VR device or app?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
                 onPress={() => setUxTechIssue('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  uxTechIssue === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  uxTechIssue === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -649,14 +633,10 @@ export default function PostVRAssessment() {
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
                 onPress={() => setUxTechIssue('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  uxTechIssue === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  uxTechIssue === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -677,7 +657,7 @@ export default function PostVRAssessment() {
                   label="If yes, please describe" 
                   placeholder="Connectivity, app crash, etc." 
                   multiline 
-                  maxLength={4}
+                  numberOfLines={4}
                   value={uxTechDescription}
                   onChangeText={setUxTechDescription}
                 />
@@ -686,15 +666,12 @@ export default function PostVRAssessment() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Would you recommend VR-guided imagery to other Participants?</Text>
+            <Text className="text-xs text-[#4b5f5a] mb-2">Would you recommend VR-guided imagery to other participants?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
                 onPress={() => setRecommend('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  recommend === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  recommend === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -708,14 +685,10 @@ export default function PostVRAssessment() {
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
                 onPress={() => setRecommend('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  recommend === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  recommend === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -733,15 +706,12 @@ export default function PostVRAssessment() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">Used phone app for guided imagery at home?</Text>
+            <Text className="text-xs text-[#4b5f5a] mb-2">Did you use phone app for guided imagery at home?</Text>
             <View className="flex-row gap-2">
-              {/* Yes Button */}
               <Pressable 
                 onPress={() => setUsedApp('Yes')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  usedApp === 'Yes' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  usedApp === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -755,14 +725,10 @@ export default function PostVRAssessment() {
                   Yes
                 </Text>
               </Pressable>
-
-              {/* No Button */}
               <Pressable 
                 onPress={() => setUsedApp('No')}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  usedApp === 'No' 
-                    ? 'bg-[#4FC264]' 
-                    : 'bg-[#EBF6D6]'
+                  usedApp === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
                 }`}
               >
                 <Text className={`text-lg mr-1 ${
@@ -780,8 +746,10 @@ export default function PostVRAssessment() {
             {usedApp === 'Yes' && (
               <View className="mt-3">
                 <Field 
-                  label="Describe overall experience" 
+                  label="Describe overall experience using the app" 
                   placeholder="App ease of use, content, reminders…"
+                  multiline
+                  numberOfLines={4}
                   value={appExperience}
                   onChangeText={setAppExperience}
                 />
@@ -791,7 +759,7 @@ export default function PostVRAssessment() {
 
           <View className="mt-3">
             <Field
-              label="Any additional comments or suggestions?"
+              label="Any additional comments or suggestions to improve your VR experience?"
               placeholder="Anything else to improve your VR experience…"
               multiline
               numberOfLines={4}
