@@ -25,22 +25,20 @@ export default function TabPills({
             <Pressable
               key={t.key}
               onPress={() => onChange(t.key)}
-              className={`px-4 py-2 rounded-full border ${
-                isActive
-                  ? 'bg-brand-dark-green border-brand-dark-green'
-                  : 'bg-brand-light-green border-brand-border-green'
-              }`}
+              className={`px-4 py-2 rounded-full ${isActive
+                  ? 'bg-brand-dark-green border border-brand-dark-green'
+                  : 'bg-brand-light-green'
+                }`}
               accessible={true}
               accessibilityLabel={`${t.label} tab`}
               accessibilityRole="tab"
               accessibilityState={{ selected: isActive }}
             >
               <Text
-                className={`text-sm font-zen ${
-                  isActive
+                className={`text-sm font-zen ${isActive
                     ? 'text-white font-zen-bold'
                     : 'text-brand-text-green font-zen-medium'
-                }`}
+                  }`}
               >
                 {t.label}
               </Text>

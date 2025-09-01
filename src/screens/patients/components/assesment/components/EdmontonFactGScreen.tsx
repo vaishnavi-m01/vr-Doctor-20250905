@@ -123,7 +123,7 @@ export default function EdmontonFactGScreen() {
       // Build payload with all question responses
       const payload = {
         ParticipantId: patientId,
-        StudyId: patientId,
+        StudyId: "CS-0001",
         AssessedOn: assessedOn,
         AssessedBy: assessedBy,
         SessionNo: sessionNo,
@@ -133,7 +133,7 @@ export default function EdmontonFactGScreen() {
         })),
       };
 
-      const response = await apiService.post("/AddUpdateParticipant", payload);
+      const response = await apiService.post("/AddParticipantFactGQuestionsBaseline", payload);
 
       if (response.status === 200) {
         Toast.show({

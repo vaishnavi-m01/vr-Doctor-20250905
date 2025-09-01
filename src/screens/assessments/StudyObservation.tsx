@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, use } from 'react';
 import { View, Text, ScrollView, Alert, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import { Field } from '@components/Field';
@@ -8,22 +8,22 @@ import BottomBar from '@components/BottomBar';
 import { Btn } from '@components/Button';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
-import { 
-  DEFAULT_PATIENT_INFO, 
-  SESSION_CONSTANTS, 
-  FORM_LABELS, 
-  FORM_PLACEHOLDERS, 
+import {
+  DEFAULT_PATIENT_INFO,
+  SESSION_CONSTANTS,
+  FORM_LABELS,
+  FORM_PLACEHOLDERS,
   PARTICIPANT_RESPONSES,
   SEGMENTED_OPTIONS,
   MESSAGES,
   ASSESSMENT_CONFIG
 } from '../../constants/appConstants';
-import { 
-  validateRequired, 
-  getValidationMessage, 
-  getSuccessMessage, 
+import {
+  validateRequired,
+  getValidationMessage,
+  getSuccessMessage,
   getErrorMessage,
-  prepareFormSubmission 
+  prepareFormSubmission
 } from '../../utils/formUtils';
 
 export default function StudyObservation() {
@@ -31,8 +31,9 @@ export default function StudyObservation() {
   const [tech, setTech] = useState('');
   const [discomfort, setDiscomfort] = useState('');
   const [deviation, setDeviation] = useState('');
+  const [assistance, setAssistance] = useState('');
   const [resp, setResp] = useState<string[]>([]);
-  
+
   // Form field states using constants - properly typed as strings
   const [participantId, setParticipantId] = useState<string>(DEFAULT_PATIENT_INFO.PARTICIPANT_ID);
   // const [age, setAge] = useState<string>(DEFAULT_PATIENT_INFO.AGE);
@@ -47,6 +48,7 @@ export default function StudyObservation() {
   const [endTime, setEndTime] = useState<string>('');
   const [preVRAssessment, setPreVRAssessment] = useState<string>('');
   const [postVRAssessment, setPostVRAssessment] = useState<string>('');
+  const [distressScoreAndFactG, setDistressScoreAndFactG] = useState<string>('');
   const [midwayReason, setMidwayReason] = useState<string>('');
   const [followInstructions, setFollowInstructions] = useState<string>('');
   const [otherResponse, setOtherResponse] = useState<string>('');
@@ -54,9 +56,10 @@ export default function StudyObservation() {
   const [discomfortDescription, setDiscomfortDescription] = useState<string>('');
   const [deviationDescription, setDeviationDescription] = useState<string>('');
   const [otherObservations, setOtherObservations] = useState<string>('');
+  const [AssistanceDescription, setsetAssistanceDescription] = useState<string>('');
 
   const route = useRoute<RouteProp<RootStackParamList, 'StudyObservation'>>();
-  const { patientId,age } = route.params as { patientId: number,age:number };
+  const { patientId, age } = route.params as { patientId: number, age: number };
 
   const flag = useMemo(() => completed === 'No' || tech === 'Yes' || discomfort === 'Yes' || deviation === 'Yes', [completed, tech, discomfort, deviation]);
 
@@ -115,14 +118,14 @@ export default function StudyObservation() {
         followInstructions,
         otherObservations,
       }, patientId);
-      
+
       console.log('Saving observation data:', observationData);
-      
+
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       Alert.alert('Success', getSuccessMessage('SAVED'));
-      
+
       // Navigate back or to next screen
       // navigation.goBack();
     } catch (error) {
@@ -140,7 +143,7 @@ export default function StudyObservation() {
     setResp([]);
     setParticipantId(DEFAULT_PATIENT_INFO.PARTICIPANT_ID);
     // setAge(DEFAULT_PATIENT_INFO.AGE);
-    
+
     setDateTime('');
     setDeviceId(SESSION_CONSTANTS.DEFAULT_DEVICE_ID);
     setObserverName(SESSION_CONSTANTS.DEFAULT_OBSERVER);
@@ -167,7 +170,7 @@ export default function StudyObservation() {
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="font-zen text-lg font-bold text-green-600">
-            {FORM_LABELS.PARTICIPANT_ID}: { patientId || participantId}
+            {FORM_LABELS.PARTICIPANT_ID}: {patientId || participantId}
           </Text>
 
           <Text className="font-zen text-base font-semibold text-gray-700">
@@ -180,40 +183,48 @@ export default function StudyObservation() {
         <FormCard icon={ASSESSMENT_CONFIG.STUDY_OBSERVATION.ICON} title={ASSESSMENT_CONFIG.STUDY_OBSERVATION.TITLE}>
           <View className="flex-row flex-wrap gap-3">
             <View className="w-full md:w-[48%]">
-              <Field 
-                label={FORM_LABELS.DATE} 
-                placeholder={FORM_PLACEHOLDERS.DATE} 
+              <Field
+                label={FORM_LABELS.DATE}
+                placeholder={FORM_PLACEHOLDERS.DATE}
+                value={dateTime}
+                onChangeText={setDateTime}
+              />
+            </View>
+             <View className="w-full md:w-[48%]">
+              <Field
+                label={FORM_LABELS.TIME}
+                placeholder={FORM_PLACEHOLDERS.TIME}
                 value={dateTime}
                 onChangeText={setDateTime}
               />
             </View>
             <View className="w-full md:w-[48%]">
-              <Field 
-                label={FORM_LABELS.PARTICIPANT_ID} 
+              <Field
+                label={FORM_LABELS.PARTICIPANT_ID}
                 placeholder={`${patientId}`}
                 value={participantId}
                 onChangeText={setParticipantId}
               />
             </View>
             <View className="w-full md:w-[48%]">
-              <Field 
-                label={FORM_LABELS.DEVICE_ID} 
+              <Field
+                label={FORM_LABELS.DEVICE_ID}
                 placeholder={FORM_PLACEHOLDERS.DEVICE_ID}
                 value={deviceId}
                 onChangeText={setDeviceId}
               />
             </View>
             <View className="w-full md:w-[48%]">
-              <Field 
-                label={FORM_LABELS.OBSERVER_NAME} 
+              <Field
+                label={FORM_LABELS.OBSERVER_NAME}
                 placeholder={FORM_PLACEHOLDERS.OBSERVER_NAME}
                 value={observerName}
                 onChangeText={setObserverName}
               />
             </View>
             <View className="w-full md:w-[48%]">
-              <Field 
-                label={FORM_LABELS.SESSION_NUMBER} 
+              <Field
+                label={FORM_LABELS.SESSION_NUMBER}
                 placeholder={FORM_PLACEHOLDERS.SESSION_NUMBER}
                 value={sessionNumber}
                 onChangeText={setSessionNumber}
@@ -221,8 +232,8 @@ export default function StudyObservation() {
               />
             </View>
             <View className="w-full md:w-[48%]">
-              <Field 
-                label={FORM_LABELS.SESSION_NAME} 
+              <Field
+                label={FORM_LABELS.SESSION_NAME}
                 placeholder={FORM_PLACEHOLDERS.SESSION_NAME}
                 value={sessionName}
                 onChangeText={setSessionName}
@@ -234,8 +245,8 @@ export default function StudyObservation() {
         <FormCard icon="1" title="Baseline Assessment">
           <View className="flex-row gap-3">
             <View className="flex-1">
-              <Field 
-                label={FORM_LABELS.FACT_G_SCORE} 
+              <Field
+                label={FORM_LABELS.FACT_G_SCORE}
                 placeholder={FORM_PLACEHOLDERS.FACT_G_SCORE}
                 value={factGScore}
                 onChangeText={setFactGScore}
@@ -243,8 +254,8 @@ export default function StudyObservation() {
               />
             </View>
             <View className="flex-1">
-              <Field 
-                label={FORM_LABELS.DISTRESS_THERMOMETER} 
+              <Field
+                label={FORM_LABELS.DISTRESS_THERMOMETER}
                 placeholder={FORM_PLACEHOLDERS.DISTRESS_THERMOMETER}
                 value={distressScore}
                 onChangeText={setDistressScore}
@@ -259,51 +270,45 @@ export default function StudyObservation() {
             <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Was the session completed?</Text>
             <View className="flex-row gap-2">
               {/* Yes Button */}
-              <Pressable 
+              <Pressable
                 onPress={() => setCompleted('Yes')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  completed === 'Yes' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${completed === 'Yes'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  completed === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${completed === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ✅
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  completed === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${completed === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   Yes
                 </Text>
               </Pressable>
 
               {/* No Button */}
-              <Pressable 
+              <Pressable
                 onPress={() => setCompleted('No')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  completed === 'No' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${completed === 'No'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  completed === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${completed === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ❌
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  completed === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${completed === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   No
                 </Text>
               </Pressable>
             </View>
             {completed === 'No' && (
               <View className="mt-3">
-                <Field 
-                  label="If No, specify reason" 
+                <Field
+                  label="If No, specify reason"
                   placeholder={FORM_PLACEHOLDERS.REASON_NOT_COMPLETING}
                   value={midwayReason}
                   onChangeText={setMidwayReason}
@@ -314,16 +319,16 @@ export default function StudyObservation() {
 
           <View className="flex-row gap-3">
             <View className="flex-1">
-              <Field 
-                label={FORM_LABELS.START_TIME} 
+              <Field
+                label={FORM_LABELS.START_TIME}
                 placeholder={FORM_PLACEHOLDERS.START_TIME}
                 value={startTime}
                 onChangeText={setStartTime}
               />
             </View>
             <View className="flex-1">
-              <Field 
-                label={FORM_LABELS.END_TIME} 
+              <Field
+                label={FORM_LABELS.END_TIME}
                 placeholder={FORM_PLACEHOLDERS.END_TIME}
                 value={endTime}
                 onChangeText={setEndTime}
@@ -336,8 +341,8 @@ export default function StudyObservation() {
             <Chip items={[...PARTICIPANT_RESPONSES]} value={resp} onChange={setResp} />
             {resp.includes('Other') && (
               <View className="mt-2">
-                <Field 
-                  label="Describe other response" 
+                <Field
+                  label="Describe other response"
                   placeholder={FORM_PLACEHOLDERS.OTHER_RESPONSE}
                   value={otherResponse}
                   onChangeText={setOtherResponse}
@@ -350,51 +355,45 @@ export default function StudyObservation() {
             <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Any Technical Issues?</Text>
             <View className="flex-row gap-2">
               {/* Yes Button */}
-              <Pressable 
+              <Pressable
                 onPress={() => setTech('Yes')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  tech === 'Yes' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${tech === 'Yes'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  tech === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${tech === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ✅
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  tech === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${tech === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   Yes
                 </Text>
               </Pressable>
 
               {/* No Button */}
-              <Pressable 
+              <Pressable
                 onPress={() => setTech('No')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  tech === 'No' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${tech === 'No'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  tech === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${tech === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ❌
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  tech === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${tech === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   No
                 </Text>
               </Pressable>
             </View>
             {tech === 'Yes' && (
               <View className="mt-3">
-                <Field 
-                  label="If Yes, describe" 
+                <Field
+                  label="If Yes, describe"
                   placeholder={FORM_PLACEHOLDERS.TECHNICAL_ISSUES}
                   value={techDescription}
                   onChangeText={setTechDescription}
@@ -407,25 +406,33 @@ export default function StudyObservation() {
         <FormCard icon="3" title="Counselor / Social Worker Compliance">
           <View className="flex-row gap-3">
             <View className="flex-1">
-              <Field 
-                label="Pre-VR Assessment completed?" 
+              <Field
+                label="Pre-VR Assessment completed?"
                 placeholder="Yes/No"
                 value={preVRAssessment}
                 onChangeText={setPreVRAssessment}
               />
             </View>
             <View className="flex-1">
-              <Field 
-                label="Post-VR Assessment completed?" 
+              <Field
+                label="Post-VR Assessment completed?"
                 placeholder="Yes/No"
                 value={postVRAssessment}
                 onChangeText={setPostVRAssessment}
               />
             </View>
+            <View className="flex-1">
+              <Field
+                label="Distress score and FACT G(end of week)?"
+                placeholder="Yes/No"
+                value={distressScoreAndFactG}
+                onChangeText={setDistressScoreAndFactG}
+              />
+            </View>
           </View>
           <View className="mt-3">
-            <Field 
-              label="If the session was stopped midway, reason" 
+            <Field
+              label="If the session was stopped midway, reason"
               placeholder={FORM_PLACEHOLDERS.MIDWAY_REASON}
               value={midwayReason}
               onChangeText={setMidwayReason}
@@ -434,44 +441,38 @@ export default function StudyObservation() {
           <View className="mt-3">
             <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Was the Participant able to follow instructions?</Text>
             <View className="flex-row gap-2">
-                            {/* Yes Button */}
-              <Pressable 
+              {/* Yes Button */}
+              <Pressable
                 onPress={() => setFollowInstructions('Yes')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  followInstructions === 'Yes' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${followInstructions === 'Yes'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  followInstructions === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${followInstructions === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ✅
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  followInstructions === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${followInstructions === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   Yes
                 </Text>
               </Pressable>
 
               {/* No Button */}
-              <Pressable 
+              <Pressable
                 onPress={() => setFollowInstructions('No')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  followInstructions === 'No' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${followInstructions === 'No'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  followInstructions === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${followInstructions === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ❌
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  followInstructions === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${followInstructions === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   No
                 </Text>
               </Pressable>
@@ -484,53 +485,47 @@ export default function StudyObservation() {
             <View className="flex-1">
               <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Visible signs of discomfort?</Text>
               <View className="flex-row gap-2">
-                              {/* Yes Button */}
-              <Pressable 
-                onPress={() => setDiscomfort('Yes')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  discomfort === 'Yes' 
-                    ? 'bg-[#EBF6D6]' 
+                {/* Yes Button */}
+                <Pressable
+                  onPress={() => setDiscomfort('Yes')}
+                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${discomfort === 'Yes'
+                    ? 'bg-[#EBF6D6]'
                     : 'bg-[#EBF6D6]'
-                }`}
-              >
-                <Text className={`text-lg mr-1 ${
-                  discomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
-                  ✅
-                </Text>
-                <Text className={`font-medium text-xs ${
-                  discomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
-                  Yes
-                </Text>
-              </Pressable>
+                    }`}
+                >
+                  <Text className={`text-lg mr-1 ${discomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                    }`}>
+                    ✅
+                  </Text>
+                  <Text className={`font-medium text-xs ${discomfort === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                    }`}>
+                    Yes
+                  </Text>
+                </Pressable>
 
-              {/* No Button */}
-              <Pressable 
-                onPress={() => setDiscomfort('No')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  discomfort === 'No' 
-                    ? 'bg-[#EBF6D6]' 
+                {/* No Button */}
+                <Pressable
+                  onPress={() => setDiscomfort('No')}
+                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${discomfort === 'No'
+                    ? 'bg-[#EBF6D6]'
                     : 'bg-[#EBF6D6]'
-                }`}
-              >
-                <Text className={`text-lg mr-1 ${
-                  discomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
-                  ❌
-                </Text>
-                <Text className={`font-medium text-xs ${
-                  discomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
-                  No
-                </Text>
-              </Pressable>
-            </View>
+                    }`}
+                >
+                  <Text className={`text-lg mr-1 ${discomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                    }`}>
+                    ❌
+                  </Text>
+                  <Text className={`font-medium text-xs ${discomfort === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                    }`}>
+                    No
+                  </Text>
+                </Pressable>
+              </View>
             </View>
             {discomfort === 'Yes' && (
               <View className="mt-3">
-                <Field 
-                  label="Describe" 
+                <Field
+                  label="Describe"
                   placeholder={FORM_PLACEHOLDERS.DISCOMFORT_SYMPTOMS}
                   value={discomfortDescription}
                   onChangeText={setDiscomfortDescription}
@@ -538,55 +533,102 @@ export default function StudyObservation() {
               </View>
             )}
           </View>
+
+
           <View className="flex-1">
-            <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Any deviations from protocol?</Text>
+            <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Did the patient require any assistance during the session?</Text>
             <View className="flex-row gap-2">
-                            {/* Yes Button */}
-              <Pressable 
-                onPress={() => setDeviation('Yes')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  deviation === 'Yes' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+              {/* Yes Button */}
+              <Pressable
+                onPress={() => setAssistance('Yes')}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${deviation === 'Yes'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  deviation === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${deviation === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ✅
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  deviation === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${deviation === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   Yes
                 </Text>
               </Pressable>
 
               {/* No Button */}
-              <Pressable 
-                onPress={() => setDeviation('No')}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                  deviation === 'No' 
-                    ? 'bg-[#EBF6D6]' 
-                    : 'bg-[#EBF6D6]'
-                }`}
+              <Pressable
+                onPress={() => setAssistance('No')}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${deviation === 'No'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <Text className={`text-lg mr-1 ${
-                  deviation === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`text-lg mr-1 ${deviation === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   ❌
                 </Text>
-                <Text className={`font-medium text-xs ${
-                  deviation === 'No' ? 'text-white' : 'text-[#2c4a43]'
-                }`}>
+                <Text className={`font-medium text-xs ${deviation === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
                   No
                 </Text>
               </Pressable>
             </View>
             {deviation === 'Yes' && (
               <View className="mt-3">
-                <Field 
-                  label="Explain" 
+                <Field
+                  label="Explain"
+                  placeholder={FORM_PLACEHOLDERS.DEVIATION_EXPLANATION}
+                  value={deviationDescription}
+                  onChangeText={setsetAssistanceDescription}
+                />
+              </View>
+            )}
+          </View>
+
+          <View className="flex-1">
+            <Text className="font-zen text-xs text-[#4b5f5a] mb-2">Any deviations from protocol?</Text>
+            <View className="flex-row gap-2">
+              {/* Yes Button */}
+              <Pressable
+                onPress={() => setDeviation('Yes')}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${deviation === 'Yes'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
+              >
+                <Text className={`text-lg mr-1 ${deviation === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  ✅
+                </Text>
+                <Text className={`font-medium text-xs ${deviation === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  Yes
+                </Text>
+              </Pressable>
+
+              {/* No Button */}
+              <Pressable
+                onPress={() => setDeviation('No')}
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${deviation === 'No'
+                  ? 'bg-[#EBF6D6]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
+              >
+                <Text className={`text-lg mr-1 ${deviation === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  ❌
+                </Text>
+                <Text className={`font-medium text-xs ${deviation === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  No
+                </Text>
+              </Pressable>
+            </View>
+            {deviation === 'Yes' && (
+              <View className="mt-3">
+                <Field
+                  label="Explain"
                   placeholder={FORM_PLACEHOLDERS.DEVIATION_EXPLANATION}
                   value={deviationDescription}
                   onChangeText={setDeviationDescription}
@@ -594,9 +636,10 @@ export default function StudyObservation() {
               </View>
             )}
           </View>
+
           <View className="mt-3">
-            <Field 
-              label={FORM_LABELS.OTHER_OBSERVATIONS} 
+            <Field
+              label={FORM_LABELS.OTHER_OBSERVATIONS}
               placeholder={FORM_PLACEHOLDERS.OTHER_OBSERVATIONS}
               value={otherObservations}
               onChangeText={setOtherObservations}

@@ -9,7 +9,7 @@ interface CheckboxProps {
 
 const Checkbox = ({ label, isChecked, onToggle }: CheckboxProps) => {
   return (
-    <Pressable className="flex-row items-center my-1 mr-4" onPress={onToggle}>
+    <Pressable className="flex-row items-center my-2 mr-4" onPress={onToggle}>
       <View
         className={`w-4 h-4 rounded border ${
           isChecked ? 'bg-[#4FC264] border-[#4FC264]' : 'border-gray-400'

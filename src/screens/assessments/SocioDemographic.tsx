@@ -79,6 +79,9 @@ export default function SocioDemographic() {
   const [physicalActivityLevel, setPhysicalActivityLevel] = useState("");
   const [stressLevels, setStressLevels] = useState("");
   const [technologyExperience, setTechnologyExperience] = useState("");
+
+  const [participantSignature, setParticipantSignature] = useState("");
+  const [consentDate, setConsentDate] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
 
@@ -1083,7 +1086,34 @@ export default function SocioDemographic() {
             </View>
           </View>
         </FormCard>
-      </ScrollView>
+
+
+        <FormCard icon="✍️" title="Section 4: Consent and Signature">
+          <View className="mt-3">
+            <Text className="text-sm text-gray-700 mb-4">
+              I confirm that the information provided is accurate to the best of my knowledge.
+            </Text>
+
+            <View className="mt-3">
+              <Field
+                label="Participant Signature"
+                placeholder="Enter your name"
+                value={participantSignature}
+                onChangeText={setParticipantSignature}
+              />
+            </View>
+
+            <View className="mt-3">
+              <Field
+                label="Date"
+                placeholder="MM/DD/YYYY"
+                value={consentDate}
+                onChangeText={setConsentDate}
+              />
+            </View>
+          </View>
+        </FormCard>
+      </ScrollView> 
 
       <BottomBar>
         {/* <Btn variant="light" onPress={() => { }}>Validate</Btn> */}

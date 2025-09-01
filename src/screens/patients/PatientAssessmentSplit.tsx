@@ -20,6 +20,8 @@ import Dashboard from './components/Dashboard';
 import { RootStackParamList } from '../../Navigation/types';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import axios from 'axios';
+import { apiService } from 'src/services';
 
 export interface Patient {
   id: number;                  // using ParticipantId as id
@@ -40,6 +42,8 @@ export default function ParticipantAssessmentSplit() {
   const [loading, setLoading] = useState<boolean>(true);
   const [selId, setSelId] = useState<number | null>(null); // holds ParticipantId
   const [tab, setTab] = useState('assessment');
+  const [searchText, setSearchText] = useState("");
+
 
   useFocusEffect(
     useCallback(() => {
@@ -47,51 +51,46 @@ export default function ParticipantAssessmentSplit() {
     }, [])
   );
 
-  const fetchParticipants = async () => {
+
+  const fetchParticipants = async (search: string = "") => {
     try {
-      const response = await fetch(
-        'https://dev.3framesailabs.com:8060/api/GetParticipantsPaginationFilterSearch',
+      setLoading(true);
+
+      const response = await apiService.post<any>(
+        "/GetParticipantsPaginationFilterSearch",
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            PageNumber: 1,
-            RecordsPerPage: 10,
-            Search: '',
-            Filters: [],
-          }),
+          PageNumber: 1,
+          RecordsPerPage: 10,
+          Search: search,
+          Filters: [],
         }
       );
 
-      const json = await response.json();
-
-      if (json.ResponseData) {
-        const parsed: Patient[] = json.ResponseData.map((item: any) => ({
+      if (response.data?.ResponseData) {
+        const parsed: Patient[] = response.data.ResponseData.map((item: any) => ({
           id: item.ParticipantId,
           ParticipantId: item.ParticipantId,
           age: Number(item.Age) ?? 0,
-          status: item.CriteriaStatus?.toLowerCase() || 'pending',
+          status: item.CriteriaStatus?.toLowerCase() || "pending",
           gender:
-            item.Gender === 'Male' || item.Gender === 'Female'
+            item.Gender === "Male" || item.Gender === "Female"
               ? item.Gender
-              : 'Unknown',
-          cancerType: item.CancerDiagnosis || 'N/A',
-          stage: item.StageOfCancer || 'N/A',
+              : "Unknown",
+          cancerType: item.CancerDiagnosis || "N/A",
+          stage: item.StageOfCancer || "N/A",
           name: item.Name ?? undefined,
-          // weightKg: item.WeightKg ?? undefined, // uncomment if API sends it
         }));
 
         setParticipants(parsed);
         setSelId(parsed[0]?.ParticipantId ?? null);
       }
     } catch (error) {
-      console.error('Failed to fetch participants:', error);
+      console.error("Failed to fetch participants:", error);
     } finally {
       setLoading(false);
     }
   };
+
 
   const sel = participants.find((p) => p.ParticipantId === selId);
 
@@ -137,12 +136,17 @@ export default function ParticipantAssessmentSplit() {
               {/* Search Bar */}
               <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-3 py-2 flex-1">
                 <TextInput
-                  placeholder="Search Participant"
+                  placeholder="Search by ID, Cancer Type, Age"
+                  value={searchText}
+                  onChangeText={setSearchText}
+                  onSubmitEditing={() => fetchParticipants(searchText)} // 🔑 Press Enter to search
                   className="flex-1"
                   placeholderTextColor="#999"
                   style={{ fontSize: 12 }}
                 />
-                <EvilIcons name="search" size={24} color="#21c57e" />
+                <Pressable onPress={() => fetchParticipants(searchText)}>
+                  <EvilIcons name="search" size={24} color="#21c57e" />
+                </Pressable>
               </View>
 
               {/* Filter Icon */}
@@ -167,7 +171,7 @@ export default function ParticipantAssessmentSplit() {
             </Pressable>
           </View>
 
-          <ScrollView className="flex-1 p-3" contentContainerStyle={{paddingBottom:70}}>
+          <ScrollView className="flex-1 p-3" contentContainerStyle={{ paddingBottom: 70 }}>
             {loading ? (
               <ActivityIndicator color="#0ea06c" />
             ) : (
