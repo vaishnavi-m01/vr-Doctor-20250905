@@ -79,7 +79,7 @@ const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
                 icon="⚠️"
                 title="Adverse Event Reporting Form"
                 subtitle="Document and report any adverse events during VR sessions"
-                onPress={() => navigation.navigate("AdverseEventForm", { patientId,age })}
+                onPress={() => navigation.navigate("AdverseEventForm",{patientId,age})}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
 

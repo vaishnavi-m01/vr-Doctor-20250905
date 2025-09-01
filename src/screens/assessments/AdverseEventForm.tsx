@@ -163,7 +163,7 @@ export default function AdverseEventForm() {
                         )}
                     </View>
                     <DropdownField
-                        label="📼 VR content at AE time"
+                        label="📼 VR Content Type at of AE"
                         value={vrContentType}
                         onValueChange={(val) => setVrContentType(val)}
                         options={[
@@ -225,7 +225,7 @@ export default function AdverseEventForm() {
                 </FormCard>
 
 
-                <FormCard icon="2" title=" Severity & Impact">
+                <FormCard icon="2" title=" Severity & Impact Assessment">
 
                     <Text className="text-sm font-medium text-gray-700 mb-2">
                         🌡️ AE Severity Level (Check One):
@@ -284,6 +284,9 @@ export default function AdverseEventForm() {
                     </View>
                 </FormCard>
                 <FormCard icon="3" title="Action Taken">
+                     <Text className="text-sm font-medium text-gray-700 mb-2">
+                       ✅ Immediate Action Taken (Check all that apply):
+                    </Text>
                     <Chip
                         items={[
                             "VR session stopped",
@@ -337,7 +340,7 @@ export default function AdverseEventForm() {
                             <DateField label="📅 Follow-up visit date" value={reportDate} onChange={setReportDate} />
                         </View>
                         <View className="flex-1">
-                            <Field label="🧾 Investigator signature" placeholder="Sign/name" />
+                            <Field label="🧾 signature of Investigator" placeholder="Sign/name" />
                         </View>
                     </View>
 

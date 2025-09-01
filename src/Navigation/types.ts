@@ -27,5 +27,6 @@ export type RootStackParamList = {
   StudyObservation_List:{patientId:number,age:number};
   FactGAssessmentHistory: {patientId:number,age:number};
   VRPrePostList: {patientId:number,age:number};
+  AdverseEventReportsHistory: {patientId:number,age:number};
 };
  

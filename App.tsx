@@ -42,6 +42,7 @@ import DistressThermometerList from './src/screens/patients/components/assesment
 import StudyObservation_List from '@screens/assessments/StudyObservation_List';
 import FactGAssessmentHistory from '@screens/patients/components/assesment/FactGAssessmentHistory';
 import VRPrePostList from '@screens/vr-sessions/vr-prepost_list';
+import AdverseEventReportsHistory from '@screens/assessments/AdverseEventReportsHistory';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -200,6 +201,12 @@ export default function App() {
                   name="EdmontonFactGScreen"
                   component={EdmontonFactGScreen}
                   options={{ headerShown: true, title: "Edmonton FACT-G" }}
+                />
+
+                <Stack.Screen
+                  name="AdverseEventReportsHistory"
+                  component={AdverseEventReportsHistory}
+                  options={{ headerShown: true, title: "VR Adverse Event Reports" }}
                 />
                 <Stack.Screen
                   name="AdverseEventForm"

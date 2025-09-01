@@ -8,7 +8,7 @@ export const ENV = {
 
 // API configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.EXPO_PUBLIC_API_URL || 'http://18.60.122.213:8060/api',
+  BASE_URL: process.env.EXPO_PUBLIC_API_URL || 'https://dev.3framesailabs.com:8060/api',
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
 } as const;

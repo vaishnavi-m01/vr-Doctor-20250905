@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { apiService } from "src/services";
+
 export type FactItem = { code: string; text: string; reverse?: boolean; optional?: boolean };
 export type Subscale = { key: 'PWB'|'SWB'|'EWB'|'FWB'; label: string; range: [number, number]; items: FactItem[]; };
 
@@ -46,6 +49,23 @@ export const subscales: Subscale[] = [
     ]
   },
 ];
+
+
+
+
+
+const fetchFactG = async () => {
+  try {
+    const response = await apiService.get("/getParticipantFactGQuestionBaseline");
+    console.log("FactG data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching FactG:", error);
+    return null;
+  }
+};
+
+
 
 export function proratedSum(items: FactItem[], answers: Record<string, number|null>){
   const n = items.length;
