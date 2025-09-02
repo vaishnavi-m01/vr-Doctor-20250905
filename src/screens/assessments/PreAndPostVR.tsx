@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import Segmented from '@components/Segmented';
 import BottomBar from '@components/BottomBar';
 import { Btn } from '@components/Button';
@@ -36,6 +37,11 @@ export default function PreAndPostVR() {
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {patientId}
           </Text>
+
+          <Text className="text-base font-semibold text-green-600">
+            Study ID: {patientId || 'N/A'}
+          </Text>
+
           <Text className="text-base font-semibold text-gray-700">
             Age: {age}
           </Text>
@@ -48,7 +54,7 @@ export default function PreAndPostVR() {
               <Field label="Participant ID" placeholder={`Participant ID: ${patientId}`} />
             </View>
             <View className="flex-1">
-              <Field label="Date" placeholder="YYYY-MM-DD" />
+              <DateField label="Date" />
             </View>
           </View>
         </FormCard>

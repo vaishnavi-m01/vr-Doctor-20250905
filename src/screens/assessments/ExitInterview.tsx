@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import Segmented from '@components/Segmented';
 import Chip from '@components/Chip';
 import BottomBar from '@components/BottomBar';
@@ -29,6 +30,11 @@ export default function ExitInterview() {
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {patientId}
           </Text>
+
+          <Text className="text-base font-semibold text-green-600">
+            Study ID: {patientId || 'N/A'}
+          </Text>
+
           <Text className="text-base font-semibold text-gray-700">
             Age: {age}
           </Text>
@@ -39,7 +45,7 @@ export default function ExitInterview() {
         <FormCard icon="PI" title="Exit Interview">
           <View className="flex-row gap-3">
             <View className="flex-1"><Field label="Participant ID" placeholder={`Participant ID: ${patientId}`} /></View>
-            <View className="flex-1"><Field label="Date" placeholder="YYYY-MM-DD" /></View>
+            <View className="flex-1"><DateField label="Date" /></View>
           </View>
         </FormCard>
 
@@ -331,11 +337,11 @@ export default function ExitInterview() {
         <FormCard icon="✔︎" title="Acknowledgment & Consent">
           <View className="flex-row gap-3">
             <View className="flex-1"><Field label="Participant Signature (full name)" placeholder="Participant full name" /></View>
-            <View className="flex-1"><Field label="Date" placeholder="YYYY-MM-DD" /></View>
+            <View className="flex-1"><DateField label="Date" /></View>
           </View>
           <View className="flex-row gap-3 mt-2">
             <View className="flex-1"><Field label="Interviewer Signature (full name)" placeholder="Interviewer full name" /></View>
-            <View className="flex-1"><Field label="Date" placeholder="YYYY-MM-DD" /></View>
+            <View className="flex-1"><DateField label="Date" /></View>
           </View>
         </FormCard>
       </ScrollView>

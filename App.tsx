@@ -6,6 +6,9 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import toastConfig from '@components/toastConfig';
 import * as Font from 'expo-font';
+import { Provider } from 'react-redux';
+import { store } from './src/store';
+import ErrorBoundary from './src/components/ErrorBoundary';
 
 import "./global.css";
 
@@ -37,7 +40,7 @@ import SocioDemographic from './src/screens/assessments/SocioDemographic';
 import PatientScreening from './src/screens/assessments/PatientScreening';
 import Profile from './src/screens/auth/Profile';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ErrorBoundary } from './src/components/ErrorBoundary';
+
 import DistressThermometerList from './src/screens/patients/components/assesment/DistressThermometer_list';
 import StudyObservation_List from '@screens/assessments/StudyObservation_List';
 import FactGAssessmentHistory from '@screens/patients/components/assesment/FactGAssessmentHistory';
@@ -109,10 +112,11 @@ export default function App() {
   }
 
   return (
-    <ErrorBoundary>
-      <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-          <NavigationContainer
+    <Provider store={store}>
+      <ErrorBoundary>
+        <SafeAreaProvider>
+          <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <NavigationContainer
             onStateChange={(state) => {
               const route = state?.routes[state.index];
               const routeName = route?.name;
@@ -280,10 +284,11 @@ export default function App() {
                 <BottomDock activeScreen={currentRoute} />
               )}
             </View>
-          </NavigationContainer>
-          <Toast config={toastConfig} />
-        </SafeAreaView>
-      </SafeAreaProvider>
-    </ErrorBoundary>
+            </NavigationContainer>
+            <Toast config={toastConfig} />
+          </SafeAreaView>
+        </SafeAreaProvider>
+      </ErrorBoundary>
+    </Provider>
   );
 }

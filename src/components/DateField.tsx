@@ -17,7 +17,7 @@ export default function DateField({
   value,
   onChange,
   mode = "date",
-  placeholder = mode === "time" ? "HH:mm" : "mm-dd-yyyy",
+  placeholder = mode === "time" ? "HH:mm" : "dd-mm-yyyy",
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -27,8 +27,24 @@ export default function DateField({
       const mm = String(d.getMinutes()).padStart(2, "0");
       return `${hh}:${mm}`;
     }
-    // default: date or datetime -> YYYY-MM-DD
-    return d.toISOString().split("T")[0];
+    // default: date or datetime -> DD-MM-YYYY
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const formatDisplayValue = (val: string) => {
+    if (!val) return val;
+    if (mode === "time") return val;
+    
+    // Convert YYYY-MM-DD to DD-MM-YYYY if needed
+    if (val.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = val.split('-');
+      return `${day}-${month}-${year}`;
+    }
+    
+    return val;
   };
 
   return (
@@ -36,7 +52,7 @@ export default function DateField({
       <Pressable onPress={() => setOpen(true)} className="relative">
         <Field
           label={label}
-          value={value}
+          value={formatDisplayValue(value)}
           placeholder={placeholder}
           editable={false}
         />
@@ -57,6 +73,8 @@ export default function DateField({
           setOpen(false);
         }}
         onCancel={() => setOpen(false)}
+        style={{ justifyContent: 'center', alignItems: 'center' }}
+        modalStyle={{ justifyContent: 'center', alignItems: 'center' }}
       />
     </View>
   );

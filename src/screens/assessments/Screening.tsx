@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import Thermometer from '@components/Thermometer';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import Segmented from '@components/Segmented';
 import Chip from '@components/Chip';
 import BottomBar from '@components/BottomBar';
@@ -25,7 +26,7 @@ export default function Screening(){
       <FormCard icon="D" title="Particpant Screening">
         <View className="flex-row gap-3">
           <View className="flex-1"><Field label="Participant ID" placeholder={`Participant ID: ${patientId}`}/></View>
-          <View className="flex-1"><Field label="Date" placeholder="YYYY-MM-DD"/></View>
+          <View className="flex-1"><DateField label="Date" /></View>
         </View>
       </FormCard>
 

@@ -24,7 +24,7 @@ interface FactGResponse {
 interface Subscale {
   key: string;
   label: string;
-  items: { code: string; text: string; value?: string }[];
+  items: { code: string; text: string; value?: string,FactGCategoryId?:string }[];
 }
 
 interface ScoreResults {
@@ -90,6 +90,7 @@ export default function EdmontonFactGScreen() {
       );
 
       const { ResponseData } = response.data;
+      console.log("FactGResponseDataaa",ResponseData)
 
       const grouped: Record<string, Subscale> = {};
 
@@ -103,6 +104,7 @@ export default function EdmontonFactGScreen() {
         }
         grouped[q.FactGCategoryId].items.push({
           code: q.FactGQuestionId,
+          FactGCategoryId:q.FactGCategoryId,
           text: q.FactGQuestion,
           value: q.ScaleValue,
         });
@@ -119,52 +121,67 @@ export default function EdmontonFactGScreen() {
   }, []);
 
   const handleSave = async () => {
-    try {
-      // Build payload with all question responses
-      const payload = {
-        ParticipantId: patientId,
-        StudyId: "CS-0001",
-        AssessedOn: assessedOn,
-        AssessedBy: assessedBy,
-        SessionNo: sessionNo,
-        Responses: Object.keys(answers).map((code) => ({
-          FactGQuestionId: code,
-          ScaleValue: answers[code],
-        })),
+  try {
+    const responses = Object.keys(answers).map((code) => {
+      // find the item by FactGQuestionId
+      const foundItem = subscales
+        .flatMap((s) => s.items)
+        .find((item) => item.code === code);
+
+      return {
+        FactGQuestionId: code,
+        FactGCategoryId: foundItem?.FactGCategoryId, // ✅ now category will go
+        ScaleValue: answers[code],
       };
+    });
 
-      const response = await apiService.post("/AddParticipantFactGQuestionsBaseline", payload);
+    const payload = {
+      ParticipantId: patientId,
+      StudyId: "CS-0001",
+      // AssessedOn: assessedOn,
+      // AssessedBy: assessedBy,
+      SessionNo: sessionNo,
+      // CreatedBy: assessedBy || "system", 
+      Responses: responses,
+    };
 
-      if (response.status === 200) {
-        Toast.show({
-          type: "success",
-          text1: "Success",
-          text2: "FACT-G responses saved successfully!",
-          position: "top",
-          topOffset: 50,
-          visibilityTime: 2000,
-          onHide: () => navigation.goBack(),
-        });
-      } else {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Something went wrong. Please try again.",
-          position: "top",
-          topOffset: 50,
-        });
-      }
-    } catch (error: any) {
-      console.error("Error saving FACT-G:", error.message);
+    console.log("🚀 Payload sending:", payload);
+
+    const response = await apiService.post(
+      "/AddParticipantFactGQuestionsBaseline",
+      payload
+    );
+
+    if (response.status === 200) {
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "FACT-G responses saved successfully!",
+        position: "top",
+        topOffset: 50,
+        visibilityTime: 2000,
+        onHide: () => navigation.goBack(),
+      });
+    } else {
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Failed to save FACT-G responses.",
+        text2: "Something went wrong. Please try again.",
         position: "top",
         topOffset: 50,
       });
     }
-  };
+  } catch (error: any) {
+    console.error("Error saving FACT-G:", error.message);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Failed to save FACT-G responses.",
+      position: "top",
+      topOffset: 50,
+    });
+  }
+};
 
   return (
     <>
@@ -173,6 +190,11 @@ export default function EdmontonFactGScreen() {
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {patientId}
           </Text>
+
+          <Text className="text-base font-semibold text-green-600">
+            Study ID: {patientId || 'N/A'}
+          </Text>
+
           <Text className="text-base font-semibold text-gray-700">Age: {age}</Text>
         </View>
       </View>

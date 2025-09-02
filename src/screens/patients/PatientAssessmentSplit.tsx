@@ -125,6 +125,7 @@ export default function ParticipantAssessmentSplit() {
             <View className="flex-row items-center justify-between mb-2">
               <View className="flex-row items-center gap-2">
                 <Text className="font-extrabold">Participant List</Text>
+                <Text></Text>
                 <Text className="text-[#21c57e]">●</Text>
               </View>
               <Text className="text-xs text-[#6b7a77]">

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Pressable, Image, Alert } fro
 import FormCard from '@components/FormCard';
 import Segmented from '@components/Segmented';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import BottomBar from '@components/BottomBar';
 import { Btn } from '@components/Button';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
@@ -260,6 +261,10 @@ export default function SocioDemographic() {
               Participant ID: {patientId}
             </Text>
 
+            <Text className="text-base font-semibold text-green-600">
+              Study ID: {patientId || 'N/A'}
+            </Text>
+
             <Text className="text-base font-semibold text-gray-700">
               Age: {age || "Not specified"}
             </Text>
@@ -283,14 +288,14 @@ export default function SocioDemographic() {
               keyboardType="numeric"
             // className={errors.age ? "border border-red-500 rounded-md" : ""}
             />
-            {errors.ages && <Text className="text-red-500 text-xs mt-1">{errors.ages}</Text>}
+            {errors.ages && <Text className="text-red-500 text-sm mt-1">{errors.ages}</Text>}
 
           </View>
 
 
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">2. Gender</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">2. Gender</Text>
             <View className="flex-row gap-2">
               {/* Male Button */}
               <Pressable
@@ -309,7 +314,7 @@ export default function SocioDemographic() {
                     source={require("../../../assets/Man.png")}
                   />
                 </Text>
-                <Text className={`font-medium text-xs pl-2 ${gender === 'Male' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm pl-2 ${gender === 'Male' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Male
                 </Text>
@@ -329,7 +334,7 @@ export default function SocioDemographic() {
                     source={require("../../../assets/Women.png")}
                   />
                 </Text>
-                <Text className={`font-medium text-xs pl-2 ${gender === 'Female' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm pl-2 ${gender === 'Female' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Female
                 </Text>
@@ -351,13 +356,13 @@ export default function SocioDemographic() {
                     style={{ width: 20, height: 30, tintColor: gender === 'Other' ? '#fff' : '#9B59B6' }}
                   /> */}
                 </Text>
-                <Text className={`font-medium text-xs ${gender === 'Other' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${gender === 'Other' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Other
                 </Text>
               </Pressable>
             </View>
-            {errors.gender && <Text className="text-red-500 text-xs mt-1">{errors.gender}</Text>}
+            {errors.gender && <Text className="text-red-500 text-sm mt-1">{errors.gender}</Text>}
 
 
             {/* Conditional Specify Field */}
@@ -374,7 +379,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">3. Marital Status</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">3. Marital Status</Text>
 
             {/* Button Group */}
             <View
@@ -396,7 +401,7 @@ export default function SocioDemographic() {
                   👤
                 </Text>
                 <Text
-                  className={`font-medium text-xs ${maritalStatus === "Single" ? "text-white" : "text-[#2c4a43]"
+                  className={`font-medium text-sm ${maritalStatus === "Single" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
                   Single
@@ -419,7 +424,7 @@ export default function SocioDemographic() {
                   💑
                 </Text>
                 <Text
-                  className={`font-medium text-xs ${maritalStatus === "Married" ? "text-white" : "text-[#2c4a43]"
+                  className={`font-medium text-sm ${maritalStatus === "Married" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
                   Married
@@ -442,7 +447,7 @@ export default function SocioDemographic() {
                   💔
                 </Text>
                 <Text
-                  className={`font-medium text-xs ${maritalStatus === "Divorced" ? "text-white" : "text-[#2c4a43]"
+                  className={`font-medium text-sm ${maritalStatus === "Divorced" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
                   Divorced
@@ -465,7 +470,7 @@ export default function SocioDemographic() {
                   🕊️
                 </Text>
                 <Text
-                  className={`font-medium text-xs ${maritalStatus === "Widowed" ? "text-white" : "text-[#2c4a43]"
+                  className={`font-medium text-sm ${maritalStatus === "Widowed" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
                   Widowed
@@ -475,7 +480,7 @@ export default function SocioDemographic() {
 
             {/* Error Message */}
             {errors.maritalStatus && (
-              <Text className="text-red-500 text-xs mt-1">{errors.maritalStatus}</Text>
+              <Text className="text-red-500 text-sm mt-1">{errors.maritalStatus}</Text>
             )}
 
             {/* Conditional Number of Children Field */}
@@ -494,7 +499,7 @@ export default function SocioDemographic() {
 
 
           {/* <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-1">4. Knowledge in</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-1">4. Knowledge in</Text>
             <View className="mt-2">
               <Field
                 label="English"
@@ -523,46 +528,55 @@ export default function SocioDemographic() {
 
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-1">4. Knowledge in</Text>
-
-            <View className="flex-row mt-2 space-x-4">
-              {/* English */}
-              <TouchableOpacity
+            <Text className="text-sm text-[#4b5f5a] mb-2">4. Knowledge in</Text>
+            <View className="flex-row gap-2">
+              {/* English Button */}
+              <Pressable
                 onPress={() => setKnowledgeIn("English")}
-                className="flex-row items-center"
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${KnowledgeIn === 'English'
+                  ? 'bg-[#4FC264]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <View className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${KnowledgeIn === 'English' ? 'bg-green-500' : 'bg-white'}`}>
-                  {KnowledgeIn === 'English' && <Text className="text-white font-bold text-xs">✓</Text>}
-                </View>
-                <Text>English</Text>
-              </TouchableOpacity>
+                <Text className={`font-medium text-sm ${KnowledgeIn === 'English' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  English
+                </Text>
+              </Pressable>
 
-              <TouchableOpacity
+              {/* Hindi Button */}
+              <Pressable
                 onPress={() => setKnowledgeIn("Hindi")}
-                className="flex-row items-center"
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${KnowledgeIn === 'Hindi'
+                  ? 'bg-[#4FC264]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <View className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${KnowledgeIn === 'Hindi' ? 'bg-green-500' : 'bg-white'}`}>
-                  {KnowledgeIn === 'Hindi' && <Text className="text-white font-bold text-xs">✓</Text>}
-                </View>
-                <Text>Hindi</Text>
-              </TouchableOpacity>
+                <Text className={`font-medium text-sm ${KnowledgeIn === 'Hindi' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  Hindi
+                </Text>
+              </Pressable>
 
-              <TouchableOpacity
+              {/* Khasi Button */}
+              <Pressable
                 onPress={() => setKnowledgeIn("Khasi")}
-                className="flex-row items-center"
+                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${KnowledgeIn === 'Khasi'
+                  ? 'bg-[#4FC264]'
+                  : 'bg-[#EBF6D6]'
+                  }`}
               >
-                <View className={`w-5 h-5 border-2 border-gray-500 mr-2 items-center justify-center rounded-sm ${KnowledgeIn === 'Khasi' ? 'bg-green-500' : 'bg-white'}`}>
-                  {KnowledgeIn === 'Khasi' && <Text className="text-white font-bold text-xs">✓</Text>}
-                </View>
-                <Text>Khasi</Text>
-              </TouchableOpacity>
-
+                <Text className={`font-medium text-sm ${KnowledgeIn === 'Khasi' ? 'text-white' : 'text-[#2c4a43]'
+                  }`}>
+                  Khasi
+                </Text>
+              </Pressable>
             </View>
           </View>
 
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">5. Does faith contribute to well-being?</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">5. Does faith contribute to well-being?</Text>
             <View className="flex-row gap-2">
               {/* Yes Button */}
               <Pressable
@@ -576,7 +590,7 @@ export default function SocioDemographic() {
                   }`}>
                   ✅
                 </Text>
-                <Text className={`font-medium text-xs ${faithWellbeing === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${faithWellbeing === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Yes
                 </Text>
@@ -594,7 +608,7 @@ export default function SocioDemographic() {
                   }`}>
                   ❌
                 </Text>
-                <Text className={`font-medium text-xs ${faithWellbeing === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${faithWellbeing === 'No' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   No
                 </Text>
@@ -603,7 +617,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">6. Do you practice any religion?</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">6. Do you practice any religion?</Text>
             <View className="flex-row gap-2">
 
               <Pressable
@@ -617,7 +631,7 @@ export default function SocioDemographic() {
                   }`}>
                   ✅
                 </Text>
-                <Text className={`font-medium text-xs ${practiceReligion === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${practiceReligion === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Yes
                 </Text>
@@ -635,7 +649,7 @@ export default function SocioDemographic() {
                   }`}>
                   ❌
                 </Text>
-                <Text className={`font-medium text-xs ${practiceReligion === 'No' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${practiceReligion === 'No' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   No
                 </Text>
@@ -656,7 +670,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-1">7. Education Level (Optional)</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-1">7. Education Level (Optional)</Text>
             <Segmented
               options={[
                 { label: 'No formal education', value: 'No formal education' },
@@ -671,7 +685,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-1">8. Employment Status (Optional)</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-1">8. Employment Status (Optional)</Text>
             <Segmented
               options={[
                 { label: 'Employed', value: 'Employed' },
@@ -696,13 +710,13 @@ export default function SocioDemographic() {
               onChangeText={setCancerDiagnosis}
             />
             {errors.cancerDiagnosis && (
-              <Text className="text-red-500 text-xs mt-1">{errors.cancerDiagnosis}</Text>
+              <Text className="text-red-500 text-sm mt-1">{errors.cancerDiagnosis}</Text>
             )}
           </View>
 
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-1">2. Stage of Cancer</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-1">2. Stage of Cancer</Text>
             <Segmented
               options={[
                 { label: 'I', value: 'I' },
@@ -714,7 +728,7 @@ export default function SocioDemographic() {
               onChange={setCancerStage}
             />
             {errors.cancerStage && (
-              <Text className="text-red-500 text-xs mt-1">{errors.cancerStage}</Text>
+              <Text className="text-red-500 text-sm mt-1">{errors.cancerStage}</Text>
             )}
           </View>
 
@@ -727,13 +741,13 @@ export default function SocioDemographic() {
               onChangeText={setEcogScore}
               keyboardType="numeric"
             />
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text className="text-sm text-gray-500 mt-1">
               0: Fully active, 1: Restricted but ambulatory, 2: Ambulatory with self-care, 3: Limited self-care, 4: Completely disabled, 5: Death
             </Text>
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-1">4. Type of Treatment</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-1">4. Type of Treatment</Text>
             <Segmented
               options={[
                 { label: 'Chemotherapy', value: 'Chemotherapy' },
@@ -747,11 +761,10 @@ export default function SocioDemographic() {
 
           <View className="flex-row gap-3 mt-3">
             <View className="flex-1">
-              <Field
+              <DateField
                 label="5. Start Date of Treatment"
-                placeholder="____________"
                 value={treatmentStartDate}
-                onChangeText={setTreatmentStartDate}
+                onChange={setTreatmentStartDate}
               />
             </View>
             <View className="flex-1">
@@ -789,7 +802,7 @@ export default function SocioDemographic() {
         {/* Section 3: Lifestyle and Psychological Factors */}
         <FormCard icon="🧠" title="Section 3: Lifestyle and Psychological Factors">
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">1. Smoking History</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">1. Smoking History</Text>
             <View className="flex-row gap-2">
               {/* Never Button */}
               <Pressable
@@ -803,7 +816,7 @@ export default function SocioDemographic() {
                   }`}>
                   🚭
                 </Text>
-                <Text className={`font-medium text-xs ${smokingHistory === 'Never' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${smokingHistory === 'Never' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Never
                 </Text>
@@ -821,7 +834,7 @@ export default function SocioDemographic() {
                   }`}>
                   🚬
                 </Text>
-                <Text className={`font-medium text-xs ${smokingHistory === 'Former Smoker' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${smokingHistory === 'Former Smoker' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Former
                 </Text>
@@ -839,7 +852,7 @@ export default function SocioDemographic() {
                   }`}>
                   💨
                 </Text>
-                <Text className={`font-medium text-xs ${smokingHistory === 'Current Smoker' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${smokingHistory === 'Current Smoker' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Current
                 </Text>
@@ -848,7 +861,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">2. Alcohol Consumption</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">2. Alcohol Consumption</Text>
             <View className="flex-row gap-2">
               {/* Never Button */}
               <Pressable
@@ -862,7 +875,7 @@ export default function SocioDemographic() {
                   }`}>
                   🚫
                 </Text>
-                <Text className={`font-medium text-xs ${alcoholConsumption === 'Never' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${alcoholConsumption === 'Never' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Never
                 </Text>
@@ -880,7 +893,7 @@ export default function SocioDemographic() {
                   }`}>
                   🍷
                 </Text>
-                <Text className={`font-medium text-xs ${alcoholConsumption === 'Occasionally' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${alcoholConsumption === 'Occasionally' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Occasionally
                 </Text>
@@ -898,7 +911,7 @@ export default function SocioDemographic() {
                   }`}>
                   🍺
                 </Text>
-                <Text className={`font-medium text-xs ${alcoholConsumption === 'Frequently' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${alcoholConsumption === 'Frequently' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Frequently
                 </Text>
@@ -907,7 +920,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">3. Physical Activity Level</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">3. Physical Activity Level</Text>
             <View className="flex-row gap-2">
               {/* Sedentary Button */}
               <Pressable
@@ -921,7 +934,7 @@ export default function SocioDemographic() {
                   }`}>
                   🛋️
                 </Text>
-                <Text className={`font-medium text-xs ${physicalActivityLevel === 'Sedentary' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${physicalActivityLevel === 'Sedentary' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Sedentary
                 </Text>
@@ -939,7 +952,7 @@ export default function SocioDemographic() {
                   }`}>
                   🚶
                 </Text>
-                <Text className={`font-medium text-xs ${physicalActivityLevel === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${physicalActivityLevel === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Moderate
                 </Text>
@@ -957,19 +970,19 @@ export default function SocioDemographic() {
                   }`}>
                   🏃
                 </Text>
-                <Text className={`font-medium text-xs ${physicalActivityLevel === 'Active' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${physicalActivityLevel === 'Active' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Active
                 </Text>
               </Pressable>
             </View>
-            <Text className="text-xs text-gray-500 mt-1">
+            <Text className="text-sm text-gray-500 mt-1">
               Sedentary: Little to no exercise, Moderate: Exercise 1-3 times per week, Active: Exercise 4+ times per week
             </Text>
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">4. Stress Levels</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">4. Stress Levels</Text>
             <View className="flex-row gap-2">
               {/* Low Button */}
               <Pressable
@@ -983,7 +996,7 @@ export default function SocioDemographic() {
                   }`}>
                   😌
                 </Text>
-                <Text className={`font-medium text-xs ${stressLevels === 'Low' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${stressLevels === 'Low' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Low
                 </Text>
@@ -1001,7 +1014,7 @@ export default function SocioDemographic() {
                   }`}>
                   😐
                 </Text>
-                <Text className={`font-medium text-xs ${stressLevels === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${stressLevels === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Moderate
                 </Text>
@@ -1019,7 +1032,7 @@ export default function SocioDemographic() {
                   }`}>
                   😰
                 </Text>
-                <Text className={`font-medium text-xs ${stressLevels === 'High' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${stressLevels === 'High' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   High
                 </Text>
@@ -1028,7 +1041,7 @@ export default function SocioDemographic() {
           </View>
 
           <View className="mt-3">
-            <Text className="text-xs text-[#4b5f5a] mb-2">5. Experience with Technology (VR, Smartphones, etc.)</Text>
+            <Text className="text-sm text-[#4b5f5a] mb-2">5. Experience with Technology (VR, Smartphones, etc.)</Text>
             <View className="flex-row gap-2">
               {/* No Experience Button */}
               <Pressable
@@ -1042,7 +1055,7 @@ export default function SocioDemographic() {
                   }`}>
                   📱
                 </Text>
-                <Text className={`font-medium text-xs ${technologyExperience === 'No experience' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${technologyExperience === 'No experience' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   No Experience
                 </Text>
@@ -1060,7 +1073,7 @@ export default function SocioDemographic() {
                   }`}>
                   💻
                 </Text>
-                <Text className={`font-medium text-xs ${technologyExperience === 'Some experience' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${technologyExperience === 'Some experience' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Some Experience
                 </Text>
@@ -1078,7 +1091,7 @@ export default function SocioDemographic() {
                   }`}>
                   🚀
                 </Text>
-                <Text className={`font-medium text-xs ${technologyExperience === 'Proficient' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm ${technologyExperience === 'Proficient' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Proficient
                 </Text>
@@ -1104,11 +1117,10 @@ export default function SocioDemographic() {
             </View>
 
             <View className="mt-3">
-              <Field
+              <DateField
                 label="Date"
-                placeholder="MM/DD/YYYY"
                 value={consentDate}
-                onChangeText={setConsentDate}
+                onChange={setConsentDate}
               />
             </View>
           </View>

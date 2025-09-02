@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import Segmented from '@components/Segmented';
 import PillGroup from '@components/PillGroup';
 import BottomBar from '@components/BottomBar';
@@ -71,6 +72,11 @@ export default function PostVRAssessment() {
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {participantId || patientId}
           </Text>
+
+          <Text className="text-base font-semibold text-green-600">
+            Study ID: {participantId || patientId || 'N/A'}
+          </Text>
+
           <Text className="text-base font-semibold text-gray-700">
             Age: {age || 'Not specified'}
           </Text>
@@ -88,11 +94,10 @@ export default function PostVRAssessment() {
               />
             </View>
             <View className="flex-1">
-              <Field 
+              <DateField 
                 label="Date" 
-                placeholder="YYYY-MM-DD"
                 value={date}
-                onChangeText={setDate}
+                onChange={setDate}
               />
             </View>
           </View>

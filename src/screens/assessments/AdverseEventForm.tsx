@@ -75,6 +75,10 @@ export default function AdverseEventForm() {
                         Participant ID: {patientId}
                     </Text>
 
+                    <Text className="text-base font-semibold text-green-600">
+                        Study ID: {patientId || 'N/A'}
+                    </Text>
+
                     <Text className="text-base font-semibold text-gray-700">
                         Age: {age}
                     </Text>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '../../components/FormCard';
 import { Field } from '../../components/Field';
+import DateField from '../../components/DateField';
 import PillGroup from '../../components/PillGroup';
 import Segmented from '../../components/Segmented';
 import BottomBar from '../../components/BottomBar';
@@ -56,6 +57,10 @@ export default function PreVR() {
             Participant ID: {participantId || patientId}
           </Text>
 
+          <Text className="text-base font-semibold text-green-600">
+            Study ID: {participantId || patientId || 'N/A'}
+          </Text>
+
           <Text className="text-base font-semibold text-gray-700">
             Age: {age || 'Not specified'}
           </Text>
@@ -73,11 +78,10 @@ export default function PreVR() {
               />
             </View>
             <View className="flex-1">
-              <Field 
+              <DateField 
                 label="Date" 
-                placeholder="YYYY-MM-DD"
                 value={date}
-                onChangeText={setDate}
+                onChange={setDate}
               />
             </View>
           </View>

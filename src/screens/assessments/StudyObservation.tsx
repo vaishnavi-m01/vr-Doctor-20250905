@@ -2,6 +2,7 @@ import React, { useState, useMemo, use } from 'react';
 import { View, Text, ScrollView, Alert, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import Segmented from '@components/Segmented';
 import Chip from '@components/Chip';
 import BottomBar from '@components/BottomBar';
@@ -173,6 +174,10 @@ export default function StudyObservation() {
             {FORM_LABELS.PARTICIPANT_ID}: {patientId || participantId}
           </Text>
 
+          <Text className="font-zen text-base font-semibold text-green-600">
+            Study ID: {patientId || participantId || 'N/A'}
+          </Text>
+
           <Text className="font-zen text-base font-semibold text-gray-700">
             {FORM_LABELS.AGE}: {age || 'Not specified'}
           </Text>
@@ -183,19 +188,18 @@ export default function StudyObservation() {
         <FormCard icon={ASSESSMENT_CONFIG.STUDY_OBSERVATION.ICON} title={ASSESSMENT_CONFIG.STUDY_OBSERVATION.TITLE}>
           <View className="flex-row flex-wrap gap-3">
             <View className="w-full md:w-[48%]">
-              <Field
+              <DateField
                 label={FORM_LABELS.DATE}
-                placeholder={FORM_PLACEHOLDERS.DATE}
                 value={dateTime}
-                onChangeText={setDateTime}
+                onChange={setDateTime}
               />
             </View>
              <View className="w-full md:w-[48%]">
-              <Field
+              <DateField
                 label={FORM_LABELS.TIME}
-                placeholder={FORM_PLACEHOLDERS.TIME}
                 value={dateTime}
-                onChangeText={setDateTime}
+                onChange={setDateTime}
+                mode="time"
               />
             </View>
             <View className="w-full md:w-[48%]">

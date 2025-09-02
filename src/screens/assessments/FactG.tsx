@@ -6,6 +6,7 @@ import BottomBar from '@components/BottomBar';
 import { Btn } from '@components/Button';
 import { subscales, computeScores } from '@data/factg';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
 
@@ -24,7 +25,7 @@ export default function FactG(){
       <FormCard icon="FG" title="FACT-G (Version 4)" desc="Considering the past 7 days, choose one number per line. 0=Not at all ... 4=Very much.">
         <View className="flex-row gap-3">
           <View className="flex-1"><Field label="Participant ID" placeholder={`${patientId}`}/></View>
-          <View className="flex-1"><Field label="Assessed On" placeholder="YYYY-MM-DD"/></View>
+          <View className="flex-1"><DateField label="Assessed On" /></View>
           <View className="flex-1"><Field label="Assessed By" placeholder="Name & role"/></View>
         </View>
       </FormCard>

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import Thermometer from '@components/Thermometer';
 import { Field } from '@components/Field';
+import DateField from '@components/DateField';
 import Segmented from '@components/Segmented';
 import Chip from '@components/Chip';
 import BottomBar from '@components/BottomBar';
@@ -40,6 +41,10 @@ export default function PatientScreening() {
             Participant ID: {participantId || patientId}
           </Text>
 
+          <Text className="text-base font-semibold text-green-600">
+            Study ID: {patientId || 'N/A'}
+          </Text>
+
           <Text className="text-base font-semibold text-gray-700">
             Age: {age || 'Not specified'}
           </Text>
@@ -58,11 +63,10 @@ export default function PatientScreening() {
               />
             </View>
             <View className="flex-1">
-              <Field 
+              <DateField 
                 label="Date" 
-                placeholder="YYYY-MM-DD"
                 value={date}
-                onChangeText={setDate}
+                onChange={setDate}
               />
             </View>
           </View>
