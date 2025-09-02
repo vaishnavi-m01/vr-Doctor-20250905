@@ -440,7 +440,7 @@ export default function SocioDemographic() {
                   className={`text-lg mr-1 ${maritalStatus === "Single" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
-                  👤
+                  {/* 👤 */}
                 </Text>
                 <Text
                   className={`font-medium text-sm ${maritalStatus === "Single" ? "text-white" : "text-[#2c4a43]"
@@ -463,7 +463,7 @@ export default function SocioDemographic() {
                   className={`text-lg mr-1 ${maritalStatus === "Married" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
-                  💑
+                  {/* 💑 */}
                 </Text>
                 <Text
                   className={`font-medium text-sm ${maritalStatus === "Married" ? "text-white" : "text-[#2c4a43]"
@@ -486,7 +486,7 @@ export default function SocioDemographic() {
                   className={`text-lg mr-1 ${maritalStatus === "Divorced" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
-                  💔
+                  {/* 💔 */}
                 </Text>
                 <Text
                   className={`font-medium text-sm ${maritalStatus === "Divorced" ? "text-white" : "text-[#2c4a43]"
@@ -509,7 +509,7 @@ export default function SocioDemographic() {
                   className={`text-lg mr-1 ${maritalStatus === "Widowed" ? "text-white" : "text-[#2c4a43]"
                     }`}
                 >
-                  🕊️
+                  {/* 🕊️ */}
                 </Text>
                 <Text
                   className={`font-medium text-sm ${maritalStatus === "Widowed" ? "text-white" : "text-[#2c4a43]"
@@ -604,7 +604,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${faithWellbeing === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  ✅
+                  {/* ✅ */}
                 </Text>
                 <Text className={`font-medium text-sm ${faithWellbeing === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -622,7 +622,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${faithWellbeing === 'No' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  ❌
+                  {/* ❌ */}
                 </Text>
                 <Text className={`font-medium text-sm ${faithWellbeing === 'No' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -645,7 +645,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${practiceReligion === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  ✅
+                  {/* ✅ */}
                 </Text>
                 <Text className={`font-medium text-sm ${practiceReligion === 'Yes' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -663,7 +663,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${practiceReligion === 'No' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  ❌
+                  {/* ❌ */}
                 </Text>
                 <Text className={`font-medium text-sm ${practiceReligion === 'No' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -827,7 +827,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${smokingHistory === 'Never' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🚭
+                  {/* 🚭 */}
                 </Text>
                 <Text className={`font-medium text-sm ${smokingHistory === 'Never' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -845,7 +845,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${smokingHistory === 'Former Smoker' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🚬
+                  {/* 🚬 */}
                 </Text>
                 <Text className={`font-medium text-sm ${smokingHistory === 'Former Smoker' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -863,7 +863,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${smokingHistory === 'Current Smoker' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  💨
+                  {/* 💨 */}
                 </Text>
                 <Text className={`font-medium text-sm ${smokingHistory === 'Current Smoker' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -886,7 +886,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${alcoholConsumption === 'Never' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🚫
+                  {/* 🚫 */}
                 </Text>
                 <Text className={`font-medium text-sm ${alcoholConsumption === 'Never' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -904,7 +904,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${alcoholConsumption === 'Occasionally' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🍷
+                  {/* 🍷 */}
                 </Text>
                 <Text className={`font-medium text-sm ${alcoholConsumption === 'Occasionally' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -922,7 +922,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${alcoholConsumption === 'Frequently' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🍺
+                  {/* 🍺 */}
                 </Text>
                 <Text className={`font-medium text-sm ${alcoholConsumption === 'Frequently' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -945,7 +945,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${physicalActivityLevel === 'Sedentary' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🛋️
+                  {/* 🛋️ */}
                 </Text>
                 <Text className={`font-medium text-sm ${physicalActivityLevel === 'Sedentary' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -963,7 +963,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${physicalActivityLevel === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🚶
+                  {/* 🚶 */}
                 </Text>
                 <Text className={`font-medium text-sm ${physicalActivityLevel === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -981,7 +981,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${physicalActivityLevel === 'Active' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🏃
+                  {/* 🏃 */}
                 </Text>
                 <Text className={`font-medium text-sm ${physicalActivityLevel === 'Active' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -1007,7 +1007,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${stressLevels === 'Low' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  😌
+                  {/* 😌 */}
                 </Text>
                 <Text className={`font-medium text-sm ${stressLevels === 'Low' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -1025,7 +1025,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${stressLevels === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  😐
+                  {/* 😐 */}
                 </Text>
                 <Text className={`font-medium text-sm ${stressLevels === 'Moderate' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -1043,7 +1043,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${stressLevels === 'High' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  😰
+                  {/* 😰 */}
                 </Text>
                 <Text className={`font-medium text-sm ${stressLevels === 'High' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -1066,7 +1066,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${technologyExperience === 'No experience' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  📱
+                  {/* 📱 */}
                 </Text>
                 <Text className={`font-medium text-sm ${technologyExperience === 'No experience' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -1084,7 +1084,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${technologyExperience === 'Some experience' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  💻
+                  {/* 💻 */}
                 </Text>
                 <Text className={`font-medium text-sm ${technologyExperience === 'Some experience' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
@@ -1102,7 +1102,7 @@ export default function SocioDemographic() {
               >
                 <Text className={`text-lg mr-1 ${technologyExperience === 'Proficient' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
-                  🚀
+                  {/* 🚀 */}
                 </Text>
                 <Text className={`font-medium text-sm ${technologyExperience === 'Proficient' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>

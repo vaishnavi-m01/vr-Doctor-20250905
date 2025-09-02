@@ -135,7 +135,7 @@ export default function ParticipantAssessmentSplit() {
               List of Participants ({participants.length})
             </Text>
 
-            <View className="flex-row items-center space-x-2 mt-5">
+            <View className="flex-row items-center space-x-2 mt-3">
               {/* Search Bar */}
               <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-3 py-2 flex-1">
                 <TextInput
