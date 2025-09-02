@@ -76,7 +76,7 @@ export default function PatientScreening() {
           <View className="flex-row items-center justify-between mb-2">
             <Text className="text-xs text-muted">Distress Thermometer (0–10)</Text>
             <Pressable 
-              onPress={() => navigation.navigate('DistressThermometerScreen', { patientId })}
+              onPress={() => navigation.navigate('DistressThermometerScreen', { patientId,age })}
               className="px-4 py-3 bg-[#0ea06c] rounded-lg"
             >
               <Text className="text-xs text-white font-medium">Assessment: Distress Thermometer scoring 0-10</Text>
@@ -88,7 +88,7 @@ export default function PatientScreening() {
               <View className="flex-row items-center justify-between mb-1">
                 <Text className="text-xs text-[#4b5f5a]">FACT-G Total Score</Text>
                 <Pressable 
-                  onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId })}
+                  onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId,age })}
                   className="px-4 py-3 bg-[#0ea06c] rounded-lg"
                 >
                   <Text className="text-xs text-white font-medium">Assessment: Fact-G scoring 0-108</Text>

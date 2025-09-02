@@ -16,6 +16,7 @@ import { Btn } from "@components/Button";
 import { RootStackParamList } from "../../../../../Navigation/types";
 import { apiService } from "src/services";
 import Toast from "react-native-toast-message";
+import { Picker } from "@react-native-picker/picker";
 
 // Define expected API types
 type Question = {
@@ -37,6 +38,9 @@ export default function DistressThermometerScreen() {
     selectedProblems, setSelectedProblems] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedWeek, setSelectedWeek] = useState("week1");
+
+
 
   const route =
     useRoute<RouteProp<RootStackParamList, "DistressThermometerScreen">>();
@@ -44,6 +48,8 @@ export default function DistressThermometerScreen() {
     patientId: number;
     age: number;
   };
+  const [enteredPatientId, setEnteredPatientId] = useState<string>(patientId.toString());
+
 
   // Toggle a problem selection
   const toggleProblem = (questionId: string) => {
@@ -63,7 +69,7 @@ export default function DistressThermometerScreen() {
         "/GetParticipantDistressThermometerWeeklyQA",
         {
           WeekNo: weekNo,
-          ParticipantId: `PID-${patientId}`,
+          ParticipantId: `${patientId}`,
         }
       );
 
@@ -167,7 +173,30 @@ export default function DistressThermometerScreen() {
   return (
     <>
       {/* Header Card */}
-      <View className="px-4 pt-4">
+       <View className="px-4 pt-4 flex-row justify-end mb-4">
+      <View className="bg-white border border-gray-300 rounded-lg shadow-sm">
+        <Picker
+          selectedValue={selectedWeek}
+          onValueChange={(itemValue) => setSelectedWeek(itemValue)}
+          style={{
+            width: 150,
+            color: "black",
+            fontSize: 16,
+            paddingVertical: 8,
+          }}
+          dropdownIconColor="gray"
+          mode="dropdown" // important for iOS/iPad
+        >
+          <Picker.Item label="Week 1" value="week1" />
+          <Picker.Item label="Week 2" value="week2" />
+          <Picker.Item label="Week 3" value="week3" />
+          <Picker.Item label="Week 4" value="week4" />
+        </Picker>
+      </View>
+    </View>
+
+      {/* Header Card */}
+      <View className="px-4 pt-2">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="text-lg font-bold text-green-600">
             Participant ID: {patientId}
@@ -177,7 +206,9 @@ export default function DistressThermometerScreen() {
             Study ID: {patientId || 'N/A'}
           </Text>
 
-          <Text className="text-base font-semibold text-gray-700">Age: {age}</Text>
+          <Text className="text-base font-semibold text-gray-700">
+            Age: {age}
+          </Text>
         </View>
       </View>
 
@@ -203,7 +234,9 @@ export default function DistressThermometerScreen() {
               <Text className="text-xs text-[#6b7a77]">Participant ID</Text>
               <TextInput
                 className="border-b border-[#D1D5DB] p-2 text-sm text-[#333]"
-                placeholder={`${patientId}`}
+                value={enteredPatientId}   // show patientId as default
+                onChangeText={setEnteredPatientId} // allow typing new value
+                placeholder="Enter Patient ID" // fallback placeholder
               />
             </View>
             {/* <View className="flex-1 mr-2">
@@ -262,7 +295,7 @@ export default function DistressThermometerScreen() {
             <Text className="text-xs text-[#6b7a77]">Other Problems</Text>
             <TextInput
               className="border-b border-[#D1D5DB] p-2 text-sm text-[#333]"
-              // placeholder="other Problems"
+            // placeholder="other Problems"
             />
           </View>
         </View>

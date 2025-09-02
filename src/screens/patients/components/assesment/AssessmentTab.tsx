@@ -8,18 +8,18 @@ import FormCard from '../../../../components/FormCard';
 import { Field } from '../../../../components/Field';
 import PillGroup from '../../../../components/PillGroup';
 import Segmented from '../../../../components/Segmented';
-import { RootStackParamList } from '../../../../Navigation/types';   
+import { RootStackParamList } from '../../../../Navigation/types';
 
 type AssessmentTabNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface AssessmentTabProps {
   patientId: number;
-  age:number;
+  age: number;
 }
 
-const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
-  const navigation = useNavigation<AssessmentTabNavigationProp>(); 
-  
+const AssessmentTab = ({ patientId, age }: AssessmentTabProps) => {
+  const navigation = useNavigation<AssessmentTabNavigationProp>();
+
   // State for orientation assessment items
   const [effect, setEffect] = useState<number | undefined>();
   const [clarity, setClarity] = useState<number | undefined>();
@@ -40,26 +40,30 @@ const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
   return (
     <ScrollView className="flex-1 p-4">
       {/* Original Assessment Items */}
+
       <AssessItem
         icon="🌡️"
         title="Distress Thermometer scoring 0-10"
         subtitle="Assess participant distress levels and identify problem areas"
-        onPress={() => navigation.navigate('DistressThermometerList', { patientId,age })}
+        // onPress={() => navigation.navigate('DistressThermometerList', { patientId,age })}
+        onPress={() => navigation.navigate("DistressThermometerScreen", { patientId, age })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
         icon="📝"
         title="Fact-G scoring 0-108"
         subtitle="Evaluate quality of life across physical, social, emotional domains"
-        onPress={() => navigation.navigate('FactGAssessmentHistory',{patientId,age})}
+        // onPress={() => navigation.navigate('FactGAssessmentHistory',{patientId,age})}
+        onPress={() => navigation.navigate("EdmontonFactGScreen", { patientId, age })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
         icon="📋"
         title="Study Observation Form"
         subtitle="Record session observations and participant responses"
-        onPress={() => 
-          navigation.navigate('StudyObservation_List',{patientId,age})
+        onPress={() =>
+          // navigation.navigate('StudyObservation_List',{patientId,age})
+          navigation.navigate("StudyObservation", { patientId, age })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
@@ -67,11 +71,12 @@ const AssessmentTab = ({ patientId,age }: AssessmentTabProps) => {
         icon="📝"
         title="Exit Interview optional"
         subtitle="Final assessment and feedback collection from participant"
-        onPress={() => 
-          navigation.navigate('ExitInterview', { patientId,age })
+        onPress={() =>
+          navigation.navigate('ExitInterview', { patientId, age })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
+
 
     </ScrollView>
   );

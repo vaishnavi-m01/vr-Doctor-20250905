@@ -12,6 +12,7 @@ import Header from '@components/Header';
 import axios from "axios";
 import { apiService } from 'src/services';
 import Toast from 'react-native-toast-message';
+import apiClient from 'src/services/apiClient';
 
 
 
@@ -45,6 +46,20 @@ interface ParticipantDetails {
 }
 
 
+interface LanguageData {
+  LID?: string;
+  Language: string;
+  SortKey?: number;
+  Status: number | string;
+}
+
+interface EducationLevel {
+  EID?: string;
+  Education: string;
+  SortKey?: number;
+  Status: number | string;
+}
+
 
 export default function SocioDemographic() {
   // Personal Information fields
@@ -56,11 +71,14 @@ export default function SocioDemographic() {
   const [faithWellbeing, setFaithWellbeing] = useState("");
   const [practiceReligion, setPracticeReligion] = useState("");
   const [religionSpecify, setReligionSpecify] = useState("");
-  const [educationLevel, setEducationLevel] = useState("");
+  const [educationOptions, setEducationOptions] = useState<EducationLevel[]>([]);
+  const [educationLevel, setEducationLevel] = useState<string>("");
+
   const [employmentStatus, setEmploymentStatus] = useState("");
-  const [english, setEnglish] = useState(false);
-  const [hindi, setHindi] = useState(false);
-  const [khasi, setKhasi] = useState(false);
+
+  const [languages, setLanguages] = useState<LanguageData[]>([]);
+  console.log("LANGUAGEDATAS", languages)
+
   const [KnowledgeIn, setKnowledgeIn] = useState<string>("");
   console.log("KnowledgeIn", KnowledgeIn)
 
@@ -90,6 +108,27 @@ export default function SocioDemographic() {
   const { patientId, age } = route.params as { patientId: number, age: number };
   const isEditMode = !!patientId;
   const navigation = useNavigation<any>();
+
+
+
+  useEffect(() => {
+    apiService
+      .post<{ ResponseData: LanguageData[] }>("/GetLanguageData")
+      .then((res) => {
+        setLanguages(res.data.ResponseData);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+
+  useEffect(() => {
+    apiService
+      .post<{ ResponseData: EducationLevel[] }>("/GetEducationData")
+      .then((res) => {
+        setEducationOptions(res.data.ResponseData);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
 
 
@@ -150,6 +189,9 @@ export default function SocioDemographic() {
 
 
 
+  const handlePress = (language: string) => {
+    setKnowledgeIn(language);
+  };
 
 
   const handleSave = async () => {
@@ -305,7 +347,7 @@ export default function SocioDemographic() {
                 }}
                 className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${gender === 'Male'
                   ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
+                  : 'bg-gray-200'
                   }`}
               >
                 <Text className={`text-lg mr-1 ${gender === 'Male' ? 'text-white' : 'text-[#2c4a43]'
@@ -314,7 +356,7 @@ export default function SocioDemographic() {
                     source={require("../../../assets/Man.png")}
                   />
                 </Text>
-                <Text className={`font-medium text-sm pl-2 ${gender === 'Male' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm pl-4 ${gender === 'Male' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Male
                 </Text>
@@ -334,7 +376,7 @@ export default function SocioDemographic() {
                     source={require("../../../assets/Women.png")}
                   />
                 </Text>
-                <Text className={`font-medium text-sm pl-2 ${gender === 'Female' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm pl-4 ${gender === 'Female' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Female
                 </Text>
@@ -356,7 +398,7 @@ export default function SocioDemographic() {
                     style={{ width: 20, height: 30, tintColor: gender === 'Other' ? '#fff' : '#9B59B6' }}
                   /> */}
                 </Text>
-                <Text className={`font-medium text-sm ${gender === 'Other' ? 'text-white' : 'text-[#2c4a43]'
+                <Text className={`font-medium text-sm pl-4  ${gender === 'Other' ? 'text-white' : 'text-[#2c4a43]'
                   }`}>
                   Other
                 </Text>
@@ -528,51 +570,25 @@ export default function SocioDemographic() {
 
 
           <View className="mt-3">
-            <Text className="text-sm text-[#4b5f5a] mb-2">4. Knowledge in</Text>
-            <View className="flex-row gap-2">
-              {/* English Button */}
-              <Pressable
-                onPress={() => setKnowledgeIn("English")}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${KnowledgeIn === 'English'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
-                  }`}
-              >
-                <Text className={`font-medium text-sm ${KnowledgeIn === 'English' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                  English
-                </Text>
-              </Pressable>
-
-              {/* Hindi Button */}
-              <Pressable
-                onPress={() => setKnowledgeIn("Hindi")}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${KnowledgeIn === 'Hindi'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
-                  }`}
-              >
-                <Text className={`font-medium text-sm ${KnowledgeIn === 'Hindi' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                  Hindi
-                </Text>
-              </Pressable>
-
-              {/* Khasi Button */}
-              <Pressable
-                onPress={() => setKnowledgeIn("Khasi")}
-                className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${KnowledgeIn === 'Khasi'
-                  ? 'bg-[#4FC264]'
-                  : 'bg-[#EBF6D6]'
-                  }`}
-              >
-                <Text className={`font-medium text-sm ${KnowledgeIn === 'Khasi' ? 'text-white' : 'text-[#2c4a43]'
-                  }`}>
-                  Khasi
-                </Text>
-              </Pressable>
+            <Text className="text-sm text-[#4b5f5a] mb-1">4. Knowledge in</Text>
+            <View className="flex-row flex-wrap gap-2 mt-2">
+              {languages.map((lang) => (
+                <Pressable
+                  key={lang.LID}
+                  onPress={() => handlePress(lang.Language)}
+                  className={` flex-1 px-8 py-4 items-center rounded-full ${KnowledgeIn === lang.Language ? "bg-[#4FC264]" : "bg-[#EBF6D6]"}`}
+                >
+                  <Text
+                    className={`font-medium text-sm ${KnowledgeIn === lang.Language ? "text-white" : "text-[#2c4a43]"}`}
+                  >
+                    {lang.Language}
+                  </Text>
+                </Pressable>
+              ))}
             </View>
           </View>
+
+
 
 
           <View className="mt-3">
@@ -672,13 +688,10 @@ export default function SocioDemographic() {
           <View className="mt-3">
             <Text className="text-sm text-[#4b5f5a] mb-1">7. Education Level (Optional)</Text>
             <Segmented
-              options={[
-                { label: 'No formal education', value: 'No formal education' },
-                { label: 'Primary school', value: 'Primary school' },
-                { label: 'Secondary school', value: 'Secondary school' },
-                { label: 'College/University', value: 'College/University' },
-                { label: 'Postgraduate', value: 'Postgraduate' }
-              ]}
+              options={educationOptions.map((edu) => ({
+                label: edu.Education,
+                value: edu.Education,
+              }))}
               value={educationLevel}
               onChange={setEducationLevel}
             />
@@ -1125,7 +1138,7 @@ export default function SocioDemographic() {
             </View>
           </View>
         </FormCard>
-      </ScrollView> 
+      </ScrollView>
 
       <BottomBar>
         {/* <Btn variant="light" onPress={() => { }}>Validate</Btn> */}

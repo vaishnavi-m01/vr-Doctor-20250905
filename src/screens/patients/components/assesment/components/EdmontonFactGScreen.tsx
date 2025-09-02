@@ -14,7 +14,7 @@ interface FactGQuestion {
   FactGCategoryName: string;
   FactGQuestionId: string;
   FactGQuestion: string;
-  ScaleValue?: string; 
+  ScaleValue?: string;
 }
 
 interface FactGResponse {
@@ -24,7 +24,7 @@ interface FactGResponse {
 interface Subscale {
   key: string;
   label: string;
-  items: { code: string; text: string; value?: string,FactGCategoryId?:string }[];
+  items: { code: string; text: string; value?: string, FactGCategoryId?: string }[];
 }
 
 interface ScoreResults {
@@ -90,7 +90,7 @@ export default function EdmontonFactGScreen() {
       );
 
       const { ResponseData } = response.data;
-      console.log("FactGResponseDataaa",ResponseData)
+      console.log("FactGResponseDataaa", ResponseData)
 
       const grouped: Record<string, Subscale> = {};
 
@@ -104,7 +104,7 @@ export default function EdmontonFactGScreen() {
         }
         grouped[q.FactGCategoryId].items.push({
           code: q.FactGQuestionId,
-          FactGCategoryId:q.FactGCategoryId,
+          FactGCategoryId: q.FactGCategoryId,
           text: q.FactGQuestion,
           value: q.ScaleValue,
         });
@@ -121,67 +121,65 @@ export default function EdmontonFactGScreen() {
   }, []);
 
   const handleSave = async () => {
-  try {
-    const responses = Object.keys(answers).map((code) => {
-      // find the item by FactGQuestionId
-      const foundItem = subscales
-        .flatMap((s) => s.items)
-        .find((item) => item.code === code);
+    try {
+      const responses = Object.keys(answers).map((code) => {
+        const foundItem = subscales
+          .flatMap((s) => s.items)
+          .find((item) => item.code === code);
 
-      return {
-        FactGQuestionId: code,
-        FactGCategoryId: foundItem?.FactGCategoryId, // ✅ now category will go
-        ScaleValue: answers[code],
-      };
-    });
-
-    const payload = {
-      ParticipantId: patientId,
-      StudyId: "CS-0001",
-      // AssessedOn: assessedOn,
-      // AssessedBy: assessedBy,
-      SessionNo: sessionNo,
-      // CreatedBy: assessedBy || "system", 
-      Responses: responses,
-    };
-
-    console.log("🚀 Payload sending:", payload);
-
-    const response = await apiService.post(
-      "/AddParticipantFactGQuestionsBaseline",
-      payload
-    );
-
-    if (response.status === 200) {
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "FACT-G responses saved successfully!",
-        position: "top",
-        topOffset: 50,
-        visibilityTime: 2000,
-        onHide: () => navigation.goBack(),
+        return {
+          FactGCategoryId: foundItem?.FactGCategoryId,
+          FactGQuestionId: code,
+          ScaleValue: String(answers[code]),   
+          FlagStatus: "Yes",                  
+        };
       });
-    } else {
+
+      const payload = {
+        StudyId: "CS-0001",
+        ParticipantId: `${patientId}`,
+        FactGData: responses,
+        CreatedBy: "UH-1000",
+        CreatedDate: new Date().toISOString().split("T")[0],
+      };
+
+      console.log(" FactG Sending Payload:", payload);
+
+      const response = await apiService.post(
+        "/AddParticipantFactGQuestionsBaseline",
+        payload
+      );
+
+      if (response.status === 200) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "FACT-G responses saved successfully!",
+          position: "top",
+          topOffset: 50,
+          onHide: () => navigation.goBack(),
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Something went wrong. Please try again.",
+          position: "top",
+          topOffset: 50,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error saving FACT-G:", error.message);
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "Something went wrong. Please try again.",
+        text2: "Failed to save FACT-G responses.",
         position: "top",
         topOffset: 50,
       });
     }
-  } catch (error: any) {
-    console.error("Error saving FACT-G:", error.message);
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: "Failed to save FACT-G responses.",
-      position: "top",
-      topOffset: 50,
-    });
-  }
-};
+  };
+
 
   return (
     <>
@@ -243,18 +241,16 @@ export default function EdmontonFactGScreen() {
                       <React.Fragment key={value}>
                         <Pressable
                           onPress={() => setAnswer(item.code, value)}
-                          className={`w-12 py-2 items-center justify-center ${
-                            answers[item.code] === value
+                          className={`w-12 py-2 items-center justify-center ${answers[item.code] === value
                               ? "bg-[#7ED321]"
                               : "bg-white"
-                          }`}
+                            }`}
                         >
                           <Text
-                            className={`font-medium text-sm ${
-                              answers[item.code] === value
+                            className={`font-medium text-sm ${answers[item.code] === value
                                 ? "text-white"
                                 : "text-[#4b5f5a]"
-                            }`}
+                              }`}
                           >
                             {value}
                           </Text>

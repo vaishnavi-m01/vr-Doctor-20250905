@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableOpacity,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -126,14 +127,15 @@ export default function ParticipantAssessmentSplit() {
               <View className="flex-row items-center gap-2">
                 <Text className="font-extrabold">Participant List</Text>
                 <Text></Text>
-                <Text className="text-[#21c57e]">●</Text>
+                {/* <Text className="text-[#21c57e]">●</Text> */}
+                <Image source={require("../../../assets/patientList.png")} ></Image>
               </View>
-              <Text className="text-xs text-[#6b7a77]">
-                List of Participants ({participants.length})
-              </Text>
             </View>
+            <Text className="text-xs text-[#6b7a77]">
+              List of Participants ({participants.length})
+            </Text>
 
-            <View className="flex-row items-center space-x-2">
+            <View className="flex-row items-center space-x-2 mt-5">
               {/* Search Bar */}
               <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-3 py-2 flex-1">
                 <TextInput

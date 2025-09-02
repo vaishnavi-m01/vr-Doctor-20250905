@@ -62,7 +62,8 @@ const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
                 icon="📋"
                 title="Pre/Post VR Questionnaires"
                 // subtitle={sessionStage === "pre" ? "Start Pre VR" : sessionStage === "post" ? "Start Post VR" : "Pre & Post Done"}
-                onPress={() => navigation.navigate("VRPrePostList",{patientId,age} )}
+                // onPress={() => navigation.navigate("VRPrePostList",{patientId,age} )}
+                onPress={()=>navigation.navigate("PreAndPostVR",{patientId,age})}
                 // onPress={() => {
                 //     if (sessionStage === "pre") {
                 //         navigation.navigate("PreAndPostVR", { patientId,age });
