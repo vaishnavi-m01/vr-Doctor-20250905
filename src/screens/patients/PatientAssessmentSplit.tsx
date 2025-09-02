@@ -121,7 +121,7 @@ export default function ParticipantAssessmentSplit() {
     <View className="flex-1 bg-white">
       <View className="flex-row flex-1">
         {/* Left Pane - Participant List */}
-        <View className="w-80 border-r border-[#e6eeeb] bg-white">
+        <View className="w-80 border-r border-[#e6eeeb] bg-[#F6F7F7]">
           <View className="px-4 pt-4 pb-2">
             <View className="flex-row items-center justify-between mb-2">
               <View className="flex-row items-center gap-2">

@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+
 
 export type Patient = {
   id: number;
@@ -69,7 +71,8 @@ export default function PatientCard({
           <View className="w-2 h-2 rounded-full bg-[#f43f5e]" />
         )}
         <Text className={`text-lg font-bold ${selected ? 'text-white' : 'text-[#6b7a77]'}`}>
-          &gt;
+          <Feather name="chevron-right" size={20} color={selected ? '#ffffff' : '#6b7a77'} />
+
         </Text>
       </View>
     </Pressable>
