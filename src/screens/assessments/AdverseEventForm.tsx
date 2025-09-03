@@ -43,7 +43,7 @@ export default function AdverseEventForm() {
     const [outcome, setOutcome] = useState([]);
     const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
     const route = useRoute<RouteProp<RootStackParamList, 'AdverseEventForm'>>();
-    const { patientId,age } = route.params as { patientId: number,age:number };
+    const { patientId,age,studyId } = route.params as { patientId: number,age:number,studyId:number };
     console.log("PATIENTID", patientId)
 
     const ready = (() => {
@@ -76,7 +76,7 @@ export default function AdverseEventForm() {
                     </Text>
 
                     <Text className="text-base font-semibold text-green-600">
-                        Study ID: {patientId || 'N/A'}
+                        Study ID: {studyId || 'N/A'}
                     </Text>
 
                     <Text className="text-base font-semibold text-gray-700">

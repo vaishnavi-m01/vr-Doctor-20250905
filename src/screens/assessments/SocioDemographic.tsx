@@ -13,6 +13,7 @@ import axios from "axios";
 import { apiService } from 'src/services';
 import Toast from 'react-native-toast-message';
 import apiClient from 'src/services/apiClient';
+import { DropdownField } from '@components/DropdownField';
 
 
 
@@ -60,6 +61,17 @@ interface EducationLevel {
   Status: number | string;
 }
 
+interface CancerTypes {
+  CancerTypeId?: string;
+  CancerType: string;
+  SortKey?: number;
+  Status: number | string;
+}
+type DropdownOption = {
+  label: string;
+  value: string;
+};
+
 
 export default function SocioDemographic() {
   // Personal Information fields
@@ -83,7 +95,12 @@ export default function SocioDemographic() {
   console.log("KnowledgeIn", KnowledgeIn)
 
   // Medical History fields
+  const [cancerTypes, setCancerTypes] = useState<CancerTypes[]>([]);
+  const [cancerTypeOptions, setCancerTypeOptions] = useState<DropdownOption[]>([]);
+  console.log("cancerTypeOptions", cancerTypeOptions)
+  console.log("canerTypes", cancerTypes)
   const [cancerDiagnosis, setCancerDiagnosis] = useState("");
+  console.log("cancerDiagnosis", cancerDiagnosis)
   const [cancerStage, setCancerStage] = useState("");
   const [ecogScore, setEcogScore] = useState("");
   const [treatmentType, setTreatmentType] = useState("");
@@ -105,7 +122,7 @@ export default function SocioDemographic() {
 
 
   const route = useRoute<RouteProp<RootStackParamList, 'SocioDemographic'>>();
-  const { patientId, age } = route.params as { patientId: number, age: number };
+  const { patientId, age, studyId } = route.params as { patientId: number, age: number, studyId: number };
   const isEditMode = !!patientId;
   const navigation = useNavigation<any>();
 
@@ -129,6 +146,26 @@ export default function SocioDemographic() {
       })
       .catch((err) => console.error(err));
   }, []);
+
+  useEffect(() => {
+    apiService
+      .post<{ ResponseData: CancerTypes[] }>("/GetCancerTypesData")
+      .then((res) => {
+        if (res.data?.ResponseData) {
+          setCancerTypes(res.data.ResponseData);
+
+          const formatted = res.data.ResponseData.map((item) => ({
+            label: item.CancerType,
+            value: item.CancerType,
+          }));
+          setCancerTypeOptions(formatted);
+        }
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+
+
 
 
 
@@ -229,6 +266,7 @@ export default function SocioDemographic() {
         KnowledgeIn: KnowledgeIn,
         FaithContributeToWellBeing: faithWellbeing,
         PracticeAnyReligion: practiceReligion,
+
         EducationLevel: educationLevel,
         EmploymentStatus: employmentStatus,
 
@@ -304,7 +342,7 @@ export default function SocioDemographic() {
             </Text>
 
             <Text className="text-base font-semibold text-green-600">
-              Study ID: {patientId || 'N/A'}
+              Study ID: {studyId || 'N/A'}
             </Text>
 
             <Text className="text-base font-semibold text-gray-700">
@@ -314,7 +352,7 @@ export default function SocioDemographic() {
         </View>
       )}
 
-             <ScrollView className="flex-1 px-6 bg-bg pb-[300px]">
+      <ScrollView className="flex-1 px-6 bg-bg pb-[300px]">
 
         <FormCard icon="👤" title="Section 1: Personal Information">
           <View className="mt-6">
@@ -629,7 +667,7 @@ export default function SocioDemographic() {
 
         {/* Section 2: Medical History */}
         <FormCard icon="🏥" title="Section 2: Medical History">
-          <View className="mt-6">
+          {/* <View className="mt-6">
             <Field
               label="1. Cancer Diagnosis"
               placeholder="__________________________________________"
@@ -639,7 +677,18 @@ export default function SocioDemographic() {
             {errors.cancerDiagnosis && (
               <Text className="text-red-500 text-sm mt-2">{errors.cancerDiagnosis}</Text>
             )}
-          </View>
+          </View> */}
+
+          <DropdownField
+            label="Cancer Diagnosis"
+            value={cancerDiagnosis}
+            onValueChange={(val) => setCancerDiagnosis(val)}
+            options={cancerTypeOptions}
+          />
+
+
+
+
 
           <View className="mt-6">
             <Text className="text-base font-medium text-[#2c4a43] mb-4">2. Stage of Cancer</Text>

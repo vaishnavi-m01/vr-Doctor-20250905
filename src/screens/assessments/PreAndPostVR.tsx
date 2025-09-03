@@ -1,52 +1,118 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, Text, ScrollView, Pressable, ActivityIndicator } from 'react-native';
 import FormCard from '@components/FormCard';
 import { Field } from '@components/Field';
 import DateField from '@components/DateField';
-import Segmented from '@components/Segmented';
 import BottomBar from '@components/BottomBar';
 import { Btn } from '@components/Button';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
+import axios from 'axios';
+import { apiService } from 'src/services';
+
+type Question = {
+  PPVRQMID: string;
+  StudyId: string;
+  QuestionName: string;
+  Type: 'Pre' | 'Post';
+  SortKey: number;
+  Status: number;
+};
 
 export default function PreAndPostVR() {
-  const [preHead, setPreHead] = useState('');
-  const [preDiz, setPreDiz] = useState('');
-  const [preBlur, setPreBlur] = useState('');
-  const [preVert, setPreVert] = useState('');
-  const [preGood, setPreGood] = useState('');
-
-  const [postGood, setPostGood] = useState('');
-  const [postDisc, setPostDisc] = useState('');
-  const [postHelp, setPostHelp] = useState('');
-  const [postLike, setPostLike] = useState('');
-
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'PreAndPostVR'>>();
-  const { patientId,age } = route.params as { patientId: number,age:number };
+  const { patientId, age, studyId } = route.params as { patientId: number; age: number; studyId: number };
 
-  const delta = useMemo(() => (postGood === 'Yes' ? 1 : 0) - (preGood === 'Yes' ? 1 : 0), [preGood, postGood]);
-  const flag = (preHead === 'Yes') || (preDiz === 'Yes') || (preBlur === 'Yes') || (preVert === 'Yes') || (postDisc === 'Yes');
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const res = await apiService.post<{ ResponseData: Question[] }>("/GetPrePostVRSessionQuestionData")
+;
+        setQuestions(res.data.ResponseData);
+      } catch (err) {
+        console.error('Error fetching questions:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchQuestions();
+  }, [studyId]);
+
+  const handleAnswer = (id: string, value: string) => {
+    setAnswers(prev => ({ ...prev, [id]: value }));
+  };
+
+  const preQuestions = questions.filter(q => q.Type === 'Pre');
+  const postQuestions = questions.filter(q => q.Type === 'Post');
+
+  // Calculate mood delta
+  const delta = useMemo(() => {
+    const preGood = questions.find(q => q.Type === 'Pre' && q.QuestionName === 'Do you feel good?');
+    const postGood = questions.find(q => q.Type === 'Post' && q.QuestionName === 'Do you feel good?');
+    return (answers[postGood?.PPVRQMID || ''] === 'Yes' ? 1 : 0) - (answers[preGood?.PPVRQMID || ''] === 'Yes' ? 1 : 0);
+  }, [answers, questions]);
+
+  // Symptom flag
+  const flag = useMemo(() => {
+    const symptomKeys = questions
+      .filter(q =>
+        ['Do you have Headache & Aura?', 'Do you have dizziness?', 'Do you have Blurred Vision?', 'Do you have Vertigo?', 'Do you experience any discomfort?'].includes(
+          q.QuestionName
+        )
+      )
+      .map(q => q.PPVRQMID);
+
+    return symptomKeys.some(id => answers[id] === 'Yes');
+  }, [answers, questions]);
+
+  // Submit answers to API
+  const handleSave = async () => {
+    setSubmitting(true);
+    try {
+      const payload = Object.keys(answers).map(id => ({
+        PPVRQMID: id,
+        Answer: answers[id],
+        PatientId: patientId,
+        StudyId: studyId,
+      }));
+
+      await apiService.post('/GetPrePostVRSessionQuestionData', { Responses: payload });
+
+      navigation.goBack();
+    } catch (err) {
+      console.error('Error saving responses:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#4FC264" />
+        <Text className="mt-2">Loading questions…</Text>
+      </View>
+    );
+  }
 
   return (
     <>
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
-          <Text className="text-lg font-bold text-green-600">
-            Participant ID: {patientId}
-          </Text>
-
-          <Text className="text-base font-semibold text-green-600">
-            Study ID: {patientId || 'N/A'}
-          </Text>
-
-          <Text className="text-base font-semibold text-gray-700">
-            Age: {age}
-          </Text>
+          <Text className="text-lg font-bold text-green-600">Participant ID: {patientId}</Text>
+          <Text className="text-base font-semibold text-green-600">Study ID: {studyId || 'N/A'}</Text>
+          <Text className="text-base font-semibold text-gray-700">Age: {age}</Text>
         </View>
       </View>
+
       <ScrollView className="px-4 pt-4 bg-bg pb-[300px]">
         <FormCard icon="I" title="Pre & Post VR">
           <View className="flex-row gap-3">
@@ -58,45 +124,32 @@ export default function PreAndPostVR() {
             </View>
           </View>
         </FormCard>
+
+        {/* Pre Questions */}
         <FormCard icon="A" title="Pre Virtual Reality Questions">
-          {[
-            ['Do you have Headache & Aura?', preHead, setPreHead],
-            ['Do you have dizziness?', preDiz, setPreDiz],
-            ['Do you have Blurred Vision?', preBlur, setPreBlur],
-            ['Do you have Vertigo?', preVert, setPreVert],
-            ['Do you feel good?', preGood, setPreGood],
-          ].map(([label, val, setter]: [string, string, (value: string) => void]) => (
-            <View key={String(label)} className="mb-3">
-              <Text className="text-xs text-[#4b5f5a] mb-2">{label}</Text>
+          {preQuestions.map(q => (
+            <View key={q.PPVRQMID} className="mb-3">
+              <Text className="text-xs text-[#4b5f5a] mb-2">{q.QuestionName}</Text>
               <View className="flex-row gap-2">
-                <Pressable
-                  onPress={() => setter('Yes')}
-                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                    val === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
-                  }`}
-                >
-                  <Text className={`text-lg mr-1 ${val === 'Yes' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    ✅
-                  </Text>
-                  <Text className={`font-medium text-xs ${val === 'Yes' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    Yes
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setter('No')}
-                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                    val === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
-                  }`}
-                >
-                  <Text className={`text-lg mr-1 ${val === 'No' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    ❌
-                  </Text>
-                  <Text className={`font-medium text-xs ${val === 'No' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    No
-                  </Text>
-                </Pressable>
+                {['Yes', 'No'].map(opt => (
+                  <Pressable
+                    key={opt}
+                    onPress={() => handleAnswer(q.PPVRQMID, opt)}
+                    className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
+                      answers[q.PPVRQMID] === opt ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
+                    }`}
+                  >
+                    <Text className={`text-lg mr-1 ${answers[q.PPVRQMID] === opt ? 'text-white' : 'text-[#2c4a43]'}`}>
+                      {opt === 'Yes' ? '✅' : '❌'}
+                    </Text>
+                    <Text className={`font-medium text-xs ${answers[q.PPVRQMID] === opt ? 'text-white' : 'text-[#2c4a43]'}`}>
+                      {opt}
+                    </Text>
+                  </Pressable>
+                ))}
               </View>
-              {val === 'Yes' && label !== 'Do you feel good?' && (
+
+              {answers[q.PPVRQMID] === 'Yes' && q.QuestionName !== 'Do you feel good?' && (
                 <View className="mt-3">
                   <Field label="Notes (optional)" placeholder="Add details…" />
                 </View>
@@ -104,62 +157,57 @@ export default function PreAndPostVR() {
             </View>
           ))}
         </FormCard>
+
+        {/* Post Questions */}
         <FormCard icon="B" title="Post Virtual Reality Questions">
-          {[
-            ['Do you feel good?', postGood, setPostGood],
-            ['Do you experience any discomfort?', postDisc, setPostDisc],
-            ['Did the VR experience help you to relaxed/feel good?', postHelp, setPostHelp],
-            ['Do you like the VR experience’s audio and visual content?', postLike, setPostLike],
-          ].map(([label, val, setter]: [string, string, (value: string) => void]) => (
-            <View key={String(label)} className="mb-3">
-              <Text className="text-xs text-[#4b5f5a] mb-2">{label}</Text>
+          {postQuestions.map(q => (
+            <View key={q.PPVRQMID} className="mb-3">
+              <Text className="text-xs text-[#4b5f5a] mb-2">{q.QuestionName}</Text>
               <View className="flex-row gap-2">
-                <Pressable
-                  onPress={() => setter('Yes')}
-                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                    val === 'Yes' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
-                  }`}
-                >
-                  <Text className={`text-lg mr-1 ${val === 'Yes' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    ✅
-                  </Text>
-                  <Text className={`font-medium text-xs ${val === 'Yes' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    Yes
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => setter('No')}
-                  className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
-                    val === 'No' ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
-                  }`}
-                >
-                  <Text className={`text-lg mr-1 ${val === 'No' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    ❌
-                  </Text>
-                  <Text className={`font-medium text-xs ${val === 'No' ? 'text-white' : 'text-[#2c4a43]'}`}>
-                    No
-                  </Text>
-                </Pressable>
+                {['Yes', 'No'].map(opt => (
+                  <Pressable
+                    key={opt}
+                    onPress={() => handleAnswer(q.PPVRQMID, opt)}
+                    className={`flex-1 flex-row items-center justify-center rounded-full py-3 px-2 ${
+                      answers[q.PPVRQMID] === opt ? 'bg-[#4FC264]' : 'bg-[#EBF6D6]'
+                    }`}
+                  >
+                    <Text className={`text-lg mr-1 ${answers[q.PPVRQMID] === opt ? 'text-white' : 'text-[#2c4a43]'}`}>
+                      {opt === 'Yes' ? '✅' : '❌'}
+                    </Text>
+                    <Text className={`font-medium text-xs ${answers[q.PPVRQMID] === opt ? 'text-white' : 'text-[#2c4a43]'}`}>
+                      {opt}
+                    </Text>
+                  </Pressable>
+                ))}
               </View>
-              {val === 'No' && label !== 'Do you experience any discomfort?' && (
-                <View className="mt-3">
-                  <Field label="Please specify" placeholder="e.g., audio low, visuals blurry…" />
-                </View>
-              )}
-              {label === 'Do you experience any discomfort?' && val === 'Yes' && (
+
+              {/* Conditional extra inputs */}
+              {q.QuestionName === 'Do you experience any discomfort?' && answers[q.PPVRQMID] === 'Yes' && (
                 <View className="mt-3">
                   <Field label="Please describe" placeholder="Dizziness, nausea, etc." />
+                </View>
+              )}
+              {answers[q.PPVRQMID] === 'No' && q.QuestionName !== 'Do you experience any discomfort?' && (
+                <View className="mt-3">
+                  <Field label="Please specify" placeholder="e.g., audio low, visuals blurry…" />
                 </View>
               )}
             </View>
           ))}
         </FormCard>
       </ScrollView>
+
+      {/* Bottom Bar */}
       <BottomBar>
-        <Text className="px-3 py-2 rounded-xl bg-[#0b362c] text-white font-bold">Mood Δ: {delta > 0 ? '+1' : delta < 0 ? '-1' : '0'}</Text>
+        <Text className="px-3 py-2 rounded-xl bg-[#0b362c] text-white font-bold">
+          Mood Δ: {delta > 0 ? '+1' : delta < 0 ? '-1' : '0'}
+        </Text>
         {flag && <Text className="px-3 py-2 rounded-xl bg-[#0b362c] text-white font-bold">⚠︎ Review symptoms</Text>}
         <Btn variant="light" onPress={() => {}}>Validate</Btn>
-        <Btn onPress={() => { navigation.goBack() }}>Save</Btn>
+        <Btn onPress={handleSave} disabled={submitting}>
+          {submitting ? 'Saving…' : 'Save'}
+        </Btn>
       </BottomBar>
     </>
   );

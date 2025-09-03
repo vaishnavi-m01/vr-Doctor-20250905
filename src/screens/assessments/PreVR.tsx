@@ -34,7 +34,7 @@ export default function PreVR() {
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'PreVR'>>();
-  const { patientId,age } = route.params;
+  const { patientId,age,studyId } = route.params;
   console.log("PATIENTID", patientId)
 
   const ready = (() => {
@@ -58,7 +58,7 @@ export default function PreVR() {
           </Text>
 
           <Text className="text-base font-semibold text-green-600">
-            Study ID: {participantId || patientId || 'N/A'}
+            Study ID: {studyId || studyId || 'N/A'}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">

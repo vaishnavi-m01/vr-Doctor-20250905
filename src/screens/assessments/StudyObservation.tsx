@@ -60,7 +60,7 @@ export default function StudyObservation() {
   const [AssistanceDescription, setsetAssistanceDescription] = useState<string>('');
 
   const route = useRoute<RouteProp<RootStackParamList, 'StudyObservation'>>();
-  const { patientId, age } = route.params as { patientId: number, age: number };
+  const { patientId, age,studyId } = route.params as { patientId: number, age: number,studyId:number };
 
   const flag = useMemo(() => completed === 'No' || tech === 'Yes' || discomfort === 'Yes' || deviation === 'Yes', [completed, tech, discomfort, deviation]);
 
@@ -175,7 +175,7 @@ export default function StudyObservation() {
           </Text>
 
           <Text className="font-zen text-base font-semibold text-green-600">
-            Study ID: {patientId || participantId || 'N/A'}
+            Study ID: {studyId || studyId || 'N/A'}
           </Text>
 
           <Text className="font-zen text-base font-semibold text-gray-700">

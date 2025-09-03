@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import FormCard from '@components/FormCard';
 import Thermometer from '@components/Thermometer';
@@ -11,13 +11,23 @@ import { Btn } from '@components/Button';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { apiService } from 'src/services';
+
+
+interface ClinicalChecklist {
+  PMEMID?: string;
+  StudyId: string;
+  ExeperiencType: string;
+  SortKey?: number;
+  Status: number
+}
 
 export default function PatientScreening() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [dt, setDt] = useState(0);
   const [implants, setImplants] = useState('');
   const [prosthetics, setProsthetics] = useState('');
-  const [conds, setConds] = useState<string[]>([]);
+  // const [conds, setConds] = useState<string[]>([]);
 
   // New state variables for previously hardcoded values
   const [participantId, setParticipantId] = useState('');
@@ -30,9 +40,21 @@ export default function PatientScreening() {
   const [bmi, setBmi] = useState('');
   const [notes, setNotes] = useState('');
 
-  const route = useRoute<RouteProp<RootStackParamList, 'PatientScreening'>>();
-  const { patientId,age } = route.params as { patientId: number,age:number };
-  console.log("agee",age)
+  const [clinicalChecklist, setClinicalChecklist] = useState<ClinicalChecklist[]>([]);
+  const [conds, setConds] = useState<string[]>([]);
+
+ const route = useRoute<RouteProp<RootStackParamList, 'PatientScreening'>>();
+  const { patientId, age, studyId } = route.params as { patientId: number, age: number, studyId: number };
+
+    useEffect(() => {
+    apiService
+      .post<{ ResponseData: ClinicalChecklist[] }>("/GetParticipantMedicalExperienceData")
+      .then((res) => {
+        setClinicalChecklist(res.data.ResponseData || []);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
     <>
       <View className="px-4 pt-4">
@@ -42,7 +64,7 @@ export default function PatientScreening() {
           </Text>
 
           <Text className="text-base font-semibold text-green-600">
-            Study ID: {patientId || 'N/A'}
+            Study ID: {studyId || 'N/A'}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">
@@ -76,7 +98,7 @@ export default function PatientScreening() {
           <View className="flex-row items-center justify-between mb-2">
             <Text className="text-xs text-muted">Distress Thermometer (0–10)</Text>
             <Pressable 
-              onPress={() => navigation.navigate('DistressThermometerScreen', { patientId,age })}
+              onPress={() => navigation.navigate('DistressThermometerScreen', { patientId, age, studyId })}
               className="px-4 py-3 bg-[#0ea06c] rounded-lg"
             >
               <Text className="text-xs text-white font-medium">Assessment: Distress Thermometer scoring 0-10</Text>
@@ -88,7 +110,7 @@ export default function PatientScreening() {
               <View className="flex-row items-center justify-between mb-1">
                 <Text className="text-xs text-[#4b5f5a]">FACT-G Total Score</Text>
                 <Pressable 
-                  onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId,age })}
+                  onPress={() => navigation.navigate('EdmontonFactGScreen', { patientId, age, studyId })}
                   className="px-4 py-3 bg-[#0ea06c] rounded-lg"
                 >
                   <Text className="text-xs text-white font-medium">Assessment: Fact-G scoring 0-108</Text>
@@ -242,30 +264,16 @@ export default function PatientScreening() {
           </View>
         </FormCard>
 
-        <FormCard icon="✔︎" title="Clinical Checklist">
-          <Chip 
-            items={[
-              'Vertigo / Dizziness', 
-              'Tinnitus', 
-              'Migraine', 
-              'Diplopia', 
-              'Blurred Vision', 
-              'Any discomfort / uneasiness', 
-              'Brain Tumors', 
-              'Advanced stage of cancer', 
-              'Brain Metastasis', 
-              'Psychiatric illnesses', 
-              'Surgical complications', 
-              'Progressive disease on treatment (Not responsive)', 
-              'Cognitive impairment', 
-              'Hearing or sight problems'
-            ]} 
-            value={conds} 
-            onChange={setConds} 
+       <FormCard icon="✔︎" title="Clinical Checklist">
+          <Chip
+            items={clinicalChecklist.map(item => item.ExeperiencType)} // 👈 use API values
+            value={conds}
+            onChange={setConds}
           />
+
           <View className="mt-3">
-            <Field 
-              label="Notes (optional)" 
+            <Field
+              label="Notes (optional)"
               placeholder="Add any clarifications…"
               value={notes}
               onChangeText={setNotes}

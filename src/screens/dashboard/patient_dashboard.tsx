@@ -21,7 +21,7 @@ type ParticipantDashboardNavigationProp = NativeStackNavigationProp<RootStackPar
 const ParticipantDashboard = () => {
   const navigation = useNavigation<ParticipantDashboardNavigationProp>();
     const route = useRoute<PatientDashboardRouteProp>();
-  const { patientId, age } = route.params;
+  const { patientId, age,studyId } = route.params;
 
 
   return (

@@ -21,7 +21,7 @@ export default function ExitInterview() {
   const [overallRating, setOverallRating] = useState('');
 
   const route = useRoute<RouteProp<RootStackParamList, 'ExitInterview'>>();
-  const { patientId, age } = route.params as { patientId: number, age: number };
+  const { patientId, age,studyId } = route.params as { patientId: number, age: number,studyId:number };
 
   return (
     <>
@@ -32,7 +32,7 @@ export default function ExitInterview() {
           </Text>
 
           <Text className="text-base font-semibold text-green-600">
-            Study ID: {patientId || 'N/A'}
+            Study ID: {studyId || 'N/A'}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">
