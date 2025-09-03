@@ -2,11 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Global white background for the entire app */
-* {
-  background-color: white;
-}
-
+/* Global styles for the app */
 body {
   background-color: white;
 }
+
+/* Remove the universal white background override */
+/* * {
+  background-color: white;
+} */

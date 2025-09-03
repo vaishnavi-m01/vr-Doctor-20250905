@@ -114,7 +114,7 @@ export default function Profile() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 p-4 pb-[50px]">
+      <ScrollView className="flex-1 p-4 pb-[200px]">
         {/* Profile Header */}
         <View className="bg-white rounded-xl p-6 mb-4 shadow-sm">
           <View className="items-center mb-4">

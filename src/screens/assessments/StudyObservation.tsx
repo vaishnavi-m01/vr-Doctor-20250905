@@ -184,7 +184,7 @@ export default function StudyObservation() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 p-4 bg-bg pb-[50px]">
+      <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
         <FormCard icon={ASSESSMENT_CONFIG.STUDY_OBSERVATION.ICON} title={ASSESSMENT_CONFIG.STUDY_OBSERVATION.TITLE}>
           <View className="flex-row flex-wrap gap-3">
             <View className="w-full md:w-[48%]">

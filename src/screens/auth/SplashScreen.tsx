@@ -3,25 +3,11 @@ import { View, Text } from 'react-native';
 
 export const SplashScreen: React.FC = () => {
   return (
-    <View style={{ 
-      flex: 1, 
-      backgroundColor: '#0e4336', 
-      justifyContent: 'center', 
-      alignItems: 'center' 
-    }}>
-      <Text style={{ 
-        color: 'white', 
-        fontSize: 32, 
-        fontWeight: 'bold',
-        marginBottom: 20
-      }}>
+    <View className="flex-1 bg-brand-dark-green justify-center items-center">
+      <Text className="text-white text-3xl font-bold mb-5 font-zen-bold">
         VR Doctor
       </Text>
-      <Text style={{ 
-        color: 'white', 
-        fontSize: 16, 
-        opacity: 0.8
-      }}>
+      <Text className="text-white text-base opacity-80 font-zen">
         Loading...
       </Text>
     </View>

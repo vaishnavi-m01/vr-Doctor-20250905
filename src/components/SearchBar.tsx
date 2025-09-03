@@ -24,11 +24,15 @@ export default function SearchBar({
         <TextInput
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
-          className="flex-1 text-[15px] text-[#0b1f1c] pr-3"
+          className="flex-1 text-base text-gray-700 pr-3"
           value={value}
           onChangeText={onChangeText}
           onSubmitEditing={onSubmit}
           returnKeyType="search"
+          style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: 16,
+          }}
         />
 
         {/* green search icon (inside right) */}

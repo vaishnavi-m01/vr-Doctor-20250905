@@ -63,30 +63,38 @@ const PatientRegistrationForm = () => {
 
       {/* Patient Full Name */}
       <Text className="text-base mb-2 text-gray-700">Particpant full name?</Text>
-      <View className="bg-gray-100 rounded-lg mb-4 px-4 h-12 justify-center">
+      <View className="bg-gray-100 rounded-xl mb-4 px-4 h-12 justify-center">
         <TextInput
           className="text-base text-gray-700 flex-1"
           placeholder="Samantha ruth"
           placeholderTextColor="#9ca3af" // Tailwind's gray-400
           value={firstName}
           onChangeText={setFirstName}
+          style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: 16,
+          }}
         />
       </View>
 
       {/* Last Name */}
-      <View className="bg-gray-100 rounded-lg mb-4 px-4 h-12 justify-center">
+      <View className="bg-gray-100 rounded-xl mb-4 px-4 h-12 justify-center">
         <TextInput
           className="text-base text-gray-700 flex-1"
           placeholder="Last name"
           placeholderTextColor="#9ca3af"
           value={lastName}
           onChangeText={setLastName}
+          style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: 16,
+          }}
         />
       </View>
 
       {/* Patient Age */}
       <Text className="text-base mb-2 text-gray-700">Particpant age?</Text>
-      <View className="bg-gray-100 rounded-lg mb-4 px-4 h-12 justify-center">
+      <View className="bg-gray-100 rounded-xl mb-4 px-4 h-12 justify-center">
         <TextInput
           className="text-base text-gray-700 flex-1"
           placeholder="23"
@@ -94,6 +102,10 @@ const PatientRegistrationForm = () => {
           keyboardType="numeric"
           value={age}
           onChangeText={setAge}
+          style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: 16,
+          }}
         />
       </View>
 
@@ -131,7 +143,7 @@ const PatientRegistrationForm = () => {
 
       {/* Patient Mobile */}
       <Text className="text-base mb-2 text-gray-700">Particpant mobile</Text>
-      <View className="flex-row bg-gray-100 rounded-lg mb-4 px-4 h-12 items-center">
+      <View className="flex-row bg-gray-100 rounded-xl mb-4 px-4 h-12 items-center">
         <Text className="text-base text-gray-700 mr-1">+91</Text>
         <TextInput
           className="text-base text-gray-700 flex-1"
@@ -140,18 +152,26 @@ const PatientRegistrationForm = () => {
           keyboardType="phone-pad"
           value={mobileNumber}
           onChangeText={setMobileNumber}
+          style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: 16,
+          }}
         />
       </View>
 
       {/* Patient Address */}
       <Text className="text-base mb-2 text-gray-700">Particpant address</Text>
-      <View className="bg-gray-100 rounded-lg mb-4 px-4 h-12 justify-center">
+      <View className="bg-gray-100 rounded-xl mb-4 px-4 h-12 justify-center">
         <TextInput
           className="text-base text-gray-700 flex-1"
           placeholder="City"
           placeholderTextColor="#9ca3af"
           value={city}
           onChangeText={setCity}
+          style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: 16,
+          }}
         />
       </View>
     </ScrollView>

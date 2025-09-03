@@ -41,7 +41,7 @@ export default function ExitInterview() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 p-4 bg-bg pb-[50px]">
+      <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
         <FormCard icon="PI" title="Exit Interview">
           <View className="flex-row gap-3">
             <View className="flex-1"><Field label="Participant ID" placeholder={`Participant ID: ${patientId}`} /></View>

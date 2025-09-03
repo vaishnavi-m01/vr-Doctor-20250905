@@ -170,49 +170,49 @@ export default function DistressThermometerScreen() {
 
 
 
-  return (
+    return (
     <>
-      {/* Header Card */}
-       <View className="px-4 pt-4 flex-row justify-end mb-4">
-      <View className="bg-white border border-gray-300 rounded-lg shadow-sm">
-        <Picker
-          selectedValue={selectedWeek}
-          onValueChange={(itemValue) => setSelectedWeek(itemValue)}
-          style={{
-            width: 150,
-            color: "black",
-            fontSize: 16,
-            paddingVertical: 8,
-          }}
-          dropdownIconColor="gray"
-          mode="dropdown" // important for iOS/iPad
-        >
-          <Picker.Item label="Week 1" value="week1" />
-          <Picker.Item label="Week 2" value="week2" />
-          <Picker.Item label="Week 3" value="week3" />
-          <Picker.Item label="Week 4" value="week4" />
-        </Picker>
-      </View>
-    </View>
-
       {/* Header Card */}
       <View className="px-4 pt-2">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
-          <Text className="text-lg font-bold text-green-600">
-            Participant ID: {patientId}
-          </Text>
+          <View className="flex-1">
+            <Text className="text-lg font-bold text-green-600">
+              Participant ID: {patientId}
+            </Text>
 
-          <Text className="text-base font-semibold text-green-600">
-            Study ID: {patientId || 'N/A'}
-          </Text>
+            <Text className="text-base font-semibold text-green-600">
+              Study ID: {patientId || 'N/A'}
+            </Text>
 
-          <Text className="text-base font-semibold text-gray-700">
-            Age: {age}
-          </Text>
+            <Text className="text-base font-semibold text-gray-700">
+              Age: {age || "Not specified"}
+            </Text>
+          </View>
+
+          {/* Week Dropdown - Right side */}
+          <View className="bg-white border border-gray-300 rounded-lg shadow-sm">
+            <Picker
+              selectedValue={selectedWeek}
+              onValueChange={(itemValue) => setSelectedWeek(itemValue)}
+              style={{
+                width: 120,
+                color: "black",
+                fontSize: 14,
+                paddingVertical: 6,
+              }}
+              dropdownIconColor="gray"
+              mode="dropdown" // important for iOS/iPad
+            >
+              <Picker.Item label="Week 1" value="week1" />
+              <Picker.Item label="Week 2" value="week2" />
+              <Picker.Item label="Week 3" value="week3" />
+              <Picker.Item label="Week 4" value="week4" />
+            </Picker>
+          </View>
         </View>
-      </View>
+      </View>       
 
-      <ScrollView className="flex-1 bg-gray-100 p-4 pb-20">
+      <ScrollView className="flex-1 bg-gray-100 p-4 pb-[300px]">
         {/* Distress Thermometer Card */}
         <View className="bg-white rounded-lg p-4 shadow-md mb-4">
           <View className="flex-row items-center mb-4">
@@ -229,16 +229,21 @@ export default function DistressThermometerScreen() {
             </View>
           </View>
 
-          <View className="flex-row justify-between mb-2">
-            <View className="flex-1 mr-2">
-              <Text className="text-xs text-[#6b7a77]">Participant ID</Text>
-              <TextInput
-                className="border-b border-[#D1D5DB] p-2 text-sm text-[#333]"
-                value={enteredPatientId}   // show patientId as default
-                onChangeText={setEnteredPatientId} // allow typing new value
-                placeholder="Enter Patient ID" // fallback placeholder
-              />
-            </View>
+                     <View className="flex-row justify-between mb-2">
+             <View className="flex-1 mr-2">
+               <Text className="text-xs text-[#6b7a77] mb-2">Participant ID</Text>
+                               <TextInput
+                  className="bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-700"
+                  value={enteredPatientId}   // show patientId as default
+                  onChangeText={setEnteredPatientId} // allow typing new value
+                  placeholder="Enter Patient ID" // fallback placeholder
+                  style={{
+                    backgroundColor: '#f8f9fa',
+                    borderColor: '#e5e7eb',
+                    borderRadius: 16,
+                  }}
+                />
+             </View>
             {/* <View className="flex-1 mr-2">
               <Text className="text-xs text-[#6b7a77]">Assessed On</Text>
               <TextInput
@@ -291,13 +296,18 @@ export default function DistressThermometerScreen() {
             </View>
           ))}
 
-          <View className="flex-1 mr-1">
-            <Text className="text-xs text-[#6b7a77]">Other Problems</Text>
-            <TextInput
-              className="border-b border-[#D1D5DB] p-2 text-sm text-[#333]"
-            // placeholder="other Problems"
-            />
-          </View>
+                     <View className="flex-1 mr-1">
+             <Text className="text-xs text-[#6b7a77] mb-2">Other Problems</Text>
+                           <TextInput
+                className="bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-base text-gray-700"
+                placeholder="Enter other problems..."
+                style={{
+                  backgroundColor: '#f8f9fa',
+                  borderColor: '#e5e7eb',
+                  borderRadius: 16,
+                }}
+              />
+           </View>
         </View>
 
         {/* Notes Section */}

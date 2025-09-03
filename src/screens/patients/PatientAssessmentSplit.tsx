@@ -137,15 +137,19 @@ export default function ParticipantAssessmentSplit() {
 
             <View className="flex-row items-center space-x-2 mt-3">
               {/* Search Bar */}
-              <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-3 py-2 flex-1">
+              <View className="flex-row items-center bg-white border border-[#e6eeeb] rounded-2xl px-4 py-3 flex-1">
                 <TextInput
                   placeholder="Search by ID, Cancer Type, Age"
                   value={searchText}
                   onChangeText={setSearchText}
                   onSubmitEditing={() => fetchParticipants(searchText)} // 🔑 Press Enter to search
-                  className="flex-1"
+                  className="flex-1 text-base text-gray-700"
                   placeholderTextColor="#999"
-                  style={{ fontSize: 12 }}
+                  style={{ 
+                    fontSize: 16,
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: 16,
+                  }}
                 />
                 <Pressable onPress={() => fetchParticipants(searchText)}>
                   <EvilIcons name="search" size={24} color="#21c57e" />

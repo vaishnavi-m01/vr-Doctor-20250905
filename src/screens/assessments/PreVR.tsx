@@ -66,7 +66,7 @@ export default function PreVR() {
           </Text>
         </View>
       </View>
-      <ScrollView className="flex-1 p-4 bg-white pb-[50px]">
+      <ScrollView className="flex-1 p-4 bg-white pb-[300px]">
         <FormCard icon="H" title="Pre-VR Assessment">
           <View className="flex-row gap-3">
             <View className="flex-1">

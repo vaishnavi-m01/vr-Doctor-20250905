@@ -190,12 +190,12 @@ const styles = {
   inputContainer: {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderWidth: 1,
-    borderColor: '#d1d5db',
+    borderColor: '#e5e7eb',
   },
   searchIcon: {
     marginRight: 8,
@@ -203,8 +203,8 @@ const styles = {
   textInput: {
     flex: 1,
     fontSize: 16,
-    color: '#1f2937',
-    paddingVertical: 4,
+    color: '#374151',
+    paddingVertical: 8,
   },
   clearButton: {
     marginLeft: 8,

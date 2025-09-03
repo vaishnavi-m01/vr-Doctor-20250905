@@ -153,7 +153,7 @@ const Login = () => {
             <TextInput
                 placeholder="Email"
                 placeholderTextColor="#94a3b8"
-                className={`font-zen border rounded-lg p-3 mb-2 w-full max-w-md self-center text-sm ${
+                className={`font-zen border rounded-xl p-4 mb-2 w-full max-w-md self-center text-base ${
                     emailError ? 'border-error' : 'border-gray-300 focus:border-brand-accent-green'
                 }`}
                 keyboardType="email-address"
@@ -172,6 +172,11 @@ const Login = () => {
                 accessibilityLabel="Email input field"
                 accessibilityHint="Enter your email address to log in"
                 accessibilityRole="text"
+                style={{
+                    backgroundColor: '#f8f9fa',
+                    borderColor: emailError ? '#ef4444' : '#e5e7eb',
+                    borderRadius: 16,
+                }}
             />
             {emailError ? (
                 <Text className="text-error text-xs font-zen mb-3 self-center max-w-md">
@@ -183,7 +188,7 @@ const Login = () => {
                 placeholder="Password"
                 placeholderTextColor="#94a3b8"
                 secureTextEntry
-                className={`font-zen border rounded-lg p-3 mb-2 w-full max-w-md self-center text-sm ${
+                className={`font-zen border rounded-xl p-4 mb-2 w-full max-w-md self-center text-base ${
                     passwordError ? 'border-error' : 'border-gray-300 focus:border-brand-accent-green'
                 }`}
                 value={password}
@@ -201,6 +206,11 @@ const Login = () => {
                 accessibilityLabel="Password input field"
                 accessibilityHint="Enter your password to log in"
                 accessibilityRole="text"
+                style={{
+                    backgroundColor: '#f8f9fa',
+                    borderColor: passwordError ? '#ef4444' : '#e5e7eb',
+                    borderRadius: 16,
+                }}
             />
             {passwordError ? (
                 <Text className="text-error text-xs font-zen mb-3 self-center max-w-md">

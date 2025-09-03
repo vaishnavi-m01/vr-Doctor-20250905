@@ -104,7 +104,7 @@ export default function FactGWithRedux() {
 
   return (
     <>
-      <ScrollView className="flex-1 p-4 bg-bg">
+      <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
         <FormCard 
           icon="FG" 
           title="FACT-G (Version 4)" 

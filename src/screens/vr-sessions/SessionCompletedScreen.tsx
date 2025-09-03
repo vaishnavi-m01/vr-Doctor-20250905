@@ -69,9 +69,14 @@ export default function SessionCompletedScreen() {
           <TextInput
             value={note}
             onChangeText={setNote}
-            placeholder="Add any notes about how you’re feeling…"
+            placeholder="Add any notes about how you're feeling…"
             multiline
-            className="min-h-[140px] border border-[#d7ebe3] rounded-xl p-4 text-[#4c6b63]"
+            className="min-h-[140px] border border-[#d7ebe3] rounded-xl p-4 text-base text-gray-700"
+            style={{
+              backgroundColor: '#f8f9fa',
+              borderColor: '#e5e7eb',
+              borderRadius: 16,
+            }}
           />
           <Pressable 
             onPress={handleSubmit}

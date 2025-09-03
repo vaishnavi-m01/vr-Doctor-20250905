@@ -231,7 +231,7 @@ function FactGWithErrorHandling({ patientId }: FactGWithErrorHandlingProps) {
   return (
     <>
       <ScrollView 
-        className="flex-1 p-4 bg-bg"
+        className="flex-1 p-4 bg-bg pb-[300px]"
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

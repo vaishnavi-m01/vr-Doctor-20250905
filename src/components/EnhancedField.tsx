@@ -220,7 +220,7 @@ export const EnhancedField: React.FC<EnhancedFieldProps> = ({
       </View>
       
       <TextInput
-        className={`px-4 py-3 border rounded-lg text-base ${
+        className={`px-4 py-3 border rounded-xl text-base text-gray-700 ${
           hasError 
             ? 'border-red-500 bg-red-50' 
             : 'border-gray-300 bg-white'
@@ -231,6 +231,11 @@ export const EnhancedField: React.FC<EnhancedFieldProps> = ({
         keyboardType={getKeyboardType()}
         autoCapitalize={validationRule?.type === 'email' ? 'none' : 'sentences'}
         autoCorrect={validationRule?.type === 'email' ? false : true}
+        style={{
+          backgroundColor: hasError ? '#fef2f2' : '#f8f9fa',
+          borderColor: hasError ? '#ef4444' : '#e5e7eb',
+          borderRadius: 16,
+        }}
         {...textInputProps}
       />
       

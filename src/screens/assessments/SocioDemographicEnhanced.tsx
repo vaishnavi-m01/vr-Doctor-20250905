@@ -226,7 +226,7 @@ function SocioDemographicEnhanced() {
         </View>
       )}
 
-      <ScrollView className="flex-1 p-4 bg-bg pb-[60px]">
+      <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
         {/* Form Status */}
         {hasAnyData && (
           <FormCard icon="📊" title="Form Status">
@@ -506,8 +506,7 @@ function SocioDemographicEnhanced() {
                 type: 'text',
                 minLength: 2,
                 maxLength: 100,
-                allowEmpty: false,
-                message: 'Please specify your religion'
+                allowEmpty: false
               }}
               placeholder="Enter your religion"
             />

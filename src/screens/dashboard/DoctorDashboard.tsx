@@ -162,7 +162,7 @@ const DoctorDashboard = () => {
 
 
 
-            <ScrollView className="flex-1 bg-white px-4 py-6 mt-2 pb-[100px]">
+            <ScrollView className="flex-1 bg-white px-4 py-6 mt-2 pb-[200px]">
                 <View className="flex-row mb-6">
 
                     <View className="flex-1 mr-2 bg-white rounded-2xl p-4 shadow border border-gray-200">

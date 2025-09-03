@@ -16,7 +16,7 @@ export default function VR(){
   const [duration,setDuration]=useState('Just Right');
   return (
     <>
-    <ScrollView className="flex-1 p-4 bg-bg">
+    <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
       <FormCard icon="J" title="Post‑VR Assessment & Questionnaires">
         <View className="flex-row gap-3">
           <View className="flex-1"><Field label="Participant ID" placeholder="e.g., PT-0234"/></View>

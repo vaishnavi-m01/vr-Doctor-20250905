@@ -47,7 +47,7 @@ export default function PreAndPostVR() {
           </Text>
         </View>
       </View>
-      <ScrollView className="px-4 pt-4 bg-bg pb-[70px]">
+      <ScrollView className="px-4 pt-4 bg-bg pb-[300px]">
         <FormCard icon="I" title="Pre & Post VR">
           <View className="flex-row gap-3">
             <View className="flex-1">

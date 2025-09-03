@@ -176,7 +176,7 @@ export default function PatientDatabaseScreen() {
       </View>
 
       <ScrollView 
-        className="flex-1 p-4 gap-3"
+        className="flex-1 p-4 gap-3 pb-[300px]"
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={handleRefresh} />
         }

@@ -197,7 +197,7 @@ export default function EdmontonFactGScreen() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 p-4 bg-bg pb-[90px]">
+      <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
         <FormCard
           icon="FG"
           title="FACT-G (Version 4)"

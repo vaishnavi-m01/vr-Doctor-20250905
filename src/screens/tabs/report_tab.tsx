@@ -100,7 +100,7 @@ export default function ReportsTab() {
   );
 
   return (
-    <ScrollView className="flex-1 bg-white pb-[100px]">
+    <ScrollView className="flex-1 bg-white pb-[200px]">
       <View className="p-6">
         {/* Header with Date Range */}
         <View className="mb-6">

@@ -51,7 +51,7 @@ export default function PatientScreening() {
         </View>
       </View>
 
-      <ScrollView className="flex-1 p-4 bg-bg pb-[60px]">
+      <ScrollView className="flex-1 p-4 bg-bg pb-[300px]">
         <FormCard icon="D" title="Patient Screening">
           <View className="flex-row gap-3">
             <View className="flex-1">
