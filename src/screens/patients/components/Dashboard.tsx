@@ -7,9 +7,10 @@ import AssessItem from '../../../components/AssessItem';
 interface DashboardProps {
   patientId: number;
   age:number;
+  studyId:number;
 }
 
-export default function Dashboard({ patientId,age }: DashboardProps) {
+export default function Dashboard({ patientId,age,studyId }: DashboardProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
@@ -26,7 +27,7 @@ export default function Dashboard({ patientId,age }: DashboardProps) {
         icon="👤"
         title="Particpant Dashboard"
         subtitle="View Particpant information and session details"
-        onPress={() => navigation.navigate('PatientDashboard', { patientId,age })}
+        onPress={() => navigation.navigate('PatientDashboard', { patientId,age,studyId })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
     </ScrollView>

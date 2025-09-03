@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AssessItem from "../../../components/AssessItem";
 import { RootStackParamList } from "src/Navigation/types";
 
-type VRProps = { patientId: number,age:number };
+type VRProps = { patientId: number,age:number,studyId:number };
 
 // type RootStackParamList = {
 //     VR: { patientId: number };
@@ -24,7 +24,7 @@ type VRScreenNavigationProp = NativeStackNavigationProp<
     // "VR"
 >;
 
-const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
+const VRTab: React.FC<VRProps> = ({ patientId,age,studyId }) => {
     const navigation = useNavigation<VRScreenNavigationProp>();
     // const [sessionStage, setSessionStage] = useState<"pre" | "post" | "pre & post">("pre");
 
@@ -54,7 +54,7 @@ const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
                 icon="🎮"
                 title="VR Session Setup"
                 subtitle="Configure and initialize VR therapy session parameters"
-                onPress={() => navigation.navigate("SessionSetupScreen",{patientId,age} )}
+                onPress={() => navigation.navigate("SessionSetupScreen",{patientId,age,studyId} )}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
  
@@ -63,7 +63,7 @@ const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
                 title="Pre/Post VR Questionnaires"
                 // subtitle={sessionStage === "pre" ? "Start Pre VR" : sessionStage === "post" ? "Start Post VR" : "Pre & Post Done"}
                 // onPress={() => navigation.navigate("VRPrePostList",{patientId,age} )}
-                onPress={()=>navigation.navigate("PreAndPostVR",{patientId,age})}
+                onPress={()=>navigation.navigate("PreAndPostVR",{patientId,age,studyId})}
                 // onPress={() => {
                 //     if (sessionStage === "pre") {
                 //         navigation.navigate("PreAndPostVR", { patientId,age });
@@ -80,7 +80,7 @@ const VRTab: React.FC<VRProps> = ({ patientId,age }) => {
                 icon="⚠️"
                 title="Adverse Event Reporting Form"
                 subtitle="Document and report any adverse events during VR sessions"
-                onPress={() => navigation.navigate("AdverseEventForm",{patientId,age})}
+                onPress={() => navigation.navigate("AdverseEventForm",{patientId,age,studyId})}
                 className="bg-[#F6F7F7] border-[#F6F7F7]"
             />
 

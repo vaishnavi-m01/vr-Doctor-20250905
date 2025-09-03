@@ -16,7 +16,7 @@ export default function SessionSetupScreen() {
   const [sess, setSess] = useState('Relaxation');
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<RouteProp<RootStackParamList, 'SessionSetupScreen'>>();
-  const { patientId, age } = route.params as { patientId: number, age: number };
+  const { patientId, age, studyId } = route.params as { patientId: number, age: number,studyId:number };
 
   const ready = !!cat && !!instr && !!lang && !!sess;
 

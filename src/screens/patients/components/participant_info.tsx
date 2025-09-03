@@ -7,9 +7,10 @@ import AssessItem from '../../../components/AssessItem';
 interface ParticipantInfoProps {
   patientId: number;
   age?: number
+  studyId?:number;
 }
 
-export default function ParticipantInfo({ patientId,age }: ParticipantInfoProps) {
+export default function ParticipantInfo({ patientId,age,studyId }: ParticipantInfoProps) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
@@ -18,7 +19,7 @@ export default function ParticipantInfo({ patientId,age }: ParticipantInfoProps)
         icon="📋"
         title="Socio Demographic Form"
         subtitle="Collect demographic, education, and contact information"
-        onPress={() => navigation.navigate("SocioDemographic", { patientId,age })}
+        onPress={() => navigation.navigate("SocioDemographic", { patientId,age,studyId })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
 
@@ -26,7 +27,7 @@ export default function ParticipantInfo({ patientId,age }: ParticipantInfoProps)
         icon="❤️"
         title="Particpant Screening Form"
         subtitle="Assess eligibility, medical history, and clinical checklist"
-        onPress={() => navigation.navigate("PatientScreening", { patientId,age })}
+        onPress={() => navigation.navigate("PatientScreening", { patientId,age,studyId })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
 
@@ -35,7 +36,7 @@ export default function ParticipantInfo({ patientId,age }: ParticipantInfoProps)
         title="Study and Control Group Assignment"
         subtitle="Assign participants to study groups and track assignments"
         onPress={() => 
-          navigation.navigate('PreAndPostVR', { patientId,age })
+          navigation.navigate('PreAndPostVR', { patientId,age,studyId })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"/>
     </ScrollView>

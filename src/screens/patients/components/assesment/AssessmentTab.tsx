@@ -15,9 +15,10 @@ type AssessmentTabNavigationProp = NativeStackNavigationProp<RootStackParamList>
 interface AssessmentTabProps {
   patientId: number;
   age: number;
+  studyId:number;
 }
 
-const AssessmentTab = ({ patientId, age }: AssessmentTabProps) => {
+const AssessmentTab = ({ patientId, age,studyId }: AssessmentTabProps) => {
   const navigation = useNavigation<AssessmentTabNavigationProp>();
 
   // State for orientation assessment items
@@ -46,7 +47,7 @@ const AssessmentTab = ({ patientId, age }: AssessmentTabProps) => {
         title="Distress Thermometer scoring 0-10"
         subtitle="Assess participant distress levels and identify problem areas"
         // onPress={() => navigation.navigate('DistressThermometerList', { patientId,age })}
-        onPress={() => navigation.navigate("DistressThermometerScreen", { patientId, age })}
+        onPress={() => navigation.navigate("DistressThermometerScreen", { patientId, age,studyId })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
@@ -54,7 +55,7 @@ const AssessmentTab = ({ patientId, age }: AssessmentTabProps) => {
         title="Fact-G scoring 0-108"
         subtitle="Evaluate quality of life across physical, social, emotional domains"
         // onPress={() => navigation.navigate('FactGAssessmentHistory',{patientId,age})}
-        onPress={() => navigation.navigate("EdmontonFactGScreen", { patientId, age })}
+        onPress={() => navigation.navigate("EdmontonFactGScreen", { patientId, age,studyId })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
       <AssessItem
@@ -63,7 +64,7 @@ const AssessmentTab = ({ patientId, age }: AssessmentTabProps) => {
         subtitle="Record session observations and participant responses"
         onPress={() =>
           // navigation.navigate('StudyObservation_List',{patientId,age})
-          navigation.navigate("StudyObservation", { patientId, age })
+          navigation.navigate("StudyObservation", { patientId, age,studyId })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
@@ -72,7 +73,7 @@ const AssessmentTab = ({ patientId, age }: AssessmentTabProps) => {
         title="Exit Interview optional"
         subtitle="Final assessment and feedback collection from participant"
         onPress={() =>
-          navigation.navigate('ExitInterview', { patientId, age })
+          navigation.navigate('ExitInterview', { patientId, age,studyId })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />

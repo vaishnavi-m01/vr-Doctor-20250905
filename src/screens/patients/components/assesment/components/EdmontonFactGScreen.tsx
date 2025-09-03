@@ -73,7 +73,7 @@ export default function EdmontonFactGScreen() {
 
   const route = useRoute<RouteProp<RootStackParamList, "EdmontonFactGScreen">>();
   const navigation = useNavigation();
-  const { patientId, age } = route.params as { patientId: number; age: number };
+  const { patientId, age,studyId } = route.params as { patientId: number; age: number;studyId:number };
 
   function setAnswer(code: string, value: number) {
     setAnswers((prev) => ({ ...prev, [code]: value }));
@@ -190,7 +190,7 @@ export default function EdmontonFactGScreen() {
           </Text>
 
           <Text className="text-base font-semibold text-green-600">
-            Study ID: {patientId || 'N/A'}
+            Study ID: {studyId || 'N/A'}
           </Text>
 
           <Text className="text-base font-semibold text-gray-700">Age: {age}</Text>
