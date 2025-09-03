@@ -89,7 +89,7 @@ export default function HomeTab() {
       </View>
 
       {/* Recent Activity */}
-      <View className="mb-6">
+      <View className="mb-[100px]">
         <Text className="text-xl font-semibold text-[#0e4336] mb-4">Recent Activity</Text>
         <View className="space-y-3">
           <View className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">

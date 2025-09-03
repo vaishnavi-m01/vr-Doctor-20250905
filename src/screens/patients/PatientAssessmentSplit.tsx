@@ -23,6 +23,7 @@ import EvilIcons from '@expo/vector-icons/EvilIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { apiService } from 'src/services';
+import Pagination from '../../components/Pagination';
 
 export interface Patient {
   id: number;                  // using ParticipantId as id
@@ -45,6 +46,10 @@ export default function ParticipantAssessmentSplit() {
   const [tab, setTab] = useState('assessment');
   const [searchText, setSearchText] = useState("");
 
+  // pagination states
+  const [page, setPage] = useState(1);
+  const perPage = 3;
+
 
   useFocusEffect(
     useCallback(() => {
@@ -60,8 +65,10 @@ export default function ParticipantAssessmentSplit() {
       const response = await apiService.post<any>(
         "/GetParticipantsPaginationFilterSearch",
         {
-          PageNumber: 1,
-          RecordsPerPage: 10,
+          // PageNumber: 1,
+          // RecordsPerPage: 10,
+          PageNumber: page,
+          RecordsPerPage: perPage,
           Search: search,
           Filters: [],
         }
@@ -84,6 +91,7 @@ export default function ParticipantAssessmentSplit() {
 
         setParticipants(parsed);
         setSelId(parsed[0]?.ParticipantId ?? null);
+        setPage(1); 
       }
     } catch (error) {
       console.error("Failed to fetch participants:", error);
@@ -94,6 +102,13 @@ export default function ParticipantAssessmentSplit() {
 
 
   const sel = participants.find((p) => p.ParticipantId === selId);
+
+  // Slice participants for current page
+  const paginatedParticipants = participants.slice(
+    (page - 1) * perPage,
+    page * perPage
+  );
+
 
   const renderTabContent = () => {
     const patientId = sel?.ParticipantId || 0;
@@ -182,7 +197,7 @@ export default function ParticipantAssessmentSplit() {
             {loading ? (
               <ActivityIndicator color="#0ea06c" />
             ) : (
-              participants.map((p) => (
+              paginatedParticipants.map((p) => (
                 <ListItem
                   key={p.ParticipantId}
                   item={p}
@@ -191,6 +206,19 @@ export default function ParticipantAssessmentSplit() {
                 />
               ))
             )}
+
+            {!loading && participants.length > perPage && (
+            <View className="pb-20">
+              <Pagination
+                value={page}
+                onChange={(pg) => setPage(pg)}
+                totalItems={participants.length}
+                perPage={perPage}
+              />
+
+            </View>
+          )} 
+
           </ScrollView>
         </View>
 

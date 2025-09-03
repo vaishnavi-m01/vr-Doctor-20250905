@@ -83,7 +83,7 @@ export default function PatientScreening() {
             </Pressable>
           </View>
           <Thermometer value={dt} onChange={setDt} />
-          <View className="flex-row gap-3 mt-3">
+          <View className="flex-row gap-3 mt-6">
             <View className="flex-1">
               <View className="flex-row items-center justify-between mb-1">
                 <Text className="text-xs text-[#4b5f5a]">FACT-G Total Score</Text>
@@ -103,7 +103,10 @@ export default function PatientScreening() {
               />
             </View>
           </View>
+
+         <Text className="text-lg mt-3 font-semibold">Vitals</Text>
           <View className="flex-row gap-3 mt-3">
+         
             <View className="flex-1">
               <Field 
                 label="Pulse Rate (bpm)" 
