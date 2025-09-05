@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Pressable, Alert, ActivityIndicator } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RouteProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../../Navigation/types';
 import Header from '../../components/Header';
-import PatientCard from '../../components/PatientCard';
 import { participantService, Participant } from '../../services/participantService';
 
 type StudyGroupAssignmentRouteProp = RouteProp<RootStackParamList, 'StudyGroupAssignment'>;
 
 export default function StudyGroupAssignment() {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'StudyGroupAssignment'>>();
   const route = useRoute<StudyGroupAssignmentRouteProp>();
+
   const { patientId, age, studyId } = route.params;
 
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -21,26 +20,24 @@ export default function StudyGroupAssignment() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch participants from API
+
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         console.log('Fetching participants for studyId:', studyId?.toString() || 'CS-0001');
-        
-        // Add timeout to prevent infinite loading
-        const timeoutPromise = new Promise((_, reject) => 
+
+        // Timeout promise to cancel long requests
+        const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Request timeout')), 10000)
         );
-        
+
         const apiPromise = participantService.getParticipantsPagination({
           page: 1,
-          pageSize: 100, // Get all participants for this view
-          filters: {
-            studyId: studyId?.toString() || 'CS-0001'
-          }
+          pageSize: 100,
+          filters: { studyId: studyId?.toString() || 'CS-0001' }
         });
 
         const response = await Promise.race([apiPromise, timeoutPromise]);
@@ -52,7 +49,7 @@ export default function StudyGroupAssignment() {
           setParticipants(response.data.participants);
         } else {
           console.log('API failed:', response);
-          // Fallback to mock data for testing
+          // Fallback mock data
           const mockParticipants: Participant[] = [
             {
               ParticipantId: 'PID-1',
@@ -68,7 +65,16 @@ export default function StudyGroupAssignment() {
               Status: 1,
               CreatedDate: '2025-09-04T10:00:00.000Z',
               ModifiedDate: '2025-09-04T10:00:00.000Z',
-              SortKey: 0
+              SortKey: 0,
+              MaritalStatus: 'Single',
+              NumberOfChildren: "0",
+              EducationLevel: 'Bachelor',
+              EmploymentStatus: 'Employed',
+
+              // Newly added required properties
+              KnowledgeIn: 'General Health',
+              PracticeAnyReligion: 'No',
+              FaithContributeToWellBeing: 'No'
             },
             {
               ParticipantId: 'PID-2',
@@ -84,7 +90,15 @@ export default function StudyGroupAssignment() {
               Status: 1,
               CreatedDate: '2025-09-04T10:00:00.000Z',
               ModifiedDate: '2025-09-04T10:00:00.000Z',
-              SortKey: 0
+              SortKey: 0,
+              MaritalStatus: 'Married',
+              NumberOfChildren: "2",
+              EducationLevel: 'High School',
+              EmploymentStatus: 'Unemployed',
+
+              KnowledgeIn: 'Cancer Awareness',
+              PracticeAnyReligion: 'Yes',
+              FaithContributeToWellBeing: 'Yes'
             },
             {
               ParticipantId: 'PID-3',
@@ -100,10 +114,18 @@ export default function StudyGroupAssignment() {
               Status: 1,
               CreatedDate: '2025-09-04T10:00:00.000Z',
               ModifiedDate: '2025-09-04T10:00:00.000Z',
-              SortKey: 0
+              SortKey: 0,
+              MaritalStatus: 'Divorced',
+              NumberOfChildren: "1",
+              EducationLevel: 'Master',
+              EmploymentStatus: 'Employed',
+
+              KnowledgeIn: 'Nutrition',
+              PracticeAnyReligion: 'No',
+              FaithContributeToWellBeing: 'No'
             }
           ];
-          console.log('Using mock data:', mockParticipants.length);
+
           setParticipants(mockParticipants);
         }
       } catch (err) {
@@ -117,13 +139,14 @@ export default function StudyGroupAssignment() {
     fetchParticipants();
   }, [studyId]);
 
+
   const unassignedParticipants = participants.filter(p => !p.GroupType);
   const controlGroupParticipants = participants.filter(p => p.GroupType === 'Control');
   const studyGroupParticipants = participants.filter(p => p.GroupType === 'Study');
 
   const handleParticipantSelect = (participantId: string) => {
-    setSelectedParticipants(prev => 
-      prev.includes(participantId) 
+    setSelectedParticipants(prev =>
+      prev.includes(participantId)
         ? prev.filter(id => id !== participantId)
         : [...prev, participantId]
     );
@@ -149,25 +172,23 @@ export default function StudyGroupAssignment() {
           onPress: async () => {
             try {
               setLoading(true);
-              
-              // Update each selected participant
+
+              // Update each selected participant asynchronously
               const updatePromises = selectedParticipants.map(participantId =>
-                participantService.updateParticipant(participantId, {
-                  GroupType: targetGroup
-                })
+                participantService.updateParticipant(participantId, { GroupType: targetGroup })
               );
 
               await Promise.all(updatePromises);
-              
-              // Update local state
-              setParticipants(prev => 
-                prev.map(p => 
+
+              // Update local state for participants
+              setParticipants(prev =>
+                prev.map(p =>
                   selectedParticipants.includes(p.ParticipantId)
                     ? { ...p, GroupType: targetGroup }
                     : p
                 )
               );
-              
+
               setSelectedParticipants([]);
               setTargetGroup(null);
               Alert.alert('Success', `Participants assigned to ${targetGroup} Group successfully!`);
@@ -183,20 +204,20 @@ export default function StudyGroupAssignment() {
     );
   };
 
-  const renderParticipantList = (participantList: Participant[], title: string, groupColor: string) => (
+  const renderParticipantList = (participantList: Participant[], title: string) => (
     <View className="mb-6">
       <View className="flex-row items-center justify-between mb-3">
         <Text className="text-lg font-bold text-gray-800">{title}</Text>
         <Text className="text-sm text-gray-600">({participantList.length})</Text>
       </View>
-      
+
       {participantList.length === 0 ? (
         <View className="bg-gray-50 rounded-xl p-6 items-center">
           <Text className="text-gray-500 text-center">No participants in this group</Text>
         </View>
       ) : (
         <View className="space-y-3">
-          {participantList.map((participant) => (
+          {participantList.map(participant => (
             <Pressable
               key={participant.ParticipantId}
               onPress={() => handleParticipantSelect(participant.ParticipantId)}
@@ -204,18 +225,16 @@ export default function StudyGroupAssignment() {
                 selectedParticipants.includes(participant.ParticipantId)
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200'
-              }`}
+              }`} 
             >
               <View className="flex-row items-center justify-between">
                 <View className="flex-1">
-                  <Text className="font-semibold text-gray-800">
-                    {participant.ParticipantId}
-                  </Text>
+                  <Text className="font-semibold text-gray-800">{participant.ParticipantId}</Text>
                   <Text className="text-sm text-gray-600">
-                    {participant.Age || 'N/A'} years • {participant.Gender || 'N/A'} • {participant.CancerDiagnosis || 'N/A'}
+                    {participant.Age ?? 'N/A'} years • {participant.Gender ?? 'N/A'} • {participant.CancerDiagnosis ?? 'N/A'}
                   </Text>
                   <Text className="text-xs text-gray-500">
-                    Stage: {participant.StageOfCancer || 'N/A'} • MR: {participant.MRNumber || 'N/A'}
+                    Stage: {participant.StageOfCancer ?? 'N/A'} • MR: {participant.MRNumber ?? 'N/A'}
                   </Text>
                 </View>
                 {selectedParticipants.includes(participant.ParticipantId) && (
@@ -248,20 +267,23 @@ export default function StudyGroupAssignment() {
           onPress={() => {
             setError(null);
             setLoading(true);
-            // Re-fetch participants
-            participantService.getParticipantsPagination({
-              page: 1,
-              pageSize: 100,
-              filters: { studyId: studyId?.toString() || 'CS-0001' }
-            }).then(response => {
-              if (response.success && response.data) {
-                setParticipants(response.data.participants);
-              }
-            }).catch(() => {
-              setError('Failed to load participants');
-            }).finally(() => {
-              setLoading(false);
-            });
+            participantService
+              .getParticipantsPagination({
+                page: 1,
+                pageSize: 100,
+                filters: { studyId: studyId?.toString() || 'CS-0001' }
+              })
+              .then(response => {
+                if (response.success && response.data) {
+                  setParticipants(response.data.participants);
+                }
+              })
+              .catch(() => {
+                setError('Failed to load participants');
+              })
+              .finally(() => {
+                setLoading(false);
+              });
           }}
           className="bg-blue-500 px-6 py-3 rounded-xl"
         >
@@ -273,43 +295,32 @@ export default function StudyGroupAssignment() {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <Header 
-        title="Study Group Assignment" 
-        onBack={() => navigation.goBack()}
-      />
-      
+      <Header title="Study Group Assignment" onBack={() => navigation.goBack()} />
+
       <ScrollView className="flex-1 px-6 pb-6">
         {/* Assignment Controls */}
         <View className="bg-white rounded-xl p-4 mb-6 shadow-sm">
           <Text className="text-lg font-bold text-gray-800 mb-3">Assignment Controls</Text>
-          
+
           <View className="flex-row space-x-3 mb-4">
             <Pressable
               onPress={() => setTargetGroup('Control')}
               className={`flex-1 py-3 px-4 rounded-xl border-2 ${
-                targetGroup === 'Control'
-                  ? 'border-blue-500 bg-blue-50'
-                  : 'border-gray-300 bg-white'
+                targetGroup === 'Control' ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-white'
               }`}
             >
-              <Text className={`text-center font-semibold ${
-                targetGroup === 'Control' ? 'text-blue-600' : 'text-gray-600'
-              }`}>
+              <Text className={`text-center font-semibold ${targetGroup === 'Control' ? 'text-blue-600' : 'text-gray-600'}`}>
                 Control Group
               </Text>
             </Pressable>
-            
+
             <Pressable
               onPress={() => setTargetGroup('Study')}
               className={`flex-1 py-3 px-4 rounded-xl border-2 ${
-                targetGroup === 'Study'
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-gray-300 bg-white'
+                targetGroup === 'Study' ? 'border-green-500 bg-green-50' : 'border-gray-300 bg-white'
               }`}
             >
-              <Text className={`text-center font-semibold ${
-                targetGroup === 'Study' ? 'text-green-600' : 'text-gray-600'
-              }`}>
+              <Text className={`text-center font-semibold ${targetGroup === 'Study' ? 'text-green-600' : 'text-gray-600'}`}>
                 Study Group
               </Text>
             </Pressable>
@@ -319,9 +330,7 @@ export default function StudyGroupAssignment() {
             onPress={handleAssignGroup}
             disabled={selectedParticipants.length === 0 || !targetGroup}
             className={`py-3 px-6 rounded-xl ${
-              selectedParticipants.length > 0 && targetGroup
-                ? 'bg-blue-500'
-                : 'bg-gray-300'
+              selectedParticipants.length > 0 && targetGroup ? 'bg-blue-500' : 'bg-gray-300'
             }`}
           >
             <Text className="text-white text-center font-bold">
@@ -331,9 +340,9 @@ export default function StudyGroupAssignment() {
         </View>
 
         {/* Participant Lists */}
-        {renderParticipantList(unassignedParticipants, 'Unassigned Participants', 'gray')}
-        {renderParticipantList(controlGroupParticipants, 'Control Group', 'blue')}
-        {renderParticipantList(studyGroupParticipants, 'Study Group', 'green')}
+        {renderParticipantList(unassignedParticipants, 'Unassigned Participants')}
+        {renderParticipantList(controlGroupParticipants, 'Control Group')}
+        {renderParticipantList(studyGroupParticipants, 'Study Group')}
       </ScrollView>
     </View>
   );

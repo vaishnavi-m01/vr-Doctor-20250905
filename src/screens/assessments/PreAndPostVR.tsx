@@ -9,7 +9,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../Navigation/types';
-import axios from 'axios';
 import { apiService } from 'src/services';
 import Toast from 'react-native-toast-message';
 
@@ -20,6 +19,11 @@ type Question = {
   Type: 'Pre' | 'Post';
   SortKey: number;
   Status: number;
+  PPPVRId?: string | null;
+  ParticipantId?: string | null;
+  SessionNo?: string | null;
+  ScaleValue?: string | null;
+  Notes?: string | null;
 };
 
 export default function PreAndPostVR() {
@@ -27,8 +31,7 @@ export default function PreAndPostVR() {
   const route = useRoute<RouteProp<RootStackParamList, 'PreAndPostVR'>>();
   const { patientId, age, studyId } = route.params as { patientId: number; age: number; studyId: number };
 
-  const [sessionDate, setSessionDate] = useState<string>("");
-
+  const [sessionNo, setSessionNo] = useState("SessionNo-1"); // you might want to derive or select sessionNo dynamically
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -36,21 +39,51 @@ export default function PreAndPostVR() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  const [participantIdInput, setParticipantIdInput] = useState(`${patientId}`);
-  const [dateInput, setDateInput] = useState('');
+  const [participantIdInput, setParticipantIdInput] = useState(`PID-${patientId}`);
+  const [dateInput, setDateInput] = useState(new Date().toISOString().split('T')[0]);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchQuestionsAndResponses = async () => {
+      setLoading(true);
       try {
-        const res = await apiService.post<{ ResponseData: Question[] }>("/GetPrePostVRSessionQuestionData");
-        setQuestions(res.data.ResponseData);
+        // Fetch questions
+        const questionsRes = await apiService.post<{ ResponseData: Question[] }>("/GetPrePostVRSessionQuestionData");
+        const fetchedQuestions = questionsRes.data.ResponseData;
+
+        // Fetch existing responses for this participant, study, session
+        const responsesRes = await apiService.post<{ ResponseData: Question[] }>("/GetParticipantPrePostVRSessions", {
+          ParticipantId: participantIdInput,
+          StudyId: studyId ? `CS-${studyId.toString().padStart(4, '0')}` : "CS-0001",
+          SessionNo: sessionNo,
+        });
+
+        const responseData = responsesRes.data.ResponseData || [];
+
+        // Merge existing responses into questions to keep consistent data shape
+        // Set questions to those from questions API (which include question metadata)
+        setQuestions(fetchedQuestions);
+
+        // Build answers and notes from responseData where responses exist (ScaleValue or Notes)
+        const initialAnswers: Record<string, string> = {};
+        const initialNotes: Record<string, string> = {};
+        responseData.forEach(q => {
+          if (q.ScaleValue !== null && q.ScaleValue !== undefined) {
+            initialAnswers[q.PPVRQMID] = q.ScaleValue;
+          }
+          if (q.Notes !== null && q.Notes !== undefined) {
+            initialNotes[q.PPVRQMID] = q.Notes;
+          }
+        });
+
+        setAnswers(initialAnswers);
+        setNotes(initialNotes);
       } catch (err) {
-        console.error('Error fetching questions:', err);
+        console.error('Error fetching questions or responses:', err);
         Toast.show({
           type: 'error',
           text1: 'Error',
-          text2: 'Failed to load questions.',
+          text2: 'Failed to load questions or responses.',
           position: 'top',
           topOffset: 50,
         });
@@ -58,12 +91,12 @@ export default function PreAndPostVR() {
         setLoading(false);
       }
     };
-    fetchQuestions();
-  }, [studyId]);
+    fetchQuestionsAndResponses();
+  }, [studyId, participantIdInput, sessionNo]);
 
   const handleAnswer = (id: string, value: string) => {
     setAnswers(prev => ({ ...prev, [id]: value }));
-      setErrors(prev => ({ ...prev, [id]: "" }));
+    setErrors(prev => ({ ...prev, [id]: "" }));
   };
 
   const handleNote = (id: string, value: string) => {
@@ -94,14 +127,12 @@ export default function PreAndPostVR() {
   }, [answers, questions]);
 
   const validateAnswers = () => {
-    
     const newErrors: Record<string, string> = {};
-
 
     if (!participantIdInput.trim()) {
       newErrors['participantId'] = 'Participant ID is required';
     }
-
+    // Date input optional validation:
     // if (!dateInput.trim()) {
     //   newErrors['date'] = 'Date is required';
     // }
@@ -129,46 +160,50 @@ export default function PreAndPostVR() {
 
     setSubmitting(true);
     try {
-      const PPPVRId = "PPPVRID-2";
-      const sessionNo = "SessionNo-1";
-      const modifiedBy = "UH-1000";
-      const status = "1";
+      // Prepare the QuestionData array for add/update API
+      const questionData = questions.map(q => ({
+        PPPVRId: q.PPPVRId || null,
+        QuestionId: q.PPVRQMID,
+        ScaleValue: answers[q.PPVRQMID] || "",
+        Notes: notes[q.PPVRQMID] || ""
+      })).filter(item => item.ScaleValue !== "" || item.Notes !== "");
 
-      for (const question of questions) {
-        const answer = answers[question.PPVRQMID];
-     
+      const payload = {
+        ParticipantId: participantIdInput,
+        StudyId: studyId ? `CS-${studyId.toString().padStart(4, '0')}` : "CS-0001",
+        SessionNo: sessionNo,
+        Status: 1,
+        CreatedBy: "UH-1000",
+        ModifiedBy: "UH-1000",
+        QuestionData: questionData,
+      };
 
-        const payload = {
-          PPPVRId: PPPVRId,
-          ParticipantId: `${patientId}`,
-          StudyId: studyId,
-          SessionNo: sessionNo,
-          QuestionId: question.PPVRQMID,
-          ScaleValue: "5", // static 5 as requested
-          Notes: notes[question.PPVRQMID] || "",
-          Status: status,
-          ModifiedBy: modifiedBy,
-        };
+      console.log("Saving PrePost VR session payload:", JSON.stringify(payload, null, 2));
 
-        // Log the full payload before sending to API
-        console.log("Sending API payload:", JSON.stringify(payload, null, 2));
+      const response = await apiService.post("/AddUpdateParticipantPrePostVRSessions", payload);
 
-        await apiService.post("/AddUpdateParticipantPrePostVRSessions", payload);
+      if (response.status === 200) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Responses saved successfully!',
+          position: 'top',
+          topOffset: 50,
+          visibilityTime: 2000,
+          onHide: () => navigation.goBack(),
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Something went wrong. Please try again.',
+          position: 'top',
+          topOffset: 50,
+        });
       }
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Responses saved successfully!',
-        position: 'top',
-        topOffset: 50,
-        visibilityTime: 2000,
-        onHide: () => navigation.goBack(),
-      });
-
-      navigation.goBack();
     } catch (err) {
       console.error("Error saving responses:", err);
-       Toast.show({
+      Toast.show({
         type: 'error',
         text1: 'Error',
         text2: 'Failed to save responses.',
@@ -179,7 +214,6 @@ export default function PreAndPostVR() {
       setSubmitting(false);
     }
   };
-
 
   if (loading) {
     return (
@@ -194,8 +228,8 @@ export default function PreAndPostVR() {
     <>
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
-          <Text className="text-lg font-bold text-green-600">Participant ID: {patientId}</Text>
-          <Text className="text-base font-semibold text-green-600">Study ID: {studyId || 'N/A'}</Text>
+          <Text className="text-lg font-bold text-green-600">Participant ID: {participantIdInput}</Text>
+          <Text className="text-base font-semibold text-green-600">Study ID: {studyId ? `CS-${studyId.toString().padStart(4, '0')}` : 'N/A'}</Text>
           <Text className="text-base font-semibold text-gray-700">Age: {age}</Text>
         </View>
       </View>
@@ -204,20 +238,24 @@ export default function PreAndPostVR() {
         <FormCard icon="I" title="Pre & Post VR">
           <View className="flex-row gap-3">
             <View className="flex-1">
-              <Field label="Participant ID" placeholder={`Participant ID: ${patientId}`} />
+              <Field
+                label="Participant ID"
+                value={participantIdInput}
+                editable={false}
+              />
               {errors['participantId'] && (
                 <Text className="text-red-500 text-xs mt-1">{errors['participantId']}</Text>
               )}
             </View>
             <View className="flex-1">
-              <DateField 
-               label="Date" 
-                value={sessionDate} 
-                onChange={setSessionDate} 
+              <DateField
+                label="Date"
+                value={dateInput}
+                onChange={setDateInput}
               />
-              {/* {errors['date'] && (
+              {errors['date'] && (
                 <Text className="text-red-500 text-xs mt-1">{errors['date']}</Text>
-              )} */}
+              )}
             </View>
           </View>
         </FormCard>
@@ -252,9 +290,10 @@ export default function PreAndPostVR() {
 
               {answers[q.PPVRQMID] === 'Yes' && q.QuestionName !== 'Do you feel good?' && (
                 <View className="mt-3">
-                  <Field 
-                    label="Notes (optional)" 
-                    placeholder="Add details…" 
+                  <Field
+                    label="Notes (optional)"
+                    placeholder="Add details…"
+                    value={notes[q.PPVRQMID] || ''}
                     onChangeText={(text) => handleNote(q.PPVRQMID, text)}
                   />
                 </View>
@@ -286,25 +325,27 @@ export default function PreAndPostVR() {
                   </Pressable>
                 ))}
               </View>
-               {errors[q.PPVRQMID] && (
+              {errors[q.PPVRQMID] && (
                 <Text className="text-red-500 text-xs mt-1">{errors[q.PPVRQMID]}</Text>
               )}
 
               {/* Conditional extra inputs */}
               {q.QuestionName === 'Do you experience any discomfort?' && answers[q.PPVRQMID] === 'Yes' && (
                 <View className="mt-3">
-                  <Field 
-                    label="Please describe" 
-                    placeholder="Dizziness, nausea, etc." 
+                  <Field
+                    label="Please describe"
+                    placeholder="Dizziness, nausea, etc."
+                    value={notes[q.PPVRQMID] || ''}
                     onChangeText={(text) => handleNote(q.PPVRQMID, text)}
                   />
                 </View>
               )}
               {answers[q.PPVRQMID] === 'No' && q.QuestionName !== 'Do you experience any discomfort?' && (
                 <View className="mt-3">
-                  <Field 
-                    label="Please specify" 
-                    placeholder="e.g., audio low, visuals blurry…" 
+                  <Field
+                    label="Please specify"
+                    placeholder="e.g., audio low, visuals blurry…"
+                    value={notes[q.PPVRQMID] || ''}
                     onChangeText={(text) => handleNote(q.PPVRQMID, text)}
                   />
                 </View>
@@ -320,7 +361,7 @@ export default function PreAndPostVR() {
           Mood Δ: {delta > 0 ? '+1' : delta < 0 ? '-1' : '0'}
         </Text>
         {flag && <Text className="px-3 py-2 rounded-xl bg-[#0b362c] text-white font-bold">⚠︎ Review symptoms</Text>}
-        <Btn variant="light" onPress={() => {}}>Validate</Btn>
+        <Btn variant="light" onPress={() => { /* Add a validate function if needed */ }}>Validate</Btn>
         <Btn onPress={handleSave} disabled={submitting}>
           {submitting ? 'Saving…' : 'Save'}
         </Btn>
