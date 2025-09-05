@@ -11,7 +11,7 @@ import {
 import Checkbox from "../../../../../components/Checkbox";
 import FormCard from "../../../../../components/FormCard";
 import Thermometer from "../../../../../components/Thermometer";
-import { useRoute, RouteProp } from "@react-navigation/native";
+import { useRoute, RouteProp, useNavigation } from "@react-navigation/native";
 import BottomBar from "@components/BottomBar";
 import { Btn } from "@components/Button";
 import { RootStackParamList } from "../../../../../Navigation/types";
@@ -39,6 +39,8 @@ export default function DistressThermometerScreen() {
   const [selectedWeek, setSelectedWeek] = useState("week1");
   const [showWeekDropdown, setShowWeekDropdown] = useState(false);
   const [otherProblems, setOtherProblems] = useState<string>("");
+  const navigation = useNavigation<any>();
+
 
   const route = useRoute<RouteProp<RootStackParamList, "DistressThermometerScreen">>();
   const { patientId, age, studyId } = route.params as {
@@ -46,7 +48,7 @@ export default function DistressThermometerScreen() {
     age: number;
     studyId: number;
   };
-  const [enteredPatientId, setEnteredPatientId] = useState<string>(`PID-${patientId}`);
+  const [enteredPatientId, setEnteredPatientId] = useState<string>(`${patientId}`);
 
   // Toggle a problem selection
   const toggleProblem = (questionId: string) => {
@@ -65,7 +67,7 @@ export default function DistressThermometerScreen() {
       const res = await apiService.post<{ ResponseData: any[] }>(
         "/GetParticipantDistressThermometerWeeklyQA",
         {
-          ParticipantId: enteredPatientId || `PID-${patientId}`
+          ParticipantId: enteredPatientId || `${patientId}`
         }
       );
 
@@ -191,8 +193,8 @@ export default function DistressThermometerScreen() {
         "/AddUpdateParticipantDistressThermometerScore",
         scoreObj
       );
-        
-      console.log("thermometerscore",res2)
+
+      console.log("thermometerscore", res2)
 
 
       Toast.show({
@@ -201,6 +203,7 @@ export default function DistressThermometerScreen() {
         text2: "Distress Thermometer saved successfully!",
         position: "top",
         topOffset: 50,
+        onHide: () => navigation.goBack(),
       });
 
     } catch (err) {

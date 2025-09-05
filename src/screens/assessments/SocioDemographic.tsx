@@ -271,7 +271,6 @@ export default function SocioDemographic() {
     }
 
     try {
-      // const knowledgeIn = english ? "English" : hindi ? "Hindi" : khasi ? "Khasi" : "";
 
       const payload = {
         ParticipantId: patientId,
@@ -310,7 +309,6 @@ export default function SocioDemographic() {
 
       let response;
       if (isEditMode) {
-        // response = await apiService.put("/AddUpdateParticipant", payload);
         response = await apiService.post("/AddUpdateParticipant", payload);
 
       } else {
