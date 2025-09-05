@@ -69,7 +69,7 @@ export default function DistressThermometerScreen() {
         }
       );
 
-      console.log("API Response:", res.data?.ResponseData);
+      console.log("getThermmeterWeekQAPI Response:", res.data?.ResponseData);
 
       if (!res.data) {
         throw new Error("No response data received");
@@ -87,7 +87,7 @@ export default function DistressThermometerScreen() {
               if (!acc[catName]) {
                 acc[catName] = { categoryName: catName, questions: [] };
               }
-              
+
               // Only add questions that have both DistressQuestionId and Question
               if (item.DistressQuestionId && item.Question) {
                 acc[catName].questions.push({
@@ -100,8 +100,9 @@ export default function DistressThermometerScreen() {
           }, {})
         );
 
+        console.log("groupedd", grouped)
         setCategories(grouped);
-        
+
         // Set any existing answers from the API response
         const existingAnswers: Record<string, boolean> = {};
         responseData.forEach(item => {
@@ -175,8 +176,24 @@ export default function DistressThermometerScreen() {
         "/AddUpdateParticipantDistressThermometerWeeklyQA",
         reqObj
       );
-
       console.log("Save success:", res.data);
+
+      const scoreObj = {
+        ParticipantId: `${patientId}`,
+        StudyId: "CS-0001",
+        DistressThermometerScore: `${v}`,
+        ModifiedBy: "USER001",
+      };
+
+      console.log("Saving Score payload:", scoreObj);
+
+      const res2 = await apiService.post(
+        "/AddUpdateParticipantDistressThermometerScore",
+        scoreObj
+      );
+        
+      console.log("thermometerscore",res2)
+
 
       Toast.show({
         type: "success",
@@ -230,10 +247,10 @@ export default function DistressThermometerScreen() {
             <Text className="text-base font-semibold text-gray-700">
               Age: {age || "Not specified"}
             </Text>
-            
+
             {/* Week Dropdown */}
             <View className="w-32">
-              <Pressable 
+              <Pressable
                 className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 flex-row justify-between items-center"
                 onPress={() => setShowWeekDropdown(!showWeekDropdown)}
                 style={{
@@ -243,22 +260,22 @@ export default function DistressThermometerScreen() {
                 }}
               >
                 <Text className="text-sm text-gray-700">
-                  {selectedWeek === "week1" ? "Week 1" : 
-                   selectedWeek === "week2" ? "Week 2" : 
-                   selectedWeek === "week3" ? "Week 3" : 
-                   selectedWeek === "week4" ? "Week 4" : "Week 1"}
+                  {selectedWeek === "week1" ? "Week 1" :
+                    selectedWeek === "week2" ? "Week 2" :
+                      selectedWeek === "week3" ? "Week 3" :
+                        selectedWeek === "week4" ? "Week 4" : "Week 1"}
                 </Text>
                 <Text className="text-gray-500 text-xs">▼</Text>
               </Pressable>
             </View>
           </View>
         </View>
-        
+
         {/* Dropdown Menu */}
         {showWeekDropdown && (
           <View className="absolute top-20 right-6 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999] w-28">
             {["week1", "week2", "week3", "week4"].map((week, index) => (
-              <Pressable 
+              <Pressable
                 key={week}
                 className={`px-3 py-2 ${index < 3 ? 'border-b border-gray-100' : ''}`}
                 onPress={() => {
@@ -341,7 +358,7 @@ export default function DistressThermometerScreen() {
               <Text className="text-gray-500">Loading questions...</Text>
             </View>
           )}
-          
+
           {error && (
             <View className="bg-red-50 p-3 rounded-lg mb-4">
               <Text className="text-red-600 text-center">{error}</Text>

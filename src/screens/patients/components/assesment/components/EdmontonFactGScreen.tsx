@@ -32,9 +32,9 @@ interface Subscale {
   key: string;
   label: string;
   shortCode: string;
-  items: { 
-    code: string; 
-    text: string; 
+  items: {
+    code: string;
+    text: string;
     value?: string;
     FactGCategoryId?: string;
     TypeOfQuestion?: string;
@@ -71,7 +71,7 @@ const computeScores = (
   answers: Record<string, number | null>,
   subscales: Subscale[]
 ): ScoreResults => {
-  
+
   const PWB_subscale = subscales.find(s => s.key === "Physical well-being");
   const SWB_subscale = subscales.find(s => s.key === "Social/Family well-being");
   const EWB_subscale = subscales.find(s => s.key === "Emotional well-being");
@@ -89,6 +89,7 @@ const computeScores = (
 export default function EdmontonFactGScreen() {
   const [answers, setAnswers] = useState<Record<string, number | null>>({});
   const [subscales, setSubscales] = useState<Subscale[]>([]);
+
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -101,16 +102,16 @@ export default function EdmontonFactGScreen() {
 
   const route = useRoute<RouteProp<RootStackParamList, "EdmontonFactGScreen">>();
   const navigation = useNavigation();
-  const { patientId, age, studyId } = route.params as { 
-    patientId: number; 
+  const { patientId, age, studyId } = route.params as {
+    patientId: number;
     age: number;
-    studyId: number 
+    studyId: number
   };
 
   // Category code mapping for display
   const categoryCodeMapping: Record<string, string> = {
     "Physical well-being": "P",
-    "Social/Family well-being": "S", 
+    "Social/Family well-being": "S",
     "Emotional well-being": "E",
     "Functional well-being": "F"
   };
@@ -141,7 +142,7 @@ export default function EdmontonFactGScreen() {
       const response = await apiService.post<FactGResponse>(
         "/getParticipantFactGQuestionWeekly",
         {
-          ParticipantId: `PID-${patientId}`,
+          ParticipantId: `${patientId}`,
           WeekNo: parseInt(selectedWeek.replace('week', ''))
         }
       );
@@ -185,7 +186,7 @@ export default function EdmontonFactGScreen() {
       // Sort categories in the desired order
       const categoryOrder = [
         "Physical well-being",
-        "Social/Family well-being", 
+        "Social/Family well-being",
         "Emotional well-being",
         "Functional well-being"
       ];
@@ -250,7 +251,7 @@ export default function EdmontonFactGScreen() {
       // Check if all questions are answered
       const totalQuestions = subscales.reduce((sum, scale) => sum + scale.items.length, 0);
       const answeredQuestions = Object.keys(answers).length;
-      
+
       if (answeredQuestions < totalQuestions) {
         Toast.show({
           type: "error",
@@ -320,8 +321,8 @@ export default function EdmontonFactGScreen() {
       const today = new Date().toISOString().split('T')[0];
 
       const payload = {
-        StudyId: studyId ? `CS-${studyId.toString().padStart(4, '0')}` : "CS-0001",
-        ParticipantId: `PID-${patientId}`,
+        StudyId: studyId ? `${studyId.toString().padStart(4, '0')}` : "CS-0001",
+        ParticipantId: `${patientId}`,
         SessionNo: `SessionNo-${parseInt(selectedWeek.replace('week', ''))}`,
         FactGData: factGData,
         CreatedBy: "UH-1000",
@@ -337,11 +338,11 @@ export default function EdmontonFactGScreen() {
       console.log("FactGData Items:", factGData.length);
       console.log("FactG Sending Payload:", JSON.stringify(payload, null, 2));
       console.log("API Endpoint:", "/AddParticipantFactGQuestionsWeekly");
-      
+
       // Compare with test payload structure
       const testPayload = {
         StudyId: "CS-0001",
-        ParticipantId: `PID-${patientId}`,
+        ParticipantId: `${patientId}`,
         SessionNo: "SessionNo-1",
         FactGData: [
           {
@@ -377,7 +378,7 @@ export default function EdmontonFactGScreen() {
         } else {
           Toast.show({
             type: "error",
-            text1: "Error", 
+            text1: "Error",
             text2: `Server returned status ${response.status}. Please try again.`,
             position: "top",
             topOffset: 50,
@@ -385,7 +386,7 @@ export default function EdmontonFactGScreen() {
         }
       } catch (apiError) {
         console.error("API call failed:", apiError);
-        
+
         // Try with full URL as fallback
         try {
           console.log("Trying with full URL as fallback...");
@@ -424,14 +425,14 @@ export default function EdmontonFactGScreen() {
         response: error.response?.data,
         stack: error.stack
       });
-      
+
       let errorMessage = "Failed to save FACT-G responses.";
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       Toast.show({
         type: "error",
         text1: "Error",
@@ -446,7 +447,7 @@ export default function EdmontonFactGScreen() {
 
   const RatingButtons = ({ questionCode, currentValue }: { questionCode: string; currentValue: number | null }) => {
     console.log(`RatingButtons for ${questionCode}: currentValue = ${currentValue} (type: ${typeof currentValue})`);
-    
+
     return (
       <View className="bg-white border border-[#e6eeeb] rounded-xl shadow-sm overflow-hidden">
         <View className="flex-row">
@@ -460,14 +461,12 @@ export default function EdmontonFactGScreen() {
                     console.log(`Pressed button ${value} for ${questionCode}`);
                     setAnswer(questionCode, value);
                   }}
-                  className={`w-12 py-2 items-center justify-center ${
-                    isSelected ? "bg-[#7ED321]" : "bg-white"
-                  }`}
+                  className={`w-12 py-2 items-center justify-center ${isSelected ? "bg-[#7ED321]" : "bg-white"
+                    }`}
                 >
                   <Text
-                    className={`font-medium text-sm ${
-                      isSelected ? "text-white" : "text-[#4b5f5a]"
-                    }`}
+                    className={`font-medium text-sm ${isSelected ? "text-white" : "text-[#4b5f5a]"
+                      }`}
                   >
                     {value}
                   </Text>
@@ -487,21 +486,21 @@ export default function EdmontonFactGScreen() {
       <View className="px-4 pt-4">
         <View className="bg-white border-b border-gray-200 rounded-xl p-4 flex-row justify-between items-center shadow-sm">
           <Text className="text-lg font-bold text-green-600">
-            Participant ID: PID-{patientId}
+            Participant ID: {patientId}
           </Text>
 
           <Text className="text-base font-semibold text-green-600">
-            Study ID: {studyId ? `CS-${studyId.toString().padStart(4, '0')}` : 'CS-0001'}
+            Study ID: {studyId ? `${studyId.toString().padStart(4, '0')}` : 'CS-0001'}
           </Text>
 
           <View className="flex-row items-center gap-3">
             <Text className="text-base font-semibold text-gray-700">
               Age: {age || "Not specified"}
             </Text>
-            
+
             {/* Week Dropdown */}
             <View className="w-32">
-              <Pressable 
+              <Pressable
                 className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 flex-row justify-between items-center"
                 onPress={() => setShowWeekDropdown(!showWeekDropdown)}
                 style={{
@@ -511,22 +510,22 @@ export default function EdmontonFactGScreen() {
                 }}
               >
                 <Text className="text-sm text-gray-700">
-                  {selectedWeek === "week1" ? "Week 1" : 
-                   selectedWeek === "week2" ? "Week 2" : 
-                   selectedWeek === "week3" ? "Week 3" : 
-                   selectedWeek === "week4" ? "Week 4" : "Week 1"}
+                  {selectedWeek === "week1" ? "Week 1" :
+                    selectedWeek === "week2" ? "Week 2" :
+                      selectedWeek === "week3" ? "Week 3" :
+                        selectedWeek === "week4" ? "Week 4" : "Week 1"}
                 </Text>
                 <Text className="text-gray-500 text-xs">▼</Text>
               </Pressable>
             </View>
           </View>
         </View>
-        
+
         {/* Dropdown Menu */}
         {showWeekDropdown && (
           <View className="absolute top-20 right-6 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999] w-28">
             {["week1", "week2", "week3", "week4"].map((week, index) => (
-              <Pressable 
+              <Pressable
                 key={week}
                 className={`px-3 py-2 ${index < 3 ? 'border-b border-gray-100' : ''}`}
                 onPress={() => {
@@ -563,10 +562,10 @@ export default function EdmontonFactGScreen() {
               </View>
             </View>
           </View>
-          
+
           <View className="flex-row gap-3">
             <View className="flex-1">
-              <Field label="Participant ID" placeholder={`PID-${patientId}`} editable={false} />
+              <Field label="Participant ID" placeholder={`${patientId}`} value={`${patientId}`} editable={false} />
             </View>
             <View className="flex-1">
               <Field
@@ -613,7 +612,7 @@ export default function EdmontonFactGScreen() {
                 <View className="flex-row items-center gap-3 mb-2">
                   <Text className="w-16 text-ink font-bold">{item.code}</Text>
                   <Text className="flex-1 text-sm">{item.text}</Text>
-                  <RatingButtons 
+                  <RatingButtons
                     questionCode={item.code}
                     currentValue={answers[item.code] || null}
                   />
@@ -635,7 +634,7 @@ export default function EdmontonFactGScreen() {
             </Text>
           </View>
         )}
-         
+
         {/* Extra space to ensure content is not hidden by BottomBar */}
         <View style={{ height: 150 }} />
       </ScrollView>
