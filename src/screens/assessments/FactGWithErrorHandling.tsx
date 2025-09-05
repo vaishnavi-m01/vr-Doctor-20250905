@@ -160,7 +160,7 @@ function FactGWithErrorHandling({ patientId }: FactGWithErrorHandlingProps) {
   // Handle save with debouncing
   const handleSave = useCallback(() => {
     const factGData = {
-      participantId,
+      participantId: patientId,
       assessedOn,
       assessedBy,
       answers,
@@ -189,7 +189,7 @@ function FactGWithErrorHandling({ patientId }: FactGWithErrorHandlingProps) {
 
   // Check if form is complete
   const isFormComplete = useMemo(() => {
-    const totalQuestions = subscales.reduce((total, scale) => total + scale.questions.length, 0);
+    const totalQuestions = subscales.reduce((total, scale) => total + scale.items.length, 0);
     return Object.keys(answers).length === totalQuestions && assessedOn && assessedBy;
   }, [answers, assessedOn, assessedBy]);
 
@@ -274,22 +274,16 @@ function FactGWithErrorHandling({ patientId }: FactGWithErrorHandlingProps) {
         </FormCard>
 
         {subscales.map((scale, scaleIndex) => (
-          <FormCard key={scaleIndex} icon={scale.icon} title={scale.title} desc={scale.desc}>
-            {scale.questions.map((question, questionIndex) => (
-              <View key={questionIndex} className="mb-4">
+          <FormCard key={scaleIndex} icon="📋" title={scale.label} desc={`Scale: ${scale.key}`}>
+            {scale.items.map((item, itemIndex) => (
+              <View key={itemIndex} className="mb-4">
                 <Text className="text-sm text-[#4b5f5a] mb-2">
-                  {questionIndex + 1}. {question.text}
+                  {itemIndex + 1}. {item.text}
                 </Text>
                 <PillGroup
-                  options={[
-                    { label: '0', value: 0 },
-                    { label: '1', value: 1 },
-                    { label: '2', value: 2 },
-                    { label: '3', value: 3 },
-                    { label: '4', value: 4 },
-                  ]}
-                  value={answers[question.id] || null}
-                  onChange={(value) => handleAnswerSelect(question.id, value)}
+                  values={[0, 1, 2, 3, 4]}
+                  value={answers[item.code] || null}
+                  onChange={(value) => handleAnswerSelect(item.code, Number(value))}
                 />
               </View>
             ))}

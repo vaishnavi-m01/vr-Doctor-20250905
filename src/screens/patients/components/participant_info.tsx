@@ -18,7 +18,7 @@ export default function ParticipantInfo({ patientId,age,studyId }: ParticipantIn
       <AssessItem
         icon="📋"
         title="Socio Demographic Form"
-        subtitle="Collect demographic, education, and contact information"
+        subtitle="Personal Information, education, and contact information"
         onPress={() => navigation.navigate("SocioDemographic", { patientId,age,studyId })}
         className="bg-[#F6F7F7] border-[#F6F7F7]"
       />
@@ -36,7 +36,7 @@ export default function ParticipantInfo({ patientId,age,studyId }: ParticipantIn
         title="Study and Control Group Assignment"
         subtitle="Assign participants to study groups and track assignments"
         onPress={() => 
-          navigation.navigate('PreAndPostVR', { patientId,age,studyId })
+          navigation.navigate('StudyGroupAssignment', { patientId,age,studyId })
         }
         className="bg-[#F6F7F7] border-[#F6F7F7]"/>
     </ScrollView>

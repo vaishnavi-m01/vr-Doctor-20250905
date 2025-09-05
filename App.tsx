@@ -46,6 +46,7 @@ import StudyObservation_List from '@screens/assessments/StudyObservation_List';
 import FactGAssessmentHistory from '@screens/patients/components/assesment/FactGAssessmentHistory';
 import VRPrePostList from '@screens/vr-sessions/vr-prepost_list';
 import AdverseEventReportsHistory from '@screens/assessments/AdverseEventReportsHistory';
+import StudyGroupAssignment from './src/screens/patients/StudyGroupAssignment';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -55,7 +56,12 @@ function Splash({ navigation }: { navigation: NativeStackNavigationProp<RootStac
     console.log('Splash screen mounted, starting timer...');
     const timer = setTimeout(() => {
       console.log('Timer completed, navigating to Login...');
-      navigation.replace('Login');
+      try {
+        navigation.replace('Login');
+        console.log('Navigation to Login successful');
+      } catch (error) {
+        console.error('Navigation error:', error);
+      }
     }, 3000);
     return () => {
       console.log('Clearing splash timer...');
@@ -99,17 +105,51 @@ export default function App() {
   };
 
   console.log('App rendering, currentRoute:', currentRoute, 'fontsLoaded:', fontsLoaded);
+  
+  // Debug: Add more detailed logging
+  console.log('Navigation state - currentRoute:', currentRoute);
+  console.log('Fonts loaded status:', fontsLoaded);
 
   // Show loading screen while fonts are loading
   if (!fontsLoaded) {
     return (
       <SafeAreaProvider>
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18, color: '#0e4336' }}>Loading...</Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#0e4336', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 24, color: 'white', fontWeight: 'bold' }}>VR Doctor</Text>
+          <Text style={{ fontSize: 16, color: 'white', marginTop: 10 }}>Loading fonts...</Text>
         </SafeAreaView>
       </SafeAreaProvider>
     );
   }
+
+  // Temporary debug - show simple test screen
+  if (currentRoute === 'Splash') {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#0e4336', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+            VR Doctor - Debug Mode
+          </Text>
+          <Text style={{ color: 'white', fontSize: 16, opacity: 0.8 }}>
+            App is working! This is a test screen.
+          </Text>
+          <TouchableOpacity 
+            style={{ 
+              backgroundColor: 'white', 
+              paddingHorizontal: 20, 
+              paddingVertical: 10, 
+              borderRadius: 8, 
+              marginTop: 20 
+            }}
+            onPress={() => setCurrentRoute('Login')}
+          >
+            <Text style={{ color: '#0e4336', fontWeight: 'bold' }}>Go to Login</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
+
 
   return (
     <Provider store={store}>
@@ -118,13 +158,22 @@ export default function App() {
           <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <NavigationContainer
             onStateChange={(state) => {
-              const route = state?.routes[state.index];
-              const routeName = route?.name;
-              console.log('Navigation state changed:', { routeName, currentIndex: state?.index });
-              if (routeName && typeof routeName === 'string') {
-                setCurrentRoute(routeName as keyof RootStackParamList);
+              try {
+                const route = state?.routes[state.index];
+                const routeName = route?.name;
+                console.log('Navigation state changed:', { routeName, currentIndex: state?.index });
+                if (routeName && typeof routeName === 'string') {
+                  setCurrentRoute(routeName as keyof RootStackParamList);
+                }
+              } catch (error) {
+                console.error('Navigation state change error:', error);
               }
             }}
+            fallback={
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0e4336' }}>
+                <Text style={{ color: 'white', fontSize: 18 }}>Loading...</Text>
+              </View>
+            }
           >
             <View className="flex-1">
               <Stack.Navigator
@@ -276,6 +325,11 @@ export default function App() {
                   name="VRPrePostList"
                   component={VRPrePostList}
                   options={{ headerShown: true, title: "VR Pre & Post List" }}
+                />
+                <Stack.Screen
+                  name="StudyGroupAssignment"
+                  component={StudyGroupAssignment}
+                  options={{ headerShown: true, title: "Study Group Assignment" }}
                 />
               </Stack.Navigator>
 

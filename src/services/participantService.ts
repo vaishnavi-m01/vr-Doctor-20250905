@@ -116,32 +116,21 @@ export class ParticipantService {
     request: ParticipantPaginationRequest
   ): Promise<ApiResponse<ParticipantPaginationResponse> | null> {
     try {
-      // Build query parameters - use the exact format that works in Postman
-      const params: Record<string, string> = {};
-      
-      if (request.page !== undefined) params.page = request.page.toString();
-      if (request.pageSize !== undefined) params.pageSize = request.pageSize.toString();
-      if (request.searchTerm) params.searchTerm = request.searchTerm;
-      if (request.sortBy) params.sortBy = request.sortBy;
-      if (request.sortOrder) params.sortOrder = request.sortOrder;
-      
-      // Add filters if provided
-      if (request.filters) {
-        if (request.filters.studyId) params.studyId = request.filters.studyId;
-        if (request.filters.criteriaStatus) params.criteriaStatus = request.filters.criteriaStatus;
-        if (request.filters.groupType) params.groupType = request.filters.groupType;
-        if (request.filters.status !== undefined) params.status = request.filters.status.toString();
-      }
+      // Build request body - use the exact format that works in Postman
+      const requestBody: any = {
+        StudyId: request.filters?.studyId || 'CS-0001',
+        CriteriaStatus: request.filters?.criteriaStatus || 'Excluded', // Changed to get more participants
+        GroupType: request.filters?.groupType || null, // Allow null to get unassigned
+        PageNo: request.page || 1
+      };
 
-      const searchParams = new URLSearchParams(params);
-      const url = `${this.paginationEndpoint}?${searchParams.toString()}`;
-      
-      const res = await fetch(url, {
-        method: 'GET',
+      const res = await fetch(this.paginationEndpoint, {
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(requestBody),
       });
 
       if (!res.ok) {
