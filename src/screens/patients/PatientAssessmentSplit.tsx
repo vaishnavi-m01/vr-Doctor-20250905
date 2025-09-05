@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListItem from '../../components/ListItem';
 import TabPills from '../../components/TabPills';
 import ParticipantInfo from './components/participant_info';
@@ -49,36 +48,7 @@ export default function ParticipantAssessmentSplit() {
 
   // pagination states
   const [page, setPage] = useState(1);
-  const perPage = 3;
-
-  // Save selected participant ID to AsyncStorage
-  const saveSelectedParticipant = async (participantId: number | null) => {
-    try {
-      if (participantId) {
-        await AsyncStorage.setItem('selectedParticipantId', `PID-${participantId}`);
-      } else {
-        await AsyncStorage.removeItem('selectedParticipantId');
-      }
-    } catch (error) {
-      console.error('Error saving selected participant:', error);
-    }
-  };
-
-  // Load selected participant ID from AsyncStorage
-  const loadSelectedParticipant = async () => {
-    try {
-      const savedId = await AsyncStorage.getItem('selectedParticipantId');
-      if (savedId) {
-        // Convert string to number for selId
-        const participantId = parseInt(savedId.replace('PID-', ''), 10);
-        if (!isNaN(participantId)) {
-          setSelId(participantId);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading selected participant:', error);
-    }
-  };
+  const perPage = 10;
 
 
   useFocusEffect(
@@ -141,45 +111,7 @@ export default function ParticipantAssessmentSplit() {
         }));
 
         setParticipants(parsed);
-        
-        // Check for saved selection in AsyncStorage
-        try {
-          const savedId = await AsyncStorage.getItem('selectedParticipantId');
-          let savedParticipantId = null;
-          
-          if (savedId) {
-            // Convert string to number for comparison
-            savedParticipantId = parseInt(savedId.replace('PID-', ''), 10);
-          }
-          
-          // Check if saved selection exists in current participants
-          const savedParticipantExists = savedParticipantId && parsed.find(p => p.ParticipantId === savedParticipantId);
-          
-          if (savedParticipantExists) {
-            // Use saved selection
-            setSelId(savedParticipantId);
-          } else {
-            // Use current selection if it exists in the data, otherwise use first participant
-            if (selId && parsed.find(p => p.ParticipantId === selId)) {
-              // Current selection is valid, keep it
-            } else {
-              // Set to first participant
-              const newSelection = parsed[0]?.ParticipantId ?? null;
-              if (newSelection) {
-                setSelId(newSelection);
-                saveSelectedParticipant(newSelection);
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error checking saved selection:', error);
-          // Fallback to first participant
-          const newSelection = parsed[0]?.ParticipantId ?? null;
-          if (newSelection) {
-            setSelId(newSelection);
-            saveSelectedParticipant(newSelection);
-          }
-        }
+        setSelId(parsed[0]?.ParticipantId ?? null);
       }
     } catch (error) {
       console.error("Failed to fetch participants:", error);
@@ -286,19 +218,16 @@ export default function ParticipantAssessmentSplit() {
             </Pressable>
           </View>
 
-          <ScrollView className="flex-1 p-3" contentContainerStyle={{ paddingBottom: 70 }}>
+          <ScrollView className="flex-1 p-3" contentContainerStyle={{ paddingBottom: 10 }}>
             {loading ? (
               <ActivityIndicator color="#0ea06c" />
-            ) : participants.length > 0 ? (
-              participants.map((p) => (
+            ) : paginatedParticipants.length > 0 ? (
+              paginatedParticipants.map((p) => (
                 <ListItem
                   key={p.ParticipantId}
                   item={p}
                   selected={p.ParticipantId === selId}
-                  onPress={() => {
-                    setSelId(p.ParticipantId);
-                    saveSelectedParticipant(p.ParticipantId);
-                  }}
+                  onPress={() => setSelId(p.ParticipantId)}
                 />
               ))
             ) : (
@@ -306,7 +235,20 @@ export default function ParticipantAssessmentSplit() {
                 <Text className="text-gray-500 text-lg">Patient not found</Text>
               </View>
             )}
+
           </ScrollView>
+          {!loading && participants.length > perPage && (
+            <View className="pb-20">
+              <Pagination
+                value={page}
+                onChange={(pg) => setPage(pg)}
+                totalItems={participants.length}
+                perPage={perPage}
+              />
+
+            </View>
+          )} 
+
         </View>
 
         {/* Right Pane - Participant Details */}

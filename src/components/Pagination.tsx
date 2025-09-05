@@ -18,7 +18,6 @@ export default function Pagination({
 
   const getPages = (): number[] => {
     if (totalPages <= 3) {
-      // If only 3 or fewer pages → show all
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
@@ -36,7 +35,7 @@ export default function Pagination({
   const pages = getPages();
 
   return (
-    <View className="flex-row items-center justify-center space-x-2 bg-white rounded-xl p-4 shadow-md">
+    <View className="flex-row items-center justify-center space-x-2 bg-white rounded-xl p-4 ">
       {/* Previous */}
       <Pressable
         onPress={() => onChange(Math.max(1, value - 1))}
@@ -54,10 +53,10 @@ export default function Pagination({
         <Pressable
           key={page}
           onPress={() => onChange(page)}
-          disabled={page > totalPages} // 🔑 prevent invalid page press
+          disabled={page > totalPages} 
           className={`w-10 h-10 rounded-lg items-center justify-center border ${
             page === value
-              ? "bg-blue-600 border-blue-600"
+              ? "bg-[#283961] border-[#283961]"
               : page > totalPages
               ? "bg-gray-100 border-gray-300"
               : "bg-white border-gray-300"
